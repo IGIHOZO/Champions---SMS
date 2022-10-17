@@ -1,4 +1,9 @@
 <?php
+if (!isset($_GET['emp'])) {
+    ?>
+    <script>window.location='sales';</script>
+    <?php
+}
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -117,8 +122,9 @@ require("../../assets/header333.php");
   $(function () {
         $("#sidebar-toggle").click();
       var GeneralSallesReport = true;
+      var emp = "<?=$_GET['emp']?>";
       $.ajax({url:"../../main/view.php",
-        type:"POST",data:{GeneralSallesReport:GeneralSallesReport},cache:false,success:function(res){  
+        type:"POST",data:{GeneralSallesReport:GeneralSallesReport,emp:emp},cache:false,success:function(res){  
           var res = JSON.parse(res);
           // console.log(res.res);
           if (res.found===1) {
@@ -128,7 +134,7 @@ require("../../assets/header333.php");
                 "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
               if (res.res[key].is_found==0) {
                 $("#"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
-                // $("#"+key+"").css("display","none");
+                $("#"+key+"").css("display","none");
               }else{
                 let finalData = res.res[key].data;
                 let ll = finalData.length;
@@ -151,8 +157,8 @@ require("../../assets/header333.php");
             }
           }else{
             // console.log("not found");
+            $("#"+key+"").css("display","none");
             $("#report_div").html("<center><h3>No data available ...</h3></center>");
-            // $("#"+key+"").css("display","none");
           }
           }
       });
@@ -162,11 +168,12 @@ require("../../assets/header333.php");
 $("#dtto").change(function(){
   var dtFrom = $("#dtfrom").val();
   var dtTo = $("#dtto").val();
+  var emp = "<?=$_GET['emp']?>";
   if(dtFrom!='' && dtTo!=''){
     $("#report_div").html("");
     var GeneralSallesReportRange = true;
       $.ajax({url:"../../main/view.php",
-        type:"POST",data:{GeneralSallesReportRange:GeneralSallesReportRange,dtFrom:dtFrom,dtTo:dtTo},cache:false,success:function(res){  
+        type:"POST",data:{GeneralSallesReportRange:GeneralSallesReportRange,dtFrom:dtFrom,dtTo:dtTo,emp:emp},cache:false,success:function(res){  
           var res = JSON.parse(res);
           // console.log(res.res);
           if (res.found===1) {
@@ -176,13 +183,14 @@ $("#dtto").change(function(){
                 "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
               if (res.res[key].is_found==0) {
                 $("#"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
+                $("#"+key+"").css("display","none");
               }else{
                 let finalData = res.res[key].data;
                 let ll = finalData.length;
                   var ttlQntty = ttlSoldPrice = 0;
                 for (var i = 0; i < ll; i++) {
                   // console.log(res.res[key].data[i].SoldPrice);
-                $("#"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
+                $("#"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank'  href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
                 // $("#"+key+"").append("<tr> ");
                 ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
                 ttlSoldPrice+= parseInt(res.res[key].data[i].SoldPrice);
@@ -191,9 +199,9 @@ $("#dtto").change(function(){
               }
             }
           }else{
-            // console.log("not found");
+            console.log("not found");
             $("#report_div").html("<center><h3>No data available ...</h3></center>");
-            // $("#"+key+"").css("display","none");
+            $("#"+key+"").css("display","none");
           }
           }
       });

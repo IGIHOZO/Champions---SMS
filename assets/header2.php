@@ -207,6 +207,7 @@ session_start();
           <ul class="treeview-menu">
             <li><a href="actions/register/warehouse"><i class="fa fa-circle-o"></i>New Warehouse</a></li>
             <li><a href="actions/register/branch"><i class="fa fa-circle-o"></i>New Stock</a></li>
+            <li><a href="actions/register/manager"><i class="fa fa-circle-o"></i>New Branch Manager</a></li>
             <li><a href="actions/register/employee"><i class="fa fa-circle-o"></i>New Member</a></li>
             <li><a href="actions/register/product"><i class="fa fa-circle-o"></i>New Product</a></li>
           </ul>

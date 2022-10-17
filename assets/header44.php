@@ -210,6 +210,7 @@ echo "<script>window.location='../../../'</script>";
           <ul class="treeview-menu">
             <li><a href="../register/warehouse"><i class="fa fa-circle-o"></i>New Warehouse</a></li>
             <li><a href="../register/branch"><i class="fa fa-circle-o"></i>New Stock</a></li>
+            <li><a href="../register/manager"><i class="fa fa-circle-o"></i>New Branch Manager</a></li>
             <li><a href="../register/employee"><i class="fa fa-circle-o"></i>New Member</a></li>
             <li><a href="../register/product"><i class="fa fa-circle-o"></i>New Product</a></li>
           </ul>

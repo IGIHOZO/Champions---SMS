@@ -2,11 +2,13 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require("../../../assets/header44.php");
+require("../../../assets/header4.php");
 ?>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
+
 <script>
 
 </script>
@@ -50,8 +52,8 @@ require("../../../assets/header44.php");
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Orient Products
-        <small><b><u>WAREHOUSE</u></b></small>
+        Register New Branch Manager
+        <small>Employee Stock-incharge</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> ChampionTech</a></li>
@@ -68,8 +70,7 @@ require("../../../assets/header44.php");
           <div class="box" style="margin-left: 0.5%">
             <div class="box-body">
               <a class="btn btn-success" style="font-weight: bolder;">Export Excel</a>
-              <a href="warehouse_orient_upload" style="margin-left: 30%;font-weight: bold ;" class="btn btn-info">Import List From Excel File</a>
-                <a style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">Orient Product</a>
+                <a style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">New Member</a>
 
               <center><div style="text-align: center;margin: 0 auto">
                 <table class="table table-reaponsive">
@@ -78,25 +79,19 @@ require("../../../assets/header44.php");
                       #
                     </th>
                     <th>
-                      Item Name
+                      Employee Name
                     </th>
                     <th>
-                      Category
+                      Oriented Stock
                     </th>
                     <th>
-                      Set-Type
+                      Phone
                     </th>
                     <th>
-                      Qnt Available
+                      Date Registered
                     </th>
                     <th>
-                      Box_Pieces
-                    </th>
-                    <th>
-                      Warehouse
-                    </th>
-                    <th>
-                      Date Ragistered
+                      Actions
                     </th>
                     <tbody id="report_div">
                       
@@ -104,7 +99,6 @@ require("../../../assets/header44.php");
                   </thead>
                 </table>
               </div></center>
-
             </div>
             <!-- /.box-body -->
           </div>
@@ -113,11 +107,13 @@ require("../../../assets/header44.php");
         </div>
         <!-- /.col (right) -->
       </div>
+      <!-- /.row -->
+
     <div class="modal fade" id="newRequestModal" tabindex="-1" role="dialog" aria-labelledby="newRequestModalLabel" aria-hidden="false" sty>
-      <div class="modal-dialog" style="min-width: 40%" role="document">
+      <div class="modal-dialog" style="min-width: 60%" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="exampleModalLabel">Orient Products | Warehouse</h5>
+            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="exampleModalLabel">Register New Branch Manager</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span style="float:right;margin-top: -50px;" aria-hidden="false">×</span>
             </button>
@@ -128,57 +124,71 @@ require("../../../assets/header44.php");
             <div class="modal-body">
             <!-- <section class="content"> -->
       <div class="row">
-        <div class="col-md-12">
-          <div class="box">
+        <div class="col-md-9">
+          <div class="box" style="margin-left: 15%">
             <div class="box-body">
               <div id="respp" style="font-weight: bold;display: none;text-align: center;"></div>
               <!-- Date dd/mm/yyyy -->
               <div class="form-group">
-                <label>Select Warehouse:</label>
+                <label>Name:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
-                    <i class="fa fa-trophy"></i>
+                    <i class="fa fa-user"></i>
                   </div>
-                  <select style="width: 100%!important;" class="form-control" id="AvailableWarehouses" style="font-weight: lighter;"></select>
+                  <input type="text" class="form-control" placeholder="Name" id="names">
                 </div>
 
               </div>
               <div class="form-group">
-                <label>Select Product:</label>
+                <label>Manager >> Stock:</label>
 
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <i class="fa fa-trophy"></i>
-                  </div>
-                  <select style="width: 100%!important;" class="form-control" id="product" style="font-weight: lighter;"></select>
-                </div>
-
-              </div>
-              <div class="form-group">
-                <label>Amount Added
                 <div class="input-group">
                   <div class="input-group-addon">
                     <i class="fa fa-shopping-cart"></i>
                   </div>
-                  <input type="number" class="form-control" placeholder="Quantity added" id="added">
+                  <select style="width: 100%!important;" class="form-control" id="branch"></select>
                 </div>
                 <!-- /.input group -->
               </div>
               <div class="form-group">
-                <label>Product Unit type:</label>
+                <label>Phone Number:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <i class="fa fa-phone"></i>
                   </div>
-                  <select class="form-control" id="IsProductBox">
-                    <option value=0 selected>Piece</option>
-                    <option value=1>Box</option>
-                  </select>
+                  <input type="text" class="form-control" placeholder="Phone Number" id="phone">
                 </div>
                 <!-- /.input group -->
               </div>
+
+              <div class="form-group">
+                <label>New Password</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-key"></i>
+                  </div>
+                  <input type="password" class="form-control" placeholder="new password" id="pass">
+                </div>
+                <!-- /.input group -->
+              </div>
+
+              <div class="form-group">
+                <label>Confirm Password</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-key"></i>
+                  </div>
+                  <input type="password" class="form-control" placeholder="Confirm password" id="conf">
+                </div>
+                <!-- /.input group -->
+              </div>
+
+
+              <!-- /.form group -->
 
             </div>
             <!-- /.box-body -->
@@ -193,9 +203,10 @@ require("../../../assets/header44.php");
               <div class="form-group">
         
                 <div class="input-group">
-                  <button class="btn btn-success" style="font-weight: bold;" id="OrientProductsToMainStock">OK, Orient</button>
+                  <button class="btn btn-success" style="font-weight: bold;" id="BranchEmployeeSignUp">Register</button>
                 </div>
-                <a href="head" style="float:right;" class="btn btn-primary" id="Next">Next</a>
+                <a href="product" style="float:right;" class="btn btn-primary" id="Next">Next</a>
+
                 <!-- /.input group -->
               </div>
             </div>
@@ -204,8 +215,90 @@ require("../../../assets/header44.php");
       </div>
     </div>
 
-      <!-- /.row -->
 
+    <div class="modal fade" id="updateMemberModal" tabindex="-1" role="dialog" aria-labelledby="updateMemberModalLabel" aria-hidden="false" sty>
+      <div class="modal-dialog" style="min-width: 60%" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="updateMemberModalLabel">Update Branch manager Details</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span style="float:right;margin-top: -50px;" aria-hidden="false">×</span>
+            </button>
+          </div>
+          <!-- <div class="modal-body"> -->
+          <!-- <form action = "employee" method = "POST" name="sentMessage" id="contactForm" novalidate="novalidate"> -->
+
+            <div class="modal-body">
+            <!-- <section class="content"> -->
+      <div class="row">
+        <div class="col-md-9">
+          <div class="box" style="margin-left: 15%">
+            <div class="box-body">
+              <div id="respp" style="font-weight: bold;display: none;text-align: center;"></div>
+              <!-- Date dd/mm/yyyy -->
+              <div class="form-group">
+                <label>Member Name:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-user"></i>
+                  </div>
+                  <input type="text" class="form-control" placeholder="Member Name" id="upd_names">
+                </div>
+
+              </div>
+              <div class="form-group">
+                <label>Member >> Stock:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-shopping-cart"></i>
+                  </div>
+                  <select class="form-control" id="upd_branch"></select>
+                </div>
+                <!-- /.input group -->
+              </div>
+              <div class="form-group">
+                <label>Phone Number:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-phone"></i>
+                  </div>
+                  <input type="text" class="form-control" placeholder="Phone Number" id="upd_phone">
+                </div>
+                <!-- /.input group -->
+              </div>
+
+
+              <!-- /.form group -->
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        <!-- /.col (right) -->
+      </div>
+            </div>
+            <div class="modal-footer">
+              <div class="form-group">
+        
+                <div class="input-group">
+                  <button class="btn btn-success" style="font-weight: bold;" id="UpdBranchEmployeeSignUp">Update</button>
+                </div>
+                <a href="product" style="float:right;" class="btn btn-primary" id="Next">Next</a>
+
+                <!-- /.input group -->
+              </div>
+            </div>
+          <!-- </form> -->
+        </div>
+      </div>
+    </div>
+                <button data-toggle='modal' id='updateMemberbtn' data-target='#updateMemberModal' style="display: none;"></button>
+                          <input type="hidden" class="form-control" id="MemberID">
     </section>
     <!-- /.content -->
   </div>
@@ -251,8 +344,39 @@ require("../../../assets/header44.php");
 <script src="../../../dist/js/demo.js"></script>
 <!-- Page script -->
 <script src="../../../assets/js/main.js"></script>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 
 <script>
+function ExportToExcel(type, fn, dl) {
+       var elt = document.getElementById('report_div');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('AvailableProducts.' + (type || 'xlsx')));
+    }
+    
+function updateMemberModal(member, phone, memberid) {
+  document.getElementById("upd_names").value=member;
+  document.getElementById("MemberID").value=memberid;
+  document.getElementById("upd_phone").value=phone;
+
+  return $("#updateMemberbtn").click();
+}
+
+
+function deleteEmployee(empid){
+      var deleteEmployee = true;
+      $.ajax({url:"../../../main/action.php",
+        type:"POST",data:{deleteEmployee:deleteEmployee,empid:empid},cache:false,success:function(res){  
+          if (res=='used') {
+            alert("You can't delete a user who has modified something in the system ...");
+          }else{
+            window.location.reload();
+            // console.log(res);
+          }
+          }
+      });
+}
   $(function () {
     //Initialize Select2 Elements
     $('.select2').select2()
@@ -319,76 +443,62 @@ require("../../../assets/header44.php");
     })
   })
 
-
-
   $(document).ready(function(){
-      var available_products = true;
+      var available_branches = true;
       $.ajax({url:"../../../main/view.php",
-        type:"POST",data:{available_products:available_products},cache:false,success:function(res){  
+        type:"POST",data:{available_branches:available_branches},cache:false,success:function(res){  
           var res = JSON.parse(res);
           console.log(res.found);
           if (res.found===1) {
             for (const key in res.res) {
               // console.log(res.res[key]);
-              $("#product").append("<option value='"+res.res[key].product_id+"'>"+res.res[key].product_name+"</option>");
+              $("#branch").append("<option value='"+res.res[key].branch_id+"'>"+res.res[key].branch_name+"</option>");
             }
           }else{
-            $("#product").html("<option value=''>No product available</option>");
+            $("#branch").html("<option value=''>No branch available</option>");
           }
           }
       });
-
-      var available_warehouses = true;
+      var available_branches = true;
       $.ajax({url:"../../../main/view.php",
-        type:"POST",data:{available_warehouses:available_warehouses},cache:false,success:function(res){  
+        type:"POST",data:{available_branches:available_branches},cache:false,success:function(res){  
           var res = JSON.parse(res);
           console.log(res.found);
           if (res.found===1) {
             for (const key in res.res) {
               // console.log(res.res[key]);
-              $("#AvailableWarehouses").append("<option value='"+res.res[key].warehouse_id+"'>"+res.res[key].warehouse_name+"</option>");
+              $("#upd_branch").append("<option value='"+res.res[key].branch_id+"'>"+res.res[key].branch_name+"</option>");
             }
           }else{
-            $("#AvailableWarehouses").html("<option value=''>No warehouse available</option>");
+            $("#upd_branch").html("<option value=''>No branch available</option>");
           }
           }
       });
 
 
-$("#product").change(function(){
-  var product_id = $("#product").val();
-  var IsProductBox = true;
-      $.ajax({url:"../../../main/view.php",
-        type:"POST",data:{IsProductBox:IsProductBox,product_id:product_id},cache:false,success:function(res){  
-          console.log(res);
-          if (res==1) {
-            $("#IsProductBox").html("<option value='0' selected>Piece</option><option value='1' disable>Box</option>");
-            $("#IsProductBox").attr("disabled",false);
-          }else{
-            $("#IsProductBox").html("<option value='0'>Piece</option>");
-            $("#IsProductBox").attr("disabled",true);
-          }
-          }
-      });
-})
 
-      var WarehouseProducts = true;
+      var AllMembersWIthStocks = true;
       $.ajax({url:"../../../main/view.php",
-        type:"POST",data:{WarehouseProducts:WarehouseProducts},cache:false,success:function(res){  
+        type:"POST",data:{AllMembersWIthStocks:AllMembersWIthStocks},cache:false,success:function(res){  
           var res = JSON.parse(res);
           console.log(res.found);
           if (res.found===1) {
             var cnt = 1;
             for (const key in res.res) {
-              // console.log(res.res[key]);
-              $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].ProductName+"</td> <td>"+res.res[key].ProductCategory+"</td><td>"+res.res[key].IsProductBox+"</td><td>"+res.res[key].Qnt+"</td> <td>"+res.res[key].ProductBoxPieces+"</td> <td>"+res.res[key].WarehouseName+"</td><td>"+res.res[key].ProductDate+"</td> </tr>");
+              var name = '"'+res.res[key].EmployeeNames+'"';
+              var phone = '"'+res.res[key].EmployeePhone+'"';
+              $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].EmployeeNames+"</td> <td>"+res.res[key].BranchName+"</td><td>"+res.res[key].EmployeePhone+"</td><td>"+res.res[key].EmployeeDate+"</td> <td><a class='btn btn-link' onclick='return updateMemberModal("+name+","+phone+","+res.res[key].EmployeesId+")'> Update </a> <a class='btn btn-danger' onclick='return deleteEmployee("+res.res[key].EmployeesId+")'>Delete</a></td> </tr>");
               cnt++;
             }
           }else{
-            $("#report_div").html("<tr> <td colspan=6> No Stock available</td></tr>");
+            $("#report_div").html("<tr> <td colspan=5> No Stock available</td></tr>");
           }
           }
       });
+
+
+
+
 
 
 
@@ -396,7 +506,7 @@ $("#product").change(function(){
  $(function(){
   // $("#branch").css("width",30%);
 
-  $("#product").select2();
+  $("#branch").select2();
  }); 
 </script>
 </body>

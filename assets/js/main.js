@@ -26,6 +26,12 @@ $(document).ready(function(){
 							$("#respp").html("Wrong email or password");
 							setTimeout(hide,10000,"#respp");
 						break;
+						case 'no':
+							$("#respp").addClass("bg-red");
+							$("#respp").css("display","block");
+							$("#respp").html("Not authorized ...");
+							setTimeout(hide,10000,"#respp");
+						break;
 						case 'admin':
 							$("#respp").addClass("bg-green");
 							$("#respp").css("display","block");
@@ -97,7 +103,10 @@ $(document).ready(function(){
 
 
 //================================================== ORIENT EMPLOYEE TO BRANCH
-	$("#BranchEmployeeSignUp").click(function(){	
+	$("#BranchEmployeeSignUp").click(function(){
+		var path = window.location.pathname;
+		var page = path.split("/").pop();
+		
 		var names = $("#names").val();
 		var phone= $("#phone").val();
 		var pass = $("#pass").val();
@@ -109,7 +118,12 @@ $(document).ready(function(){
 				// $("#respp").css("display","block");
 				$("#BranchEmployeeSignUp").prop('disabled',true);
 				$("#BranchEmployeeSignUp").html('Please wait...');
-				var BranchEmployeeSignUp = true;
+				if(page=='manager'){
+					var BranchEmployeeSignUp = "manager";
+				}else if(page=='employee'){
+					var BranchEmployeeSignUp = "employee";
+				}
+				// var BranchEmployeeSignUp = true;
 
 				$.ajax({url:"../../../main/action.php",
 				type:"GET",data:{BranchEmployeeSignUp:BranchEmployeeSignUp,names:names,phone:phone,pass:pass,branch:branch},cache:false,success:function(res){
@@ -380,6 +394,7 @@ $("#StockOut").click(function(){		//============================================
 	var soldPrice = $("#soldPrice").val();
 	var quantitySold = $("#quantitySold").val();
 	var paymentMethod = $("#paymentMethod").val();
+	var invNumbr = $("#invNumbr").val();
 
 	var paymentWayPaid = $("#paymentWayPaid").val();
 	var paymentWayDebt = $("#paymentWayDebt").val();
@@ -394,7 +409,7 @@ $("#StockOut").click(function(){		//============================================
 	}
 
 
-	if (product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='') {
+	if (product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='' || invNumbr=='') {
 		$("#respp").addClass("bg-red");
 		$("#respp").css("display","block");
 		$("#respp").html("Fill all fields ...");
@@ -405,7 +420,7 @@ $("#StockOut").click(function(){		//============================================
 		var StockOut = true;
 
 		$.ajax({url:"../../main/action.php",
-				type:"GET",data:{StockOut:StockOut,product_id:product_id,IsProductBox:IsProductBox,soldPrice:soldPrice,quantitySold:quantitySold,paymentMethod:paymentMethod,paymentWay:paymentWay,clientName:clientName,companyName:companyName,clientPhone:clientPhone},cache:false,success:function(res){
+				type:"GET",data:{StockOut:StockOut,product_id:product_id,IsProductBox:IsProductBox,soldPrice:soldPrice,quantitySold:quantitySold,paymentMethod:paymentMethod,paymentWay:paymentWay,clientName:clientName,companyName:companyName,clientPhone:clientPhone,invNumbr:invNumbr},cache:false,success:function(res){
 			$("#StockOut").prop('disabled',false);
 			$("#StockOut").html('Register');
 			switch(res){
@@ -414,7 +429,7 @@ $("#StockOut").click(function(){		//============================================
 					$("#respp").css("display","block");
 					$("#respp").html('Successful recorded !');
 					setTimeout(hide,10000,"#respp");
-					setTimeout($("#product_id").val(''),$("#IsProductBox").val(''),$("#soldPrice").val(''),$("#quantitySold").val(''),$("#paymentMethod").val(''),$("#paymentWayPaid").val(''),$("#paymentWayDebt").val(''),$("#clientName").val(''),$("#clientPhone").val(''),4000);
+					setTimeout($("#product_id").val(''),$("#IsProductBox").val(''),$("#soldPrice").val(''),$("#quantitySold").val(''),$("#paymentMethod").val(''),$("#paymentWayPaid").val(''),$("#paymentWayDebt").val(''),$("#clientName").val(''),$("#clientPhone").val(''),$("#companyName").val(''),4000);
 				break;
 				case 'failed':
 					$("#respp").addClass("bg-red");
@@ -438,6 +453,172 @@ $("#StockOut").click(function(){		//============================================
 				break;
 			}
 		}});
+
+	}
+})
+
+$("#StockOutAllTrans").click(function(){		//========================================================= STOCK-OUT FOR ALL TRANSACTIONS
+	// console.log("New Button");
+	var product_id = $("#hdn_product_id").val();
+	var IsProductBox = $("#hdn_IsProductBox").val();
+	var soldPrice = $("#hdn_soldPrice").val();
+	var quantitySold = $("#hdn_quantitySold").val();
+	var paymentMethod = $("#paymentMethod").val();
+	var invNumbr = $("#hdn_invNumbr").val();
+
+	var paymentWayPaid = $("#paymentWayPaid").val();
+	var paymentWayDebt = $("#paymentWayDebt").val();
+	var clientName = $("#hdn_clientName").val();
+	var companyName = $("#hdn_companyName").val();
+	var clientPhone = $("#hdn_clientPhone").val();
+	var paymentWay = null;
+	if (paymentMethod==1 || paymentMethod=='1') {
+		paymentWay = paymentWayPaid;
+	}else if (paymentMethod==0 || paymentMethod=='0') {
+		paymentWay = paymentWayDebt;
+	}
+
+
+	if (product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='' || invNumbr=='') {
+		$("#respp").addClass("bg-red");
+		$("#respp").css("display","block");
+		$("#respp").html("Fill all fields ...");
+		setTimeout(hide,10000,"#respp");
+	}else{
+		$("#StockOutAllTrans").prop('disabled',true);
+		$("#StockOutAllTrans").html('Please wait...');
+		var StockOutAllTrans = true;
+
+		$.ajax({url:"../../main/action.php",
+				type:"GET",data:{StockOutAllTrans:StockOutAllTrans,product_id:product_id,IsProductBox:IsProductBox,soldPrice:soldPrice,quantitySold:quantitySold,paymentMethod:paymentMethod,paymentWay:paymentWay,clientName:clientName,companyName:companyName,clientPhone:clientPhone,invNumbr:invNumbr},cache:false,success:function(res){
+			$("#StockOutAllTrans").prop('disabled',false);
+			$("#StockOutAllTrans").html('Register');
+			$("resp_newItm").html("");
+			switch(res){
+				case 'success':
+					$("#respp").addClass("bg-green");
+					$("#respp").css("display","block");
+					$("#respp").html('Successful recorded !');
+					setTimeout(hide,10000,"#respp");
+					setTimeout($("#product_id").val(''),$("#IsProductBox").val(''),$("#soldPrice").val(''),$("#quantitySold").val(''),$("#paymentMethod").val(''),$("#paymentWayPaid").val(''),$("#paymentWayDebt").val(''),$("#clientName").val(''),$("#clientPhone").val(''),$("#companyName").val(''),4000);
+				break;
+				case 'failed':
+					$("#respp").addClass("bg-red");
+					$("#respp").css("display","block");
+					$("#respp").html("Failed, try again later ...");
+					// $("#respp").html(res);
+
+					setTimeout(hide,10000,"#respp");
+				break;
+				case 'not_enough':
+					$("#respp").addClass("bg-yellow");
+					$("#respp").css("display","block");
+					$("#respp").html("Amount entered is more than the one remaining in stock ...");
+					setTimeout(hide,10000,"#respp");
+				break;
+				default:
+					$("#respp").addClass("bg-red");
+					$("#respp").css("display","block");
+					$("#respp").html(res);
+					setTimeout(hide,10000,"#respp");
+				break;
+			}
+		}});
+
+	}
+})
+
+$("#AddNewTrans").click(function(){		//======================================================================================== Add New StockOut
+	var product_id = $("#product_id").val();
+	var IsProductBox = $("#IsProductBox").val();
+	var soldPrice = $("#soldPrice").val();
+	var quantitySold = $("#quantitySold").val();
+	var paymentMethod = $("#paymentMethod").val();
+	var invNumbr = $("#invNumbr").val();
+
+	var paymentWayPaid = $("#paymentWayPaid").val();
+	var paymentWayDebt = $("#paymentWayDebt").val();
+	var clientName = $("#clientName").val();
+	var companyName = $("#companyName").val();
+	var clientPhone = $("#clientPhone").val();
+	var paymentWay = null;
+	var pp = document.getElementById("product_id");
+	var ut = document.getElementById("IsProductBox");
+	var sm = document.getElementById("paymentMethod");
+
+	var textProduct = pp.options[pp.selectedIndex].innerHTML;
+	var textUnitType = ut.options[ut.selectedIndex].innerHTML;
+	var textPaymentMethod = sm.options[sm.selectedIndex].innerHTML;
+	if (paymentMethod==1 || paymentMethod=='1') {
+		paymentWay = paymentWayPaid;
+	}else if (paymentMethod==0 || paymentMethod=='0') {
+		paymentWay = paymentWayDebt;
+	}
+
+
+	if (product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='' || invNumbr=='') {
+		$("#respp").addClass("bg-red");
+		$("#respp").css("display","block");
+		$("#respp").html("Fill all fields ...");
+		setTimeout(hide,10000,"#respp");
+	}else{
+		$("#StockOut").prop('disabled',true);
+		$("#StockOut").html('Please wait...');
+		// var StockOut = true;
+		$("#StockOut").css("display","none");
+		var hdn_product_id = $("#hdn_product_id").val();
+		var hdn_IsProductBox = $("#hdn_IsProductBox").val();
+		var hdn_soldPrice = $("#hdn_soldPrice").val();
+		var hdn_quantitySold = $("#hdn_quantitySold").val();
+		var hdn_paymentMethod = $("#hdn_paymentMethod").val();
+		var hdn_paymentWay = $("#hdn_paymentWay").val();
+		var hdn_invNumbr = $("#hdn_invNumbr").val();
+		var hdn_paymentWayPaid = $("#hdn_paymentWayPaid").val();
+		var hdn_paymentWayDebt = $("#hdn_paymentWayDebt").val();
+		var hdn_clientName = $("#hdn_clientName").val();
+		var hdn_companyName = $("#hdn_companyName").val();
+		var hdn_clientPhone = $("#hdn_clientPhone").val();
+		$("#product_id").val('');$("#IsProductBox").val('');$("#soldPrice").val('');$("#quantitySold").val('');
+		if(hdn_product_id==""){
+			// console.log("First IN");
+			// document.getElementById("hdn_product_id").value = 
+			document.getElementById("hdn_product_id").value = product_id;
+			document.getElementById("hdn_IsProductBox").value = IsProductBox;
+			document.getElementById("hdn_soldPrice").value = soldPrice;
+			document.getElementById("hdn_quantitySold").value = quantitySold;
+			document.getElementById("hdn_paymentMethod").value = paymentMethod;
+			document.getElementById("hdn_invNumbr").value = invNumbr;
+			document.getElementById("hdn_paymentWayPaid").value = paymentWayPaid;
+			document.getElementById("hdn_paymentWayDebt").value = paymentWayDebt;
+			document.getElementById("hdn_paymentWay").value = hdn_paymentWay;
+			document.getElementById("hdn_clientName").value = clientName;
+			document.getElementById("hdn_companyName").value = companyName;
+			document.getElementById("hdn_clientPhone").value = clientPhone;
+			$("#resp_newItm").html("<table class='table table-responsive' style='width:100%' id='tbl_resp_itms'> <thead>"+
+			"<th>Item</th> <th>Qnty</th> <th>Price</th> <th>Product Unit type</th> <th>Sales Method </th> <th>Invoice number </th> <th>Client Name</th> <th>Company Name</th> <th>Phone</th>"+
+			"</thead> <tbody id='tbdy_resp_itms'>"+
+			"<tr> <td>"+textProduct+"</td> <td>"+quantitySold+"</td> <td>"+soldPrice+"</td> <td>"+textUnitType+"</td> <td>"+textPaymentMethod+"</td> <td>"+invNumbr+"</td> <td>"+clientName+"</td> <td>"+companyName+"</td> <td>"+clientPhone+"</td></tr>"+
+			"</tbody>  </table>");
+			// $("#resp_newItm").append("<button class='btn btn-warning' onclick='window.location.reload();'>Reset</button>");
+			// $("#resp_newItm").append("&nbsp;&nbsp;&nbsp;&nbsp;<button class='btn btn-success' id='StockOutAllTrans'>Save</button>");
+			$("#respBtn").css("display","block");
+
+		}else{
+			// console.log("Second IN");
+			document.getElementById("hdn_product_id").value = hdn_product_id+","+product_id;
+			document.getElementById("hdn_IsProductBox").value = hdn_IsProductBox+","+IsProductBox;
+			document.getElementById("hdn_soldPrice").value = hdn_soldPrice+","+soldPrice;
+			document.getElementById("hdn_quantitySold").value = hdn_quantitySold+","+quantitySold;
+			document.getElementById("hdn_paymentMethod").value = hdn_paymentMethod+","+paymentMethod;
+			document.getElementById("hdn_paymentWay").value = hdn_paymentWay+","+paymentMethod;
+			document.getElementById("hdn_invNumbr").value = hdn_invNumbr+","+invNumbr;
+			document.getElementById("hdn_paymentWayPaid").value = hdn_paymentWayPaid+","+paymentWayPaid;
+			document.getElementById("hdn_paymentWayDebt").value = hdn_paymentWayDebt+","+paymentWayDebt;
+			document.getElementById("hdn_clientName").value = hdn_clientName+","+clientName;
+			document.getElementById("hdn_companyName").value = hdn_companyName+","+companyName;
+			document.getElementById("hdn_clientPhone").value = hdn_clientPhone+","+clientPhone;
+			$("#tbdy_resp_itms").append("<tr> <td>"+textProduct+"</td> <td>"+quantitySold+"</td> <td>"+soldPrice+"</td> <td>"+textUnitType+"</td> <td>"+textPaymentMethod+"</td> <td>"+invNumbr+"</td> <td>"+clientName+"</td> <td>"+companyName+"</td> <td>"+clientPhone+"</td></tr>");
+		}
 
 	}
 })

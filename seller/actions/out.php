@@ -27,7 +27,7 @@ echo "<script>window.location='../home'</script>";
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="box">
             <div class="box-body">
               <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
@@ -78,6 +78,27 @@ echo "<script>window.location='../home'</script>";
                 </div>
                 <!-- /.input group -->
               </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+
+        <div class="col-md-4">
+          <div class="box">
+            <div class="box-body">
+              <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
+
+              <div class="form-group" id="soldPriceDiv">
+                <label>Invoice number:
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-shopping-cart"></i> -->
+                  </div>
+                  <input type="text" class="form-control" placeholder="Invoice Number" id="invNumbr">
+                </div>
+                <!-- /.input group -->
+              </div>
               <!-- /.form group -->
               <div class="form-group" id="paymentMethodDiv">
                 <label>Sales method:</label>
@@ -94,6 +115,26 @@ echo "<script>window.location='../home'</script>";
                 </div>
                 <!-- /.input group -->
               </div>
+              <div class="form-group" id="quantitySoldDiv">
+                <label>Quantity sold:
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-shopping-cart"></i> -->
+                  </div>
+                  <input type="number" class="form-control" placeholder="Quantity sold" id="quantitySold">
+                </div>
+                <!-- /.input group -->
+              </div> 
+              <div class="form-group" id="quantitySoldDiv">
+                <label>Member name:
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-shopping-cart"></i> -->
+                  </div>
+                  <select name="mmbrName" id="mmbrName" class="form-control"></select>
+                </div>
+                <!-- /.input group -->
+              </div> 
             </div>
             <!-- /.box-body -->
           </div>
@@ -103,7 +144,7 @@ echo "<script>window.location='../home'</script>";
 
 
 
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="box">
             <div class="box-body">
               <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
@@ -178,8 +219,6 @@ echo "<script>window.location='../home'</script>";
               <div class="form-group">
         
                 <div class="input-group">
-                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="StockOut">Save</button>
-                  <br>
                 </div>
                 <!-- /.input group -->
               </div>
@@ -189,8 +228,38 @@ echo "<script>window.location='../home'</script>";
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
+<div>
+  <input type="hidden" id="hdn_product_id">
+  <input type="hidden" id="hdn_IsProductBox">
+  <input type="hidden" id="hdn_soldPrice">
+  <input type="hidden" id="hdn_quantitySold">
+  <input type="hidden" id="hdn_paymentMethod">
+  <input type="hidden" id="hdn_invNumbr">
+  <input type="hidden" id="hdn_paymentWayPaid">
+  <input type="hidden" id="hdn_paymentWayDebt">
+  <input type="hidden" id="hdn_paymentWay">
+  <input type="hidden" id="hdn_clientName">
+  <input type="hidden" id="hdn_companyName">
+  <input type="hidden" id="hdn_clientPhone">
+
+  <button class="btn btn-primary" style="font-weight: bold;margin:10px" id="AddNewTrans">Add New</button>
+  <button class="btn btn-success" style="font-weight: bold;float:right;margin:10px" id="StockOut">Ok, Save</button>
+</div>
         </div>
         <!-- /.col (right) -->
+
+<div class="content">
+  <div class="row">
+    <div class="col-12" style="background-color: #fff;">
+      <span id="resp_newItm"></span>
+      <span style="display: none;" id="respBtn">
+        <button class='btn btn-warning' onclick='window.location.reload();'>Reset</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;<button class='btn btn-success' id='StockOutAllTrans'>Save</button>
+      </span>
+    </div>
+  </div>
+</div>
+        
 
 
 
@@ -346,7 +415,6 @@ $("#product_id").change(function(){
           }
       });
 });
-
 
 
 });

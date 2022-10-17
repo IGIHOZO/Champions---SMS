@@ -260,6 +260,7 @@ div.searchable {
           <ul class="treeview-menu">
             <li><a href="warehouse"><i class="fa fa-circle-o"></i>New Warehouse</a></li>
             <li><a href="branch"><i class="fa fa-circle-o"></i>New Stock</a></li>
+            <li><a href="manager"><i class="fa fa-circle-o"></i>New Branch Manager</a></li>
             <li><a href="employee"><i class="fa fa-circle-o"></i>New Member</a></li>
             <li><a href="product"><i class="fa fa-circle-o"></i>New Product</a></li>
           </ul>

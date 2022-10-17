@@ -222,7 +222,7 @@ class MainView extends DBConnect
 		return print(json_encode($arr));
 	}
 
-	public function GeneralSallesReport()			//====================================== OVERALL SALES REPORT
+	public function GeneralSallesReport($emp)			//====================================== OVERALL SALES REPORT
 	{
 		$con = parent::connect();
 		$sel = $con->prepare("SELECT * FROM branches WHERE branches.BranchStatus=1");
@@ -234,7 +234,11 @@ class MainView extends DBConnect
 				$arr['found'] = 1;
 				$arr['res'][$cnt]['branch_name'] = $ft_sel['BranchName'];
 				$branch = $ft_sel['BranchId'];
-				$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'");
+				if ($emp==0) {
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'");
+				}else{
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch' AND employees.EmployeesId='$emp'");
+				}
 				$ssel->execute();
 				if ($ssel->rowCount()>=1) {
 					$arr['res'][$cnt]['is_found'] = 1;
@@ -243,6 +247,66 @@ class MainView extends DBConnect
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+						if ($ft_ssel['CompanyName']==NULL) {
+							$ft_ssel['CompanyName'] = '-';
+						}
+						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$ccnntt++;
+					}
+				}else{
+					// $arr['is_found'][$cnt] = 0;
+					$arr['res'][$cnt]['is_found'] = 0;
+				}
+				$cnt++;
+			}
+		}else{
+			$arr['found'] = 0;
+		}
+		return print(json_encode($arr));
+	}
+
+	public function GeneralSallesReportRange($dtFrom, $dtTo, $emp)			//============================= OVERALL SALES REPORT With Ranges
+	{
+		$con = parent::connect();
+		$sel = $con->prepare("SELECT * FROM branches WHERE branches.BranchStatus=1");
+		$sel->execute();
+		$arr = [];
+		if ($sel->rowCount()>=1) {
+			$cnt = 0;
+			while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+				$arr['found'] = 1;
+				$arr['res'][$cnt]['branch_name'] = $ft_sel['BranchName'];
+				$branch = $ft_sel['BranchId'];
+				if ($emp==0) {
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
+				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
+				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo'");
+				}else{
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
+				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
+				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' AND employees.EmployeesId='$emp'");
+				}
+				
+				$ssel->execute();
+				if ($ssel->rowCount()>=1) {
+					$arr['res'][$cnt]['is_found'] = 1;
+					$ccnntt = 0;
+					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
 						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
 						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
@@ -449,7 +513,7 @@ function WarehouseProducts(){
 			}else{
 				$IsProductBox = "Box";
 				$ProductBoxPieces = $ft_sel['ProductBoxPieces'];
-				$qnt = $ft_sel['QuantityAfter']/$ProductBoxPieces;
+				@$qnt = $ft_sel['QuantityAfter']/$ProductBoxPieces;
 			}
 			$arr['found'] = 1;
 			$arr['res'][$cnt]['ProductName'] = $ft_sel['ProductName'];
@@ -949,7 +1013,19 @@ if (isset($_POST['available_branches'])) {
 }else if (isset($_POST['available_products_in_branch_stock'])) {
 	$MainView->available_products_in_branch_stock();
 }else if (isset($_POST['GeneralSallesReport'])) {
-	$MainView->GeneralSallesReport();
+	if (isset($_POST['emp'])) {
+		$MainView->GeneralSallesReport($_POST['emp']);
+	}else{
+		$MainView->GeneralSallesReport(0);
+	}
+	
+}else if (isset($_POST['GeneralSallesReportRange'])) {
+	if (isset($_POST['emp'])) {
+		$MainView->GeneralSallesReportRange($_POST['dtFrom'],$_POST['dtTo'],$_POST['emp']);
+	}else{
+		$MainView->GeneralSallesReportRange($_POST['dtFrom'],$_POST['dtTo'],0);
+	}
+	
 }else if (isset($_POST['GeneralStockReport'])) {
 	$MainView->GeneralStockReport();
 }else if (isset($_POST['WarehouseStockReport'])) {
