@@ -27,7 +27,7 @@ echo "<script>window.location='../home'</script>";
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
           <div class="box">
             <div class="box-body">
               <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
@@ -68,6 +68,16 @@ echo "<script>window.location='../home'</script>";
                 </div>
                 <!-- /.input group -->
               </div>
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+
+        <div class="col-md-3">
+          <div class="box">
+            <div class="box-body">
               <div class="form-group" id="quantitySoldDiv">
                 <label>Quantity sold:
                 <div class="input-group">
@@ -78,17 +88,6 @@ echo "<script>window.location='../home'</script>";
                 </div>
                 <!-- /.input group -->
               </div>
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-
-        <div class="col-md-4">
-          <div class="box">
-            <div class="box-body">
-              <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
-
               <div class="form-group" id="soldPriceDiv">
                 <label>Invoice number:
                 <div class="input-group">
@@ -115,26 +114,8 @@ echo "<script>window.location='../home'</script>";
                 </div>
                 <!-- /.input group -->
               </div>
-              <div class="form-group" id="quantitySoldDiv">
-                <label>Quantity sold:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="number" class="form-control" placeholder="Quantity sold" id="quantitySold">
-                </div>
-                <!-- /.input group -->
-              </div> 
-              <div class="form-group" id="quantitySoldDiv">
-                <label>Member name:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <select name="mmbrName" id="mmbrName" class="form-control"></select>
-                </div>
-                <!-- /.input group -->
-              </div> 
+
+
             </div>
             <!-- /.box-body -->
           </div>
@@ -144,10 +125,59 @@ echo "<script>window.location='../home'</script>";
 
 
 
-        <div class="col-md-4">
+        <div class="col-md-3">
           <div class="box">
             <div class="box-body">
-              <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
+              <!-- Date dd/mm/yyyy -->
+              <div class="form-group" id="clientNameDiv" style="margin-left: 10px">
+                <label>Client Name:
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-shopping-cart"></i> -->
+                  </div>
+                  <input type="text" class="form-control" placeholder="Client Name" id="clientName">
+                </div>
+                <!-- /.input group -->
+              </div>
+              <div class="form-group" id="clientNameDiv" style="margin-left: 10px">
+                <label>Company Name:
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-shopping-cart"></i> -->
+                  </div>
+                  <input type="text" class="form-control" placeholder="Company Name" id="companyName">
+                </div>
+                <!-- /.input group -->
+              </div>
+                <!-- /.input group -->
+              </div>
+              <div class="form-group" id="clientPhoneDiv" style="margin-left: 10px">
+                <label>Phone:
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-shopping-cart"></i> -->
+                  </div>
+                  <input type="text" class="form-control" placeholder="Client phone" id="clientPhone">
+                </div>
+                <!-- /.input group -->
+              </div>
+
+              <div class="form-group">
+        
+                <div class="input-group">
+                </div>
+                <!-- /.input group -->
+              </div>
+
+              <!-- /.form group -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+<div>
+<div class="col-md-3">
+          <div class="box">
+            <div class="box-body">
               <!-- Date dd/mm/yyyy -->
 
 
@@ -184,37 +214,41 @@ echo "<script>window.location='../home'</script>";
                 <!-- /.input group -->
               </div>
 
-              <div class="form-group" id="clientNameDiv" style="margin-left: 10px">
-                <label>Client Name:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="text" class="form-control" placeholder="Client Name" id="clientName">
-                </div>
-                <!-- /.input group -->
-              </div>
-              <div class="form-group" id="clientNameDiv" style="margin-left: 10px">
-                <label>Company Name:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="text" class="form-control" placeholder="Company Name" id="companyName">
-                </div>
-                <!-- /.input group -->
-              </div>
 
-              <div class="form-group" id="clientPhoneDiv" style="margin-left: 10px">
-                <label>Phone:
+
+              <div class="form-group" id="paymentWayPaidDiv" style="display: none;">
+                <label>Payment ways:</label>
+
+                <div class="input-group"
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-phone"></i> -->
+                  </div>
+                  <select class="form-control" id="paymentWayPaid">
+                    <option value=''>Select payment way</option>
+                    <option>By Cash</option>
+                    <option>By Momo</option>
+                  </select>
+                </div>
+              <div class="form-group" id="quantitySoldDiv">
+                <label>Member name:
                 <div class="input-group">
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-shopping-cart"></i> -->
                   </div>
-                  <input type="text" class="form-control" placeholder="Client phone" id="clientPhone">
+                  <select name="mmbrName" id="mmbrName" class="form-control"></select>
                 </div>
                 <!-- /.input group -->
-              </div>
+              </div> 
+              <div class="form-group" id="quantitySoldDiv">
+                <label>Member's PIN:
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-shopping-cart"></i> -->
+                  </div>
+                  <input class="form-control" type="password" name="memberspin" id="memberspin">
+                </div>
+                <!-- /.input group -->
+              </div> 
 
               <div class="form-group">
         
@@ -229,6 +263,7 @@ echo "<script>window.location='../home'</script>";
           </div>
           <!-- /.box -->
 <div>
+
   <input type="hidden" id="hdn_product_id">
   <input type="hidden" id="hdn_IsProductBox">
   <input type="hidden" id="hdn_soldPrice">
@@ -241,6 +276,8 @@ echo "<script>window.location='../home'</script>";
   <input type="hidden" id="hdn_clientName">
   <input type="hidden" id="hdn_companyName">
   <input type="hidden" id="hdn_clientPhone">
+  <input type="hidden" id="hdn_mmbrName">
+  <input type="hidden" id="hdn_memberspin">
 
   <button class="btn btn-primary" style="font-weight: bold;margin:10px" id="AddNewTrans">Add New</button>
   <button class="btn btn-success" style="font-weight: bold;float:right;margin:10px" id="StockOut">Ok, Save</button>
@@ -398,6 +435,21 @@ echo "<script>window.location='../home'</script>";
           }
           }
       });
+      var AvailableMembersForStock = true;
+$.ajax({url:"../../main/view.php",
+  type:"POST",data:{AvailableMembersForStock:AvailableMembersForStock},cache:false,success:function(res){  
+    var res = JSON.parse(res);
+    console.log(res.found);
+    if (res.found===1) {
+      for (const key in res.res) {
+        // console.log(res.res[key]);
+        $("#mmbrName").append("<option value='"+res.res[key].EmployeesId+"'>"+res.res[key].EmployeeNames+"</option>");
+      }
+    }else{
+      $("#mmbrName").html("<option value=''>No product found</option>");
+    }
+    }
+});
 
 $("#product_id").change(function(){
   var product_id = $("#product_id").val();

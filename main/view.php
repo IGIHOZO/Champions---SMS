@@ -470,6 +470,47 @@ function AllMembersWIthStocks(){
 	return print(json_encode($arr));
 }
 
+function AllMembersWIthStocksManager(){
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT * FROM employees,branches WHERE employees.EmployeeBranch=branches.BranchId AND employees.EmployeesType=2 AND employees.EmployeeStatus=1");
+	$sel->execute();
+	if ($sel->rowCount()>=1) {
+		$cnt = 0;
+		while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+			$arr['found'] = 1;
+			$arr['res'][$cnt]['EmployeesId'] = $ft_sel['EmployeesId'];
+			$arr['res'][$cnt]['EmployeeNames'] = $ft_sel['EmployeeNames'];
+			$arr['res'][$cnt]['EmployeePhone'] = $ft_sel['EmployeePhone'];
+			$arr['res'][$cnt]['BranchName'] = $ft_sel['BranchName'];
+			$arr['res'][$cnt]['EmployeeDate'] = substr($ft_sel['EmployeeDate'], 0, 10);
+			$cnt++;
+		}
+	}else{
+		$arr['found'] = 0;
+	}
+	return print(json_encode($arr));
+}
+function AvailableMembersForStock(){
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT * FROM employees,branches WHERE employees.EmployeeBranch=branches.BranchId AND employees.EmployeesType=1 AND employees.EmployeeStatus=1");
+	$sel->execute();
+	if ($sel->rowCount()>=1) {
+		$cnt = 0;
+		while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+			$arr['found'] = 1;
+			$arr['res'][$cnt]['EmployeesId'] = $ft_sel['EmployeesId'];
+			$arr['res'][$cnt]['EmployeeNames'] = $ft_sel['EmployeeNames'];
+			$arr['res'][$cnt]['EmployeePhone'] = $ft_sel['EmployeePhone'];
+			$arr['res'][$cnt]['BranchName'] = $ft_sel['BranchName'];
+			$arr['res'][$cnt]['EmployeeDate'] = substr($ft_sel['EmployeeDate'], 0, 10);
+			$cnt++;
+		}
+	}else{
+		$arr['found'] = 0;
+	}
+	return print(json_encode($arr));
+}
+
 function AllProducts(){
 	$con = parent::connect();
 	$sel = $con->prepare("SELECT * FROM products,productcategories WHERE products.ProductCategory=productcategories.CategoryId AND products.ProductSatatus=1 ORDER BY products.ProductName,products.ProductCategory");
@@ -1032,6 +1073,8 @@ if (isset($_POST['available_branches'])) {
 	$MainView->WarehouseStockReport($_POST['warehouse']);
 }else if (isset($_POST['AllMembersWIthStocks'])) {
 	$MainView->AllMembersWIthStocks();
+}else if (isset($_POST['AllMembersWIthStocksManager'])) {
+	$MainView->AllMembersWIthStocksManager();
 }else if (isset($_POST['AllProducts'])) {
 	$MainView->AllProducts();
 }else if (isset($_POST['WarehouseProducts'])) {
@@ -1056,6 +1099,8 @@ if (isset($_POST['available_branches'])) {
 	$MainView->stockDown_Branch();
 }else if (isset($_POST['recently_registered_products'])) {
 	$MainView->recently_registered_products();
+}else if (isset($_POST['AvailableMembersForStock'])) {
+	$MainView->AvailableMembersForStock();
 }
 
 

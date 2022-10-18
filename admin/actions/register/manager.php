@@ -477,9 +477,9 @@ function deleteEmployee(empid){
 
 
 
-      var AllMembersWIthStocks = true;
+      var AllMembersWIthStocksManager = true;
       $.ajax({url:"../../../main/view.php",
-        type:"POST",data:{AllMembersWIthStocks:AllMembersWIthStocks},cache:false,success:function(res){  
+        type:"POST",data:{AllMembersWIthStocksManager:AllMembersWIthStocksManager},cache:false,success:function(res){  
           var res = JSON.parse(res);
           console.log(res.found);
           if (res.found===1) {

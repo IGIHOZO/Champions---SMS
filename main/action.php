@@ -445,99 +445,16 @@ class MainActions extends DBConnect
 		echo $response;
 	}
 
-public function StockOut($product,$IsProductBox,$SoldPrice,$QuantitySold,$ClientName,$CompanyName,$ClientPhone,$PaymentMethod,$PaymentWay,$invNumbr)   //=========================== STOCK OUT
+public function StockOut($product,$IsProductBox,$SoldPrice,$QuantitySold,$ClientName,$CompanyName,$ClientPhone,$PaymentMethod,$PaymentWay,$invNumbr,$member,$member_pin)   //=========================== STOCK OUT
 {
 		$MainFunctions = new MainFunctions();
 		$session_user_id = $_SESSION['sms_user_id'];
 		$branch = $_SESSION['sms_user_branch_id'];
 	$con = parent::connect();
-	$sel = $con->prepare("SELECT products.ProductId AS p_id,products.IsProductBox AS p_bx,products.ProductBoxPieces AS p_bpcs,branchstock.ProductPrice AS st_prc,branchstock.QuantityAfter AS st_qnt FROM branchstock,products WHERE products.ProductId=branchstock.ProductId AND products.ProductId='$product' AND branchstock.BranchId='$branch'");
-	$sel->execute();
-	if ($sel->rowCount()>=1) {
-		$ft_sel = $sel->fetch(PDO::FETCH_ASSOC);
-		$pro_added = $MainFunctions->BoxPieces($product);
-		switch ($IsProductBox) {
-			case 1:
-				$QuantitySold *= $pro_added;
-				break;
-			
-			default:
-				$QuantitySold = $QuantitySold;
-				break;
-		}
-		if ($QuantitySold<=$ft_sel['st_qnt']) {
-			$con->beginTransaction();
-			//===== update BranchStock
-			$upd_branch = $con->prepare("UPDATE branchstock SET branchstock.QuantityBefore=branchstock.QuantityAfter, branchstock.QuantityAdded=(0-$QuantitySold),branchstock.QuantityAfter=(branchstock.QuantityAfter-$QuantitySold),branchstock.AllOut=(branchstock.AllOut+$QuantitySold) WHERE branchstock.ProductId='$product' AND branchstock.BranchId='$branch'");
-			$ok_upd_branch = $upd_branch->execute();
-			if ($ok_upd_branch) {
-				//==== Update StockOut
-				$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-				$QuantityRemaining = $ft_sel['st_qnt'] - $QuantitySold;
-				$upd_stockout->bindValue(1,$session_user_id);						$upd_stockout->bindValue(8,$QuantitySold);
-				$upd_stockout->bindValue(2,$branch);								$upd_stockout->bindValue(9,$QuantityRemaining);
-				$upd_stockout->bindValue(3,$product);								$upd_stockout->bindValue(10,$ClientName);
-				$upd_stockout->bindValue(11,$CompanyName);
-				$upd_stockout->bindValue(4,$IsProductBox);							$upd_stockout->bindValue(12,$ClientPhone);
-				$upd_stockout->bindValue(5,$ft_sel['st_prc']); 						$upd_stockout->bindValue(13,$PaymentMethod);
-				$upd_stockout->bindValue(6,$SoldPrice);								$upd_stockout->bindValue(14,$PaymentWay);
-				$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);
-				$ok = $upd_stockout->execute();
-
-				if ($ok) {
-					$con->commit();
-						$MainFunctions->SaveStockTransaction($product,$session_user_id,2,3,$IsProductBox,$ft_sel['st_qnt'],(0-$QuantitySold),$QuantityRemaining);
-						$response = "success";
-				}else{
-					$con->rollback();
-					$response = "failed";
-				}
-			}else{
-				$con->rollback();
-				$response = "failed";
-			}
-		}else{
-			// $response = "Error".$ft_sel['st_qnt'];
-			$response = "not_enough";
-		}
-	}else{
-		$response = "failed";
-	}
-	echo $response;
-}
-
-public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold,$ClientName,$CompanyName,$ClientPhone,$PaymentMethod,$PaymentWay,$invNumbr)   //=========================== STOCK OUT
-{
-		$MainFunctions = new MainFunctions();
-		$session_user_id = $_SESSION['sms_user_id'];
-		$branch = $_SESSION['sms_user_branch_id'];
-	$con = parent::connect();
-	
-	$arr_product = explode(',', $product);
-	$arr_IsProductBox = explode(',', $IsProductBox);
-	$arr_SoldPrice = explode(',', $SoldPrice);
-	$arr_QuantitySold = explode(',', $QuantitySold);
-	$arr_ClientName = explode(',', $ClientName);
-	$arr_CompanyName = explode(',', $CompanyName);
-	$arr_ClientPhone = explode(',', $ClientPhone);
-	$arr_PaymentMethod = explode(',', $PaymentMethod);
-	$arr_PaymentWay = explode(',', $PaymentWay);
-	$arr_invNumbr = explode(',', $invNumbr);
-	$error_holder = false;
-	$error_value = "";
-	// $con->beginTransaction();
-	for ($i=0; $i < count($arr_product); $i++) { 
-		$product = $arr_product[$i];
-		$IsProductBox = $arr_IsProductBox[$i];
-		$SoldPrice = $arr_SoldPrice[$i];
-		$QuantitySold = $arr_QuantitySold[$i];
-		$ClientName = $arr_ClientName[$i];
-		$CompanyName = $arr_CompanyName[$i];
-		$ClientPhone = $arr_ClientPhone[$i];
-		$PaymentMethod = $PaymentMethod;
-		$PaymentWay = $PaymentWay;
-		$invNumbr = $arr_invNumbr[$i];
-		// $con->beginTransaction();
+	$sel_auth = $con->prepare("SELECT * FROM employees,systemusers WHERE employees.UserId=systemusers.UserId AND employees.EmployeesId='$member' AND systemusers.UserPassword=? AND employees.EmployeesType=1");
+	$sel_auth->bindValue(1,md5($member_pin));
+	$sel_auth->execute();
+	if ($sel_auth->rowCount()==1) {
 		$sel = $con->prepare("SELECT products.ProductId AS p_id,products.IsProductBox AS p_bx,products.ProductBoxPieces AS p_bpcs,branchstock.ProductPrice AS st_prc,branchstock.QuantityAfter AS st_qnt FROM branchstock,products WHERE products.ProductId=branchstock.ProductId AND products.ProductId='$product' AND branchstock.BranchId='$branch'");
 		$sel->execute();
 		if ($sel->rowCount()>=1) {
@@ -559,7 +476,7 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 				$ok_upd_branch = $upd_branch->execute();
 				if ($ok_upd_branch) {
 					//==== Update StockOut
-					$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+					$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber,MemberId) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 					$QuantityRemaining = $ft_sel['st_qnt'] - $QuantitySold;
 					$upd_stockout->bindValue(1,$session_user_id);						$upd_stockout->bindValue(8,$QuantitySold);
 					$upd_stockout->bindValue(2,$branch);								$upd_stockout->bindValue(9,$QuantityRemaining);
@@ -568,13 +485,118 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 					$upd_stockout->bindValue(4,$IsProductBox);							$upd_stockout->bindValue(12,$ClientPhone);
 					$upd_stockout->bindValue(5,$ft_sel['st_prc']); 						$upd_stockout->bindValue(13,$PaymentMethod);
 					$upd_stockout->bindValue(6,$SoldPrice);								$upd_stockout->bindValue(14,$PaymentWay);
-					$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);
+					$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);$upd_stockout->bindValue(16,$member);
 					$ok = $upd_stockout->execute();
-
+	
 					if ($ok) {
-							$con->commit();
+						$con->commit();
 							$MainFunctions->SaveStockTransaction($product,$session_user_id,2,3,$IsProductBox,$ft_sel['st_qnt'],(0-$QuantitySold),$QuantityRemaining);
 							$response = "success";
+					}else{
+						$con->rollback();
+						$response = "failed";
+					}
+				}else{
+					$con->rollback();
+					$response = "failed";
+				}
+			}else{
+				// $response = "Error".$ft_sel['st_qnt'];
+				$response = "not_enough";
+			}
+		}else{
+			$response = "failed";
+		}
+	}else{
+		$response = "invalid";
+	}
+	echo $response;
+}
+
+public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold,$ClientName,$CompanyName,$ClientPhone,$PaymentMethod,$PaymentWay,$invNumbr,$member,$mpin)   //=========================== STOCK OUT
+{
+		$MainFunctions = new MainFunctions();
+		$session_user_id = $_SESSION['sms_user_id'];
+		$branch = $_SESSION['sms_user_branch_id'];
+	$con = parent::connect();
+	
+	$arr_product = explode(',', $product);
+	$arr_IsProductBox = explode(',', $IsProductBox);
+	$arr_SoldPrice = explode(',', $SoldPrice);
+	$arr_QuantitySold = explode(',', $QuantitySold);
+	$arr_ClientName = explode(',', $ClientName);
+	$arr_CompanyName = explode(',', $CompanyName);
+	$arr_ClientPhone = explode(',', $ClientPhone);
+	$arr_PaymentMethod = explode(',', $PaymentMethod);
+	$arr_PaymentWay = explode(',', $PaymentWay);
+	$arr_invNumbr = explode(',', $invNumbr);
+	$arr_MemberId = explode(',', $member);
+	$arr_MemberPin = explode(',', $mpin);
+	$error_holder = false;
+	$error_value = "";
+	// $con->beginTransaction();
+	for ($i=0; $i < count($arr_product); $i++) { 
+		$product = $arr_product[$i];
+		$IsProductBox = $arr_IsProductBox[$i];
+		$SoldPrice = $arr_SoldPrice[$i];
+		$QuantitySold = $arr_QuantitySold[$i];
+		$ClientName = $arr_ClientName[$i];
+		$CompanyName = $arr_CompanyName[$i];
+		$ClientPhone = $arr_ClientPhone[$i];
+		$MemberId = $arr_MemberId[$i];
+		$MemberPin = $arr_MemberPin[$i];
+		$PaymentMethod = $PaymentMethod;
+		$PaymentWay = $PaymentWay;
+		$invNumbr = $arr_invNumbr[$i];
+		// $con->beginTransaction();
+
+		$sel_auth = $con->prepare("SELECT * FROM employees,systemusers WHERE employees.UserId=systemusers.UserId AND employees.EmployeesId='$MemberId' AND systemusers.UserPassword=? AND employees.EmployeesType=1");
+		$sel_auth->bindValue(1,md5($MemberPin));
+		$sel_auth->execute();
+		if ($sel_auth->rowCount()==1) {
+			$sel = $con->prepare("SELECT products.ProductId AS p_id,products.IsProductBox AS p_bx,products.ProductBoxPieces AS p_bpcs,branchstock.ProductPrice AS st_prc,branchstock.QuantityAfter AS st_qnt FROM branchstock,products WHERE products.ProductId=branchstock.ProductId AND products.ProductId='$product' AND branchstock.BranchId='$branch'");
+			$sel->execute();
+			if ($sel->rowCount()>=1) {
+				$ft_sel = $sel->fetch(PDO::FETCH_ASSOC);
+				$pro_added = $MainFunctions->BoxPieces($product);
+				switch ($IsProductBox) {
+					case 1:
+						$QuantitySold *= $pro_added;
+						break;
+					
+					default:
+						$QuantitySold = $QuantitySold;
+						break;
+				}
+				if ($QuantitySold<=$ft_sel['st_qnt']) {
+					$con->beginTransaction();
+					//===== update BranchStock
+					$upd_branch = $con->prepare("UPDATE branchstock SET branchstock.QuantityBefore=branchstock.QuantityAfter, branchstock.QuantityAdded=(0-$QuantitySold),branchstock.QuantityAfter=(branchstock.QuantityAfter-$QuantitySold),branchstock.AllOut=(branchstock.AllOut+$QuantitySold) WHERE branchstock.ProductId='$product' AND branchstock.BranchId='$branch'");
+					$ok_upd_branch = $upd_branch->execute();
+					if ($ok_upd_branch) {
+						//==== Update StockOut
+						$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+						$QuantityRemaining = $ft_sel['st_qnt'] - $QuantitySold;
+						$upd_stockout->bindValue(1,$session_user_id);						$upd_stockout->bindValue(8,$QuantitySold);
+						$upd_stockout->bindValue(2,$branch);								$upd_stockout->bindValue(9,$QuantityRemaining);
+						$upd_stockout->bindValue(3,$product);								$upd_stockout->bindValue(10,$ClientName);
+						$upd_stockout->bindValue(11,$CompanyName);
+						$upd_stockout->bindValue(4,$IsProductBox);							$upd_stockout->bindValue(12,$ClientPhone);
+						$upd_stockout->bindValue(5,$ft_sel['st_prc']); 						$upd_stockout->bindValue(13,$PaymentMethod);
+						$upd_stockout->bindValue(6,$SoldPrice);								$upd_stockout->bindValue(14,$PaymentWay);
+						$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);
+						$ok = $upd_stockout->execute();
+	
+						if ($ok) {
+								$con->commit();
+								$MainFunctions->SaveStockTransaction($product,$session_user_id,2,3,$IsProductBox,$ft_sel['st_qnt'],(0-$QuantitySold),$QuantityRemaining);
+								$response = "success";
+						}else{
+							$con->rollback();
+							$response = "failed";
+							$error_holder = true;
+							$error_value = $response;
+						}
 					}else{
 						$con->rollback();
 						$response = "failed";
@@ -582,28 +604,21 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 						$error_value = $response;
 					}
 				}else{
-					$con->rollback();
-					$response = "failed";
+					// $response = "Error".$ft_sel['st_qnt'];
+					$response = "not_enough";
 					$error_holder = true;
 					$error_value = $response;
 				}
 			}else{
-				// $response = "Error".$ft_sel['st_qnt'];
-				$response = "not_enough";
+				$response = "failed";
 				$error_holder = true;
 				$error_value = $response;
 			}
 		}else{
-			$response = "failed";
-			$error_holder = true;
-			$error_value = $response;
+			$response = "invalid";
 		}
-		// if ($error_holder==false) {
-		// 	$con->commit();
-		// }else{
-		// 	$con->rollBack();
-		// }
-	// echo $response;
+
+
 
 	
 	}
@@ -953,9 +968,9 @@ if (isset($_GET['BranchEmployeeSignUp'])) {
 }elseif (isset($_GET['OrientProductsToBranchStock'])) {
 	$MainActions->OrientProductsToBranchStock($_GET['branch_id'],$_GET['product_id'],$_GET['IsProductBox'],$_GET['product_price'],$_GET['added']);
 }elseif (isset($_GET['StockOut'])) {
-	$MainActions->StockOut($_GET['product_id'],$_GET['IsProductBox'],$_GET['soldPrice'],$_GET['quantitySold'],$_GET['clientName'],$_GET['companyName'],$_GET['clientPhone'],$_GET['paymentMethod'],$_GET['paymentWay'],$_GET['invNumbr']);
+	$MainActions->StockOut($_GET['product_id'],$_GET['IsProductBox'],$_GET['soldPrice'],$_GET['quantitySold'],$_GET['clientName'],$_GET['companyName'],$_GET['clientPhone'],$_GET['paymentMethod'],$_GET['paymentWay'],$_GET['invNumbr'],$_GET['member'],$_GET['mpin']);
 }elseif (isset($_GET['StockOutAllTrans'])) {
-	$MainActions->StockOutAllTrans($_GET['product_id'],$_GET['IsProductBox'],$_GET['soldPrice'],$_GET['quantitySold'],$_GET['clientName'],$_GET['companyName'],$_GET['clientPhone'],$_GET['paymentMethod'],$_GET['paymentWay'],$_GET['invNumbr']);
+	$MainActions->StockOutAllTrans($_GET['product_id'],$_GET['IsProductBox'],$_GET['soldPrice'],$_GET['quantitySold'],$_GET['clientName'],$_GET['companyName'],$_GET['clientPhone'],$_GET['paymentMethod'],$_GET['paymentWay'],$_GET['invNumbr'],$_GET['member'],$_GET['mpin']);
 }elseif (isset($_GET['Login'])) {
 	$MainActions->Login($_GET['username'],$_GET['password']);
 }elseif (isset($_GET['RegisterBranch'])) {
