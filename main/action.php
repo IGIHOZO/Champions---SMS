@@ -349,7 +349,7 @@ class MainActions extends DBConnect
 		echo $response;
 	}
 
-	public function OrientProductsToBranchStock($branch_id,$ProductId,$IsProductBox,$ProductPrice,$added)		//===================== ORIENT Products To Branch Stock
+	public function OrientProductsToBranchStock($branch_id,$ProductId,$IsProductBox,$ProductPrice,$added,$warehouseId)		//===================== ORIENT Products To Branch Stock
 	{	
 		$MainFunctions = new MainFunctions();
 		$session_user_id = $_SESSION['sms_admin_id'];
@@ -364,7 +364,7 @@ class MainActions extends DBConnect
 				break;
 		}
 		$con = parent::connect();
-		$sel_qnty_in_head = $con->prepare("SELECT * FROM headstock WHERE headstock.ProductId='$ProductId'");
+		$sel_qnty_in_head = $con->prepare("SELECT * FROM mainstock WHERE mainstock.ProductId='$ProductId' AND  mainstock.WarehouseId='$warehouseId'");
 		$sel_qnty_in_head->execute();
 		if ($sel_qnty_in_head->rowCount()>=1) {
 			$ft_sel_qnty_in_head = $sel_qnty_in_head->fetch(PDO::FETCH_ASSOC);
@@ -376,13 +376,13 @@ class MainActions extends DBConnect
 				if ($sel_pro->rowCount()==1) {
 					$ft_sel_pro = $sel_pro->fetch(PDO::FETCH_ASSOC);
 
-					$sel_branch = $con->prepare("SELECT * FROM branchstock WHERE branchstock.ProductId='$ProductId' AND branchstock.BranchId='$branch_id'");
+					$sel_branch = $con->prepare("SELECT * FROM mainstock WHERE mainstock.ProductId='$ProductId' AND  mainstock.WarehouseId='$warehouseId'");
 					$sel_branch->execute();
 					if ($sel_branch->rowCount()>=1) {
 						$ft_sel_branch = $sel_branch->fetch(PDO::FETCH_ASSOC);
 						$con->beginTransaction();
-						//======= update HeadStock
-						$upd_head_stock = $con->prepare("UPDATE headstock SET headstock.QuantityAdded=(0-$added),headstock.QuantityBefore=headstock.QuantityAfter,headstock.QuantityAfter=(headstock.QuantityAfter-$added) WHERE headstock.ProductId='$ProductId'");
+						//======= update mainstock
+						$upd_head_stock = $con->prepare("UPDATE mainstock SET mainstock.QuantityAdded=(0-$added),mainstock.QuantityBefore=mainstock.QuantityAfter,mainstock.QuantityAfter=(mainstock.QuantityAfter-$added) WHERE mainstock.ProductId='$ProductId' AND  mainstock.WarehouseId='$warehouseId'");
 						$ok_upd_head_stock = $upd_head_stock->execute();
 						if ($ok_upd_head_stock) {
 							//====== UPDATE branchstock
@@ -395,17 +395,17 @@ class MainActions extends DBConnect
 								$MainFunctions->SaveStockTransaction($ProductId,$session_user_id,2,3,$IsProductBox,$ft_sel_branch['QuantityAfter'],$added,($ft_sel_branch['QuantityAfter']+$added));
 							}else{
 								$con->rollback();
-								$response='failed1';
+								$response='failed';
 							}
 						}else{
 							$con->rollback();
-							$response = "failed2";
+							$response = "failed";
 						}
 					}else{
 						//============ INSERT NEEW RECORDS IN branchstock
 						//  == update HeadStock
 						$con->beginTransaction();
-						$up_head_stock = $con->prepare("UPDATE headstock SET headstock.QuantityAdded=(0-$added),headstock.QuantityBefore=headstock.QuantityAfter,headstock.QuantityAfter=(headstock.QuantityAfter-$added) WHERE headstock.ProductId='$ProductId'");
+						$up_head_stock = $con->prepare("UPDATE mainstock SET mainstock.QuantityAdded=(0-$added),mainstock.QuantityBefore=mainstock.QuantityAfter,mainstock.QuantityAfter=(mainstock.QuantityAfter-$added) WHERE mainstock.ProductId='$ProductId' AND  mainstock.WarehouseId='$warehouseId'");
 						$ok_up_head_stock = $up_head_stock->execute();
 						if ($ok_up_head_stock) {
 							//  == insert into BranchStock
@@ -427,20 +427,20 @@ class MainActions extends DBConnect
 								$MainFunctions->SaveStockTransaction($ProductId,$session_user_id,2,3,$IsProductBox,0,$added,$added);
 							}else{
 								$con->rollback();
-								$response = "failed3";
+								$response = "failed";
 								print_r($ins_branch_stock->errorInfo());
 							}
 						}else{
 							$con->rollback();
-							$response = "failed4";
+							$response = "failed";
 						}
 					}
 				}else{
-					$response = "failed5";
+					$response = "failed";
 				}
 			}
 		}else{
-			$response = "failed6";
+			$response = "failed";
 		}
 		echo $response;
 	}
@@ -575,7 +575,7 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 					$ok_upd_branch = $upd_branch->execute();
 					if ($ok_upd_branch) {
 						//==== Update StockOut
-						$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+						$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber,MemberId) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 						$QuantityRemaining = $ft_sel['st_qnt'] - $QuantitySold;
 						$upd_stockout->bindValue(1,$session_user_id);						$upd_stockout->bindValue(8,$QuantitySold);
 						$upd_stockout->bindValue(2,$branch);								$upd_stockout->bindValue(9,$QuantityRemaining);
@@ -584,7 +584,7 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 						$upd_stockout->bindValue(4,$IsProductBox);							$upd_stockout->bindValue(12,$ClientPhone);
 						$upd_stockout->bindValue(5,$ft_sel['st_prc']); 						$upd_stockout->bindValue(13,$PaymentMethod);
 						$upd_stockout->bindValue(6,$SoldPrice);								$upd_stockout->bindValue(14,$PaymentWay);
-						$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);
+						$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);$upd_stockout->bindValue(16,$MemberId);
 						$ok = $upd_stockout->execute();
 	
 						if ($ok) {
@@ -615,7 +615,8 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 				$error_value = $response;
 			}
 		}else{
-			$response = "invalid";
+			// $response = "invalid";
+			$response = $MemberId."  -  ".$MemberPin."  -  ".$sel_auth->rowCount()." - ".$ClientName;
 		}
 
 
@@ -966,11 +967,11 @@ if (isset($_GET['BranchEmployeeSignUp'])) {
 }elseif (isset($_GET['OrientProductsToHeadStock'])) {
 	$MainActions->OrientProductsToHeadStock($_GET['product'],$_GET['added'],$_GET['IsProductBox'],$_GET['warehouses']);
 }elseif (isset($_GET['OrientProductsToBranchStock'])) {
-	$MainActions->OrientProductsToBranchStock($_GET['branch_id'],$_GET['product_id'],$_GET['IsProductBox'],$_GET['product_price'],$_GET['added']);
+	$MainActions->OrientProductsToBranchStock($_GET['branch_id'],$_GET['product_id'],$_GET['IsProductBox'],$_GET['product_price'],$_GET['added'],$_GET['warehouseId']);
 }elseif (isset($_GET['StockOut'])) {
 	$MainActions->StockOut($_GET['product_id'],$_GET['IsProductBox'],$_GET['soldPrice'],$_GET['quantitySold'],$_GET['clientName'],$_GET['companyName'],$_GET['clientPhone'],$_GET['paymentMethod'],$_GET['paymentWay'],$_GET['invNumbr'],$_GET['member'],$_GET['mpin']);
 }elseif (isset($_GET['StockOutAllTrans'])) {
-	$MainActions->StockOutAllTrans($_GET['product_id'],$_GET['IsProductBox'],$_GET['soldPrice'],$_GET['quantitySold'],$_GET['clientName'],$_GET['companyName'],$_GET['clientPhone'],$_GET['paymentMethod'],$_GET['paymentWay'],$_GET['invNumbr'],$_GET['member'],$_GET['mpin']);
+	$MainActions->StockOutAllTrans($_GET['product_id'],$_GET['IsProductBox'],$_GET['soldPrice'],$_GET['quantitySold'],$_GET['clientName'],$_GET['companyName'],$_GET['clientPhone'],$_GET['paymentMethod'],$_GET['paymentWay'],$_GET['invNumbr'],$_GET['memberID'], $_GET['mpin']);
 }elseif (isset($_GET['Login'])) {
 	$MainActions->Login($_GET['username'],$_GET['password']);
 }elseif (isset($_GET['RegisterBranch'])) {

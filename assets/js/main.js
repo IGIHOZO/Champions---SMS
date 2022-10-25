@@ -261,6 +261,7 @@ $("#OrientProductsToMainStock").click(function(){	//============================
 					$("#respp").html('Successful recorded !');
 					setTimeout(hide,10000,"#respp");
 					setTimeout($("#product").val(''),$("#added").val(''),$("#IsProductBox").val(''),4000);
+					setTimeout(window.location.reload(true),4000);
 				break;
 				case 'failed':
 					$("#respp").addClass("bg-red");
@@ -337,9 +338,10 @@ $("#OrientProductsToBranchStock").click(function(){	//==========================
 	var product_id = $("#product_id").val();
 	var IsProductBox = $("#IsProductBox").val();
 	var product_price = $("#product_price").val();
+	var warehouseId = $("#warehouseId").val();
 	var added = $("#added").val();
 
-	if (branch_id=='' || product_id=='' || IsProductBox=='' || product_price=='' || added=='') {
+	if (branch_id=='' || product_id=='' || IsProductBox=='' || product_price=='' || added=='' || warehouseId=='') {
 		$("#respp").addClass("bg-red");
 		$("#respp").css("display","block");
 		$("#respp").html("Fill all fields ...");
@@ -350,7 +352,7 @@ $("#OrientProductsToBranchStock").click(function(){	//==========================
 		var OrientProductsToBranchStock = true;
 
 		$.ajax({url:"../../../main/action.php",
-				type:"GET",data:{OrientProductsToBranchStock:OrientProductsToBranchStock,branch_id:branch_id,product_id:product_id,IsProductBox:IsProductBox,product_price:product_price,added:added},cache:false,success:function(res){
+				type:"GET",data:{OrientProductsToBranchStock:OrientProductsToBranchStock,branch_id:branch_id,product_id:product_id,IsProductBox:IsProductBox,product_price:product_price,added:added,warehouseId:warehouseId},cache:false,success:function(res){
 			$("#OrientProductsToBranchStock").prop('disabled',false);
 			$("#OrientProductsToBranchStock").html('Register');
 			switch(res){
@@ -358,9 +360,9 @@ $("#OrientProductsToBranchStock").click(function(){	//==========================
 					$("#respp").addClass("bg-green");
 					$("#respp").css("display","block");
 					$("#respp").html('Successful recorded !');
-					window.location.reload();
+					// window.location.reload();
 					setTimeout(hide,10000,"#respp");
-					setTimeout($("#branch_id").val(''),$("#product_id").val(''),$("#IsProductBox").val(''),$("#product_price").val(''),$("#added").val(''),4000);
+					setTimeout($("#branch_id").val(''),$("#product_id").val(''),$("#IsProductBox").val(''),$("#product_price").val(''),$("#warehouseId").val(''),$("#added").val(''),4000);
 				break;
 				case 'failed':
 					$("#respp").addClass("bg-red");
@@ -430,6 +432,7 @@ $("#StockOut").click(function(){		//============================================
 					$("#respp").addClass("bg-green");
 					$("#respp").css("display","block");
 					$("#respp").html('Successful recorded !');
+					setTimeout(window.location.reload(true),10000);
 					setTimeout(hide,10000,"#respp");
 					setTimeout($("#product_id").val(''),$("#IsProductBox").val(''),$("#soldPrice").val(''),$("#quantitySold").val(''),$("#paymentMethod").val(''),$("#paymentWayPaid").val(''),$("#paymentWayDebt").val(''),$("#clientName").val(''),$("#clientPhone").val(''),$("#companyName").val(''),4000);
 				break;
@@ -479,7 +482,7 @@ $("#StockOutAllTrans").click(function(){		//====================================
 	var clientName = $("#hdn_clientName").val();
 	var companyName = $("#hdn_companyName").val();
 	var clientPhone = $("#hdn_clientPhone").val();
-	var member = $("hdn_#mmbrName").val();
+	var memberID = $("#hdn_mmbrName").val();
 	var mpin = $("#hdn_memberspin").val();
 	var paymentWay = null;
 	if (paymentMethod==1 || paymentMethod=='1') {
@@ -489,7 +492,7 @@ $("#StockOutAllTrans").click(function(){		//====================================
 	}
 
 
-	if (member=='' || mpin=='' || product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='' || invNumbr=='') {
+	if (memberID=='' || mpin=='' || product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='' || invNumbr=='') {
 		$("#respp").addClass("bg-red");
 		$("#respp").css("display","block");
 		$("#respp").html("Fill all fields ...");
@@ -500,9 +503,9 @@ $("#StockOutAllTrans").click(function(){		//====================================
 		var StockOutAllTrans = true;
 
 		$.ajax({url:"../../main/action.php",
-				type:"GET",data:{StockOutAllTrans:StockOutAllTrans,product_id:product_id,IsProductBox:IsProductBox,soldPrice:soldPrice,quantitySold:quantitySold,paymentMethod:paymentMethod,paymentWay:paymentWay,clientName:clientName,companyName:companyName,clientPhone:clientPhone,invNumbr:invNumbr,member:member,mpin:mpin},cache:false,success:function(res){
+				type:"GET",data:{memberID:memberID,StockOutAllTrans:StockOutAllTrans,product_id:product_id,IsProductBox:IsProductBox,soldPrice:soldPrice,quantitySold:quantitySold,paymentMethod:paymentMethod,paymentWay:paymentWay,clientName:clientName,companyName:companyName,clientPhone:clientPhone,invNumbr:invNumbr,mpin:mpin},cache:false,success:function(res){
 			$("#StockOutAllTrans").prop('disabled',false);
-			$("#StockOutAllTrans").html('Register');
+			$("#StockOutAllTrans").html('Ok, Save');
 			$("resp_newItm").html("");
 			switch(res){
 				case 'success':
@@ -510,6 +513,7 @@ $("#StockOutAllTrans").click(function(){		//====================================
 					$("#respp").css("display","block");
 					$("#respp").html('Successful recorded !');
 					setTimeout(hide,10000,"#respp");
+					setTimeout(window.location.reload(true),10000);
 					setTimeout($("#product_id").val(''),$("#IsProductBox").val(''),$("#soldPrice").val(''),$("#quantitySold").val(''),$("#paymentMethod").val(''),$("#paymentWayPaid").val(''),$("#paymentWayDebt").val(''),$("#clientName").val(''),$("#clientPhone").val(''),$("#companyName").val(''),4000);
 				break;
 				case 'failed':
@@ -551,13 +555,14 @@ $("#AddNewTrans").click(function(){		//=========================================
 	var clientName = $("#clientName").val();
 	var companyName = $("#companyName").val();
 	var clientPhone = $("#clientPhone").val();
+	var mmbrName = $("#mmbrName").val();
+	var memberspin = $("#memberspin").val();
 	var paymentWay = null;
 	var pp = document.getElementById("product_id");
 	var ut = document.getElementById("IsProductBox");
 	var sm = document.getElementById("paymentMethod");
 	var mn = document.getElementById("mmbrName");
-	var mmbrName = document.getElementById("mmbrName");
-	var memberspin = document.getElementById("memberspin");
+
 
 	var textProduct = pp.options[pp.selectedIndex].innerHTML;
 	var textMember = mn.options[mn.selectedIndex].innerHTML;
@@ -594,6 +599,8 @@ $("#AddNewTrans").click(function(){		//=========================================
 		var hdn_clientPhone = $("#hdn_clientPhone").val();
 		var hdn_mmbrName = $("#hdn_mmbrName").val();
 		var hdn_memberspin = $("#hdn_memberspin").val();
+
+
 		$("#product_id").val('');$("#IsProductBox").val('');$("#soldPrice").val('');$("#quantitySold").val('');
 		if(hdn_product_id==""){
 			// console.log("First IN");

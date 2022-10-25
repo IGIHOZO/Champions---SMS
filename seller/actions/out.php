@@ -7,7 +7,6 @@ if (!isset($_SESSION['sms_user_id'])) {
 echo "<script>window.location='../home'</script>";
 }
 ?>
-
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->

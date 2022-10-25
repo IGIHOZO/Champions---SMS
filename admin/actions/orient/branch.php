@@ -81,6 +81,20 @@ require("../../../assets/header44.php");
               <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
               <!-- Date dd/mm/yyyy -->
               <div class="form-group">
+                <label>Select Warehouse:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-trophy"></i>
+                  </div>
+                  <select style="width: 100%!important;" class="form-control" id="warehouseId" style="font-weight: lighter;">
+                    <option value="0">Select Warehouse</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="form-group">
                 <label>Select Sub-Stock:</label>
 
                 <div class="input-group">
@@ -340,7 +354,7 @@ require("../../../assets/header44.php");
       $.ajax({url:"../../../main/view.php",
         type:"POST",data:{available_branches:available_branches},cache:false,success:function(res){  
           var res = JSON.parse(res);
-          console.log(res.found);
+         // console.log(res.found);
           if (res.found===1) {
             for (const key in res.res) {
               // console.log(res.res[key]);
@@ -352,23 +366,53 @@ require("../../../assets/header44.php");
           }
       });
 
-
-
-      var available_products_in_head_stock = true;
+      var available_warehouses = true;
       $.ajax({url:"../../../main/view.php",
-        type:"POST",data:{available_products_in_head_stock:available_products_in_head_stock},cache:false,success:function(res){  
+        type:"POST",data:{available_warehouses:available_warehouses},cache:false,success:function(res){  
           var res = JSON.parse(res);
-          // console.log(res.found);
+         // console.log(res.found);
           if (res.found===1) {
             for (const key in res.res) {
               // console.log(res.res[key]);
-              $("#product_id").append("<option value='"+res.res[key].product_id+"'>"+res.res[key].product_name+"</option>");
+              $("#warehouseId").append("<option value='"+res.res[key].warehouse_id+"'>"+res.res[key].warehouse_name+"</option>");
             }
           }else{
-            $("#product_id").html("<option value=''>No product available</option>");
+            $("#warehouseId").html("<option value=''>No warehouse available</option>");
           }
           }
       });
+
+
+
+$("#warehouseId").change(function(){
+  var product_id = $("#product_id").val();
+  var warehouseId = $("#warehouseId").val();
+  $("#product_id").html("");
+  $("#product_id").html("<option value='0'>Select Product</option>");
+
+  var available_products_in_warehouse_stock = true;
+      $.ajax({url:"../../../main/view.php",
+        type:"POST",data:{available_products_in_warehouse_stock:available_products_in_warehouse_stock,warehouseId:warehouseId},cache:false,success:function(res){  
+          var res = JSON.parse(res);
+          // console.log("Status is: "+res.found);
+          if (res.found==1) {
+              $("#product_id").attr("disabled",false);
+              $("#product_id").append("<option value='0'>Select Product</option>");
+            for (const key in res.res) {
+              // console.log(res.res[key]);
+              // $("#product_id").attr("disabled",false);
+              $("#product_id").append("<option value='"+res.res[key].product_id+"'>"+res.res[key].product_name+"</option>");
+              
+            }
+          }else{
+            $("#product_id").html("<option value=''>No product available</option>");
+            $("#product_id").attr("disabled",true);
+          }
+          }
+      });
+});
+
+
 
 $("#product_id").change(function(){
   var product_id = $("#product_id").val();
@@ -418,6 +462,7 @@ $("#product_id").change(function(){
 
  $("#branch_id").select2();
  $("#product_id").select2();
+ $("#warehouseId").select2();
 
  }); 
 </script>

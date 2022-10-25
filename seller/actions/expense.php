@@ -11,7 +11,7 @@ require("../../assets/header2222.php");
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Purchases
+        Expenses
         <small>Records</small>
       </h1>
       <ol class="breadcrumb">
@@ -25,79 +25,53 @@ require("../../assets/header2222.php");
     <!-- Main content -->
 
       <!-- /.row -->
-    <div class="modal fade" id="newRequestModal" tabindex="-1" role="dialog" aria-labelledby="newRequestModalLabel" aria-hidden="false" >
+    <div class="modal fade" id="newRequestModal" tabindex="-1" role="dialog" aria-labelledby="newRequestModalLabel" aria-hidden="false" sty>
       <div class="modal-dialog" style="min-width: 90%" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="exampleModalLabel">Record Purchase</h5>
+            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="exampleModalLabel">Record Expenses</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="false">×</span>
             </button>
           </div>
-          <!-- <div class="modal-body"> -->
-          <!-- <form action = "employee" method = "POST" name="sentMessage" id="contactForm" novalidate="novalidate"> -->
-
-            <div class="box-body">
             <div class="modal-body">
-            <!-- <section class="content"> -->
       <div class="row">
         <div class="col-md-6">
           <div class="box">
+            <div class="box-body">
               <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
               <!-- Date dd/mm/yyyy -->
               <div class="form-group" id="product_idDiv">
-                <label>Supplier TIN Number:</label>
+                <label>Expense Name:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="text" class="form-control" id="TINNumber" placeholder="TIN Number here"> 
+                  <input type="text" class="form-control" id="ExpenseName" placeholder="ExpenseName here"> 
                 </div>
                 <!-- /.input group -->
               </div>
 
               <div class="form-group" id="product_idDiv">
-                <label>Supplier Name:</label>
+                <label>Expense Price:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="text" class="form-control" id="SupplierName" placeholder="Supplier Name here"> 
+                  <input type="number" class="form-control" id="ExpensePrice" placeholder="ExpensePrice here"> 
                 </div>
                 <!-- /.input group -->
               </div>
-              <div class="form-group" id="product_idDiv">
-                <label>Item Name:</label>
 
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-trophy"></i> -->
-                  </div>
-                  <input type="text" class="form-control" id="ItemName" placeholder="Item Name here"> 
-                </div>
-                <!-- /.input group -->
-              </div>
-              <div class="form-group" id="product_idDiv">
-                <label>Invoice Number:</label>
 
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-trophy"></i> -->
-                  </div>
-                  <input type="text" class="form-control" id="InvoiceNumber" placeholder="Invoice Number here"> 
-                </div>
-                <!-- /.input group -->
-              </div>
 
             </div>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
-        <!-- /.col (right) -->
-
-
+        </div>
 
         <div class="col-md-6">
           <div class="box">
@@ -105,49 +79,42 @@ require("../../assets/header2222.php");
               <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
               <!-- Date dd/mm/yyyy -->
 
-
               <div class="form-group" id="product_idDiv">
-                <label>Invoice Date:</label>
+                <label>Expense Quantity:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="date" class="form-control" id="InvoiceDate" placeholder="Invoice Date here"> 
+                  <input type="number" class="form-control" id="ExpenseQuantity" placeholder="ExpenseQuantity here"> 
                 </div>
                 <!-- /.input group -->
               </div>
-                <!-- /.input group -->
-              </div>
               <div class="form-group" id="product_idDiv">
-                <label>Total Amount Tax Inclusive:</label>
+                <label>Payment Method:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="number" class="form-control" id="Inclusive" placeholder="Tax Inclusive here"> 
+                  <select class="form-control" id="ExpenseMethod">
+                    <option>Cash</option>
+                    <option>Momo</option>
+                    <option>Cheque</option>
+                    <option>Credit</option>
+                  </select>
                 </div>
                 <!-- /.input group -->
               </div>
-
-              <div class="form-group" id="product_idDiv">
-                <label>VAT Amount:</label>
-
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-trophy"></i> -->
-                  </div>
-                  <input type="number" class="form-control" id="VATAmount" placeholder="VATAmount here"> 
-                </div>
                 <!-- /.input group -->
               </div>
+
 
 
               <div class="form-group">
         
                 <div class="input-group">
-                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="SavePurchase">Save</button>
+                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="SaveExpenses">Save</button>
                   <br>
                 </div>
                 <!-- /.input group -->
@@ -157,12 +124,8 @@ require("../../assets/header2222.php");
             </div>
             <!-- /.box-body -->
           </div>
-        </div>
-
           <!-- /.box -->
-        </div>
-        <!-- /.col (right) -->
-
+      </div>
             </div>
             <div class="modal-footer">
                       <div class="form-group">
@@ -182,81 +145,56 @@ require("../../assets/header2222.php");
 
 
 <!-- ================================================ UPDATE MODAL ====================================================== -->
-<input type="hidden" id="purchaseId">
-<button id="openUpdateRequestModal" data-toggle="modal" data-target="#UpdateRequestModal" style="display: none;"></button>
-    <div class="modal fade" id="UpdateRequestModal" tabindex="-1" role="dialog" aria-labelledby="UpdateRequestModalLabel" aria-hidden="false" >
+<input type="hidden" id="expenseId">
+<button id="openUpdateRequestModal" data-toggle="modal" data-target="#newExpensesModal" style="display: none;"></button>
+
+    <div class="modal fade" id="newExpensesModal" tabindex="-1" role="dialog" aria-labelledby="newExpensesModalLabel" aria-hidden="false" sty>
       <div class="modal-dialog" style="min-width: 90%" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="UpdatempleModalLabel">Update Purchase Records</h5>
+            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="newExpensesModalLabel">Update Expense Records</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="false">×</span>
             </button>
           </div>
-          <!-- <div class="modal-body"> -->
-          <!-- <form action = "employee" method = "POST" name="sentMessage" id="contactForm" novalidate="novalidate"> -->
-
-            <div class="box-body">
             <div class="modal-body">
-            <!-- <section class="content"> -->
       <div class="row">
         <div class="col-md-6">
           <div class="box">
+            <div class="box-body">
               <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
               <!-- Date dd/mm/yyyy -->
               <div class="form-group" id="product_idDiv">
-                <label>Supplier TIN Number:</label>
+                <label>Expense Name:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="text" class="form-control" id="updTINNumber" placeholder="TIN Number here"> 
+                  <input type="text" class="form-control" id="updExpenseName" placeholder="ExpenseName here"> 
                 </div>
                 <!-- /.input group -->
               </div>
 
               <div class="form-group" id="product_idDiv">
-                <label>Supplier Name:</label>
+                <label>Expense Price:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="text" class="form-control" id="updSupplierName" placeholder="Supplier Name here"> 
+                  <input type="number" class="form-control" id="updExpensePrice" placeholder="ExpensePrice here"> 
                 </div>
                 <!-- /.input group -->
               </div>
-              <div class="form-group" id="product_idDiv">
-                <label>Item Name:</label>
 
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-trophy"></i> -->
-                  </div>
-                  <input type="text" class="form-control" id="updItemName" placeholder="Item Name here"> 
-                </div>
-                <!-- /.input group -->
-              </div>
-              <div class="form-group" id="product_idDiv">
-                <label>Invoice Number:</label>
 
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-trophy"></i> -->
-                  </div>
-                  <input type="text" class="form-control" id="updInvoiceNumber" placeholder="Invoice Number here"> 
-                </div>
-                <!-- /.input group -->
-              </div>
 
             </div>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
-        <!-- /.col (right) -->
-
-
+        </div>
 
         <div class="col-md-6">
           <div class="box">
@@ -264,64 +202,62 @@ require("../../assets/header2222.php");
               <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
               <!-- Date dd/mm/yyyy -->
 
-
               <div class="form-group" id="product_idDiv">
-                <label>Invoice Date:</label>
+                <label>Expense Quantity:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="date" class="form-control" id="updInvoiceDate" placeholder="Invoice Date here"> 
+                  <input type="number" class="form-control" id="updExpenseQuantity" placeholder="ExpenseQuantity here"> 
+                </div>
+                <!-- /.input group -->
+              </div>
+              <div class="form-group" id="product_idDiv">
+                <label>Payment Method:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-trophy"></i> -->
+                  </div>
+                  <select class="form-control" id="updExpenseMethod">
+                    <option>Cash</option>
+                    <option>Momo</option>
+                    <option>Cheque</option>
+                    <option>Credit</option>
+                  </select>
                 </div>
                 <!-- /.input group -->
               </div>
                 <!-- /.input group -->
               </div>
-              <div class="form-group" id="product_idDiv">
-                <label>Total Amount Tax Inclusive:</label>
 
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-trophy"></i> -->
-                  </div>
-                  <input type="number" class="form-control" id="updInclusive" placeholder="Tax Inclusive here"> 
-                </div>
-              </div>
-
-              <div class="form-group" id="product_idDiv">
-                <label>VAT Amount:</label>
-
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-trophy"></i> -->
-                  </div>
-                  <input type="number" class="form-control" id="updVATAmount" placeholder="VATAmount here"> 
-                </div>
-              </div>
 
 
               <div class="form-group">
         
                 <div class="input-group">
-                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="updSavePurchase">Save</button>
+                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="updSaveExpenses">Update</button>
                   <br>
                 </div>
+                <!-- /.input group -->
               </div>
 
+              <!-- /.form group -->
             </div>
+            <!-- /.box-body -->
           </div>
-        </div>
-        
-        </div>
-
+          <!-- /.box -->
+      </div>
             </div>
             <div class="modal-footer">
                       <div class="form-group">
                         <div class="input-group">
+                          <!-- <button class="btn btn-success" id="RegisterWareHouse">Register</button> -->
 
                         </div>
                         <a href=""  style="float:right;" class="btn btn-default">Close</a>
+                        <!-- /.input group -->
                       </div>
             </div>
           <!-- </form> -->
@@ -329,7 +265,10 @@ require("../../assets/header2222.php");
       </div>
     </div>
 
-<!-- =========================== END ============= UPDATE MODAL ====================================================== -->
+
+
+
+
 
     <section class="content">
       <div class="row">
@@ -346,28 +285,22 @@ require("../../assets/header2222.php");
                       #
                     </th>
                     <th>
-                      SupplierTin
+                      Expense Name
                     </th>
                     <th>
-                      SupplierName
+                      Expense Price
                     </th>
                     <th>
-                      ItemName
+                      Expense Quantity
                     </th>
                     <th>
-                      InvoiceNumber
+                      Payment Method
                     </th>
                     <th>
-                      InvoiceDate
+                      Recorded Date
                     </th>
                     <th>
-                      TotalAmountTaxInclusive
-                    </th>
-                    <th>
-                      VATAmount
-                    </th>
-                    <th>
-                      RecordedDate
+                      
                     </th>
                     <tbody id="report_div">
                       
@@ -439,28 +372,30 @@ require("../../assets/header2222.php");
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 
 <script>
-function updatePurchaseModal(purchaseId,SupplierTin,SupplierName,ItemName,InvoiceNumber,InvoiceDate,TotalAmountTaxInclusive,VATAmount) {
-  document.getElementById("purchaseId").value=purchaseId;
 
-  document.getElementById("updTINNumber").value=SupplierTin;
-  document.getElementById("updSupplierName").value=SupplierName;
-  document.getElementById("updItemName").value=ItemName;
-  document.getElementById("updInvoiceNumber").value=InvoiceNumber;
-  document.getElementById("updInvoiceDate").value=InvoiceDate;
-  document.getElementById("updInclusive").value=TotalAmountTaxInclusive;
-  document.getElementById("updVATAmount").value=VATAmount;
+function updateExpenseModal(expenseId,updExpenseName,updExpensePrice,updExpenseQuantity,updExpenseMethod) {
+  document.getElementById("expenseId").value=expenseId;
+
+  document.getElementById("updExpenseName").value=updExpenseName;
+  document.getElementById("updExpensePrice").value=updExpensePrice;
+  document.getElementById("updExpenseQuantity").value=updExpenseQuantity;
+  document.getElementById("updExpenseMethod").value=updExpenseMethod;
   $("#openUpdateRequestModal").click();
+  // console.log(updExpenseMethod);
 }
 
-function deletePurchases(idd) {
-  var deletePurchases = true;
+function deleteExpenses(idd) {
+  var deleteExpenses = true;
     $.ajax({url:"../../main/action.php",
-      type:"POST",data:{deletePurchases:deletePurchases,idd:idd},cache:false,success:function(res){  
+      type:"POST",data:{deleteExpenses:deleteExpenses,idd:idd},cache:false,success:function(res){  
         window.location.reload();
         // console.log(res);
         }
     });
 }
+
+
+
 function ExportToExcel(type, fn, dl) {
        var elt = document.getElementById('respTale');
        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
@@ -470,24 +405,20 @@ function ExportToExcel(type, fn, dl) {
     }
 
 
-
-
   $(document).ready(function(){
-    $("#updSavePurchase").click(function(){
-      var purchaseId = document.getElementById("purchaseId").value;
 
-      var SupplierTin = document.getElementById("updTINNumber").value;
-      var SupplierName = document.getElementById("updSupplierName").value;
-      var ItemName = document.getElementById("updItemName").value;
-      var InvoiceNumber = document.getElementById("updInvoiceNumber").value;
-      var InvoiceDate = document.getElementById("updInvoiceDate").value;
-      var TotalAmountTaxInclusive = document.getElementById("updInclusive").value;
-      var VATAmount = document.getElementById("updVATAmount").value;
+    $("#updSaveExpenses").click(function(){
+    var expenseId = document.getElementById("expenseId").value;
 
-      if (purchaseId!='' && SupplierTin!='' && SupplierName!='' && ItemName!='' && InvoiceNumber!='' && InvoiceDate!='' && TotalAmountTaxInclusive!='' && VATAmount!='') {
-          var updSavePurchase = true;
+    var updExpenseName = document.getElementById("updExpenseName").value;
+    var updExpensePrice = document.getElementById("updExpensePrice").value;
+    var updExpenseQuantity = document.getElementById("updExpenseQuantity").value;
+    var updExpenseMethod = document.getElementById("updExpenseMethod").value;
+
+      if (expenseId!='' && updExpenseName!='' && updExpensePrice!='' && updExpenseQuantity!='' && updExpenseMethod!='') {
+          var updSaveExpenses = true;
             $.ajax({url:"../../main/action.php",
-              type:"POST",data:{updSavePurchase:updSavePurchase,purchaseId:purchaseId,SupplierTin:SupplierTin,SupplierName:SupplierName,ItemName:ItemName,InvoiceNumber:InvoiceNumber,InvoiceDate:InvoiceDate,TotalAmountTaxInclusive:TotalAmountTaxInclusive,VATAmount:VATAmount},cache:false,success:function(res){  
+              type:"POST",data:{updSaveExpenses:updSaveExpenses,expenseId:expenseId,updExpenseName:updExpenseName,updExpensePrice:updExpensePrice,updExpenseQuantity:updExpenseQuantity,updExpenseMethod:updExpenseMethod},cache:false,success:function(res){  
                 window.location.reload();
                 // console.log(res);
                 }
@@ -500,26 +431,25 @@ function ExportToExcel(type, fn, dl) {
 
 
 
-      var AllPurchases = true;
+
+      var AllExpenses = true;
       $.ajax({url:"../../main/view.php",
-        type:"POST",data:{AllPurchases:AllPurchases},cache:false,success:function(res){  
+        type:"POST",data:{AllExpenses:AllExpenses},cache:false,success:function(res){  
           var res = JSON.parse(res);
           console.log(res.found);
           if (res.found===1) {
             var cnt = 1;
             for (const key in res.res) {
-              var SupplierTin = '"'+res.res[key].SupplierTin+'"';
-              var SupplierName = '"'+res.res[key].SupplierName+'"';
-              var ItemName = '"'+res.res[key].ItemName+'"';
-              var InvoiceNumber = '"'+res.res[key].InvoiceNumber+'"';
-              var InvoiceDate = '"'+res.res[key].InvoiceDate+'"';
-              var TotalAmountTaxInclusive = '"'+res.res[key].TotalAmountTaxInclusive+'"';
-              var VATAmount = '"'+res.res[key].VATAmount+'"';
-              $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].SupplierTin+"</td> <td>"+res.res[key].SupplierName+"</td><td>"+res.res[key].ItemName+"</td><td>"+res.res[key].InvoiceNumber+"</td> <td>"+res.res[key].InvoiceDate+"</td> <td>"+Intl.NumberFormat().format(res.res[key].TotalAmountTaxInclusive)+"</td> <td>"+Intl.NumberFormat().format(res.res[key].VATAmount)+"</td> <td><a class='btn btn-link' onclick='return updatePurchaseModal("+res.res[key].PurchaseId+","+SupplierTin+","+SupplierName+","+ItemName+","+InvoiceNumber+","+InvoiceDate+","+TotalAmountTaxInclusive+","+VATAmount+")'> Update </a> <a class='btn btn-danger' onclick='return deletePurchases("+res.res[key].PurchaseId+")'>Delete</a></td> </tr>");
+              var ExpenseName = '"'+res.res[key].ExpenseName+'"';
+              var ExpensePrice = '"'+res.res[key].ExpensePrice+'"';
+              var ExpenseQuantity = '"'+res.res[key].ExpenseQuantity+'"';
+              var ExpenseMethod = '"'+res.res[key].ExpenseMethod+'"';
+              var ExpenseDate = '"'+res.res[key].ExpenseDate+'"';
+              $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].ExpenseName+"</td> <td>"+Intl.NumberFormat().format(res.res[key].ExpensePrice)+"</td><td>"+Intl.NumberFormat().format(res.res[key].ExpenseQuantity)+"</td><td>"+res.res[key].ExpenseMethod+"</td> <td>"+res.res[key].ExpenseDate+"</td> <td><a class='btn btn-link' onclick='return updateExpenseModal("+res.res[key].ExpenseId+","+ExpenseName+","+ExpensePrice+","+ExpenseQuantity+","+ExpenseMethod+")'> Update </a> <a class='btn btn-danger' onclick='return deleteExpenses("+res.res[key].ExpenseId+")'>Delete</a></td> </tr>");
               cnt++;
             }
           }else{
-            $("#report_div").html("<tr> <td colspan=8> No Stock available</td></tr>");
+            $("#report_div").html("<tr> <td colspan=5> No Stock available</td></tr>");
           }
           }
       });

@@ -5,37 +5,37 @@ error_reporting(E_ALL);
 require("../../../main/drive/config.php");
 @require("../../../assets/header4.php");
 
-function productIdFromName($product, $con=$con){
-    $sel = $con->prepare("SELECT * FROM products WHERE products.ProductName LIKE '%$product%'");
+function productIdFromName($product, $con){
+    $sel = $con->prepare("SELECT * FROM products WHERE products.ProductName LIKE '%$product%' LIMIT 1");
     $sel->execute();
     if ($sel->rowCount()>=1) {
         $ft_sel = $sel->fetch(PDO::FETCH_ASSOC);
         $pri_id = $ft_sel['ProductId'];
     }else{
-        $pri_id = null;
+        $pri_id = NULL;
     }
     return $pri_id;
 }
-function categoryIdFromName($category, $con=$con){
-    $sel = $con->prepare("SELECT * FROM productcategories WHERE productcategories.CategoryName LIKE '%$category%'");
+function categoryIdFromName($category,$con){
+    $sel = $con->prepare("SELECT * FROM productcategories WHERE productcategories.CategoryName LIKE '%$category%' LIMIT 1");
     $sel->execute();
     if ($sel->rowCount()>=1) {
         $ft_sel = $sel->fetch(PDO::FETCH_ASSOC);
         $pri_id = $ft_sel['CategoryId'];
     }else{
-        $pri_id = null;
+        $pri_id = NULL;
     }
     return $pri_id;
 }
 
-function warehouseIdFromName($warehouse, $con=$con){
-    $sel = $con->prepare("SELECT * FROM warehouses WHERE warehouses.WarehouseName LIKE '%$warehouse%'");
+function warehouseIdFromName($warehouse,$con){
+    $sel = $con->prepare("SELECT * FROM warehouses WHERE warehouses.WarehouseName LIKE '%$warehouse%' LIMIT 1");
     $sel->execute();
     if ($sel->rowCount()>=1) {
         $ft_sel = $sel->fetch(PDO::FETCH_ASSOC);
         $pri_id = $ft_sel['WarehouseId'];
     }else{
-        $pri_id = null;
+        $pri_id = NULL;
     }
     return $pri_id;
 }
@@ -104,7 +104,7 @@ function UnitIdFromName($type){
 if(isset($_POST['Submit'])){
 
 
-  $mimes = ['application/vnd.ms-excel','text/xls','text/xlsx','application/vnd.oasis.opendocument.spreadsheet'];
+  $mimes = ['application/vnd.ms-excel','text/xlsx','xlsx','text/xls','application/vnd.oasis.opendocument.spreadsheet'];
   if(in_array($_FILES["file"]["type"],$mimes)){
 
 
@@ -132,24 +132,49 @@ if(isset($_POST['Submit'])){
       $Reader->ChangeSheet($i);
 
         $cnt = 0;
+        $rrow = 1;
       foreach ($Reader as $Row)
       {
-        $html.="<tr>";
-        $itemName = isset($Row[0]) ? $Row[0] : '';
-        $itemcategory = isset($Row[1]) ? $Row[1] : '';
-        $IsProductBox = isset($Row[2]) ? $Row[2] : '';
-        $ProductBoxPieces = isset($Row[3]) ? $Row[3] : '';
-        $itemName = isset($Row[0]) ? $Row[0] : '';
-        $itemcategory = isset($Row[1]) ? $Row[1] : '';
-        $IsProductBox = isset($Row[2]) ? $Row[2] : '';
-        $ProductBoxPieces = isset($Row[3]) ? $Row[3] : '';
         
-        $html.="<td>".productIdFromName($itemName)."</td>";
-        $html.="<td>".categoryIdFromName($itemcategory)."</td>";
-        $html.="<td>".UnitIdFromName($IsProductBox)."</td>";
-        $html.="<td>".$ProductBoxPieces."</td>";
-        $html.="<td>".$itemcategory."</td>";
-        $html.="<td>".warehouseIdFromName($IsProductBox)."</td>";
+        $itemName = isset($Row[0]) ? (int)productIdFromName($Row[0],$con) : '';    //Product ID
+        $itemcategory = isset($Row[1]) ? (int)categoryIdFromName($Row[1],$con) : ''; //Category
+        $IsProductBox = isset($Row[2]) ? (int)UnitIdFromName($Row[2]) : '';  //UnityType
+        $ProductQuantity = isset($Row[3]) ? (int)$Row[3] : ''; //Product Quantity
+        $ProductBoxPieces = isset($Row[4]) ? (int)$Row[4] : '';  //Pieces
+        $WarehouseId = isset($Row[0]) ? warehouseIdFromName($Row[5], $con) : ''; //Warehouse
+        if ((productIdFromName($Row[0],$con)==NULL) OR (categoryIdFromName($Row[1],$con)) OR (UnitIdFromName($Row[2])==NULL) OR (warehouseIdFromName($Row[5], $con==NULL))) {
+          if ($rrow==1) {
+            ?>
+            <center>
+              <h4 style="color:brown;font-size: 30px;">Operation failed for: </h4>
+              <hr>
+            </center>
+            <?php
+          }
+          echo "<ul>";
+          if (productIdFromName($Row[0], $con)==NULL) {
+            echo "<li style='font-size:30px;'>Item <b style='color:red'>".$Row[0]."</b> on row ".$rrow." not found </li> ";
+          }
+          if (categoryIdFromName($Row[1],$con)==NULL) {
+            echo "<li style='font-size:30px;'>Category <b style='color:red'>".$Row[1]."</b> on row ".$rrow." not found </li> ";
+          }
+          if (UnitIdFromName($Row[2])) {
+            echo "<li style='font-size:30px;'>Set-Type <b style='color:red'>".$Row[2]."</b> on row ".$rrow." not found </li> ";
+          }
+          if (warehouseIdFromName($Row[5], $con)==NULL) {
+            echo "<li style='font-size:30px;'>Warehouse <b style='color:red'>".$Row[5]."</b> on row ".$rrow." not found </li>";
+          }
+          $rrow++;
+          echo "</ul>";
+          continue;
+        }
+        $html.="<tr>";
+        $html.="<td>".$Row[0]."</td>";
+        $html.="<td>".$Row[1]."</td>";
+        $html.="<td>".$Row[2]."</td>";
+        $html.="<td>".$Row[3]."</td>";
+        $html.="<td>".$Row[4]."</td>";
+        $html.="<td>".$Row[5]."</td>";
         $html.="</tr>";
 
         if ($ProductBoxPieces==0) {
@@ -158,27 +183,29 @@ if(isset($_POST['Submit'])){
 
 
         $ins = $con->prepare("INSERT INTO mainstock(ProductId,IsProductBox,QuantityBefore,QuantityAdded,QuantityAfter,WarehouseId,InitialStock) VALUES(?,?,?,?,?,?,?)");
-        $ins->bindValue(1,productIdFromName($itemName));
-        $ins->bindValue(2,UnitIdFromName($IsProductBox));
+        $ins->bindValue(1,$itemName);
+        $ins->bindValue(2,$IsProductBox);
         $ins->bindValue(3,0);
         if ($IsProductBox==1) {
-            $addedd = $added*$pro_added;
-            $after = $added*$pro_added;
+            $addedd = $ProductQuantity*$Row[4];
+            $after = $ProductQuantity*$Row[4];
         }else{
-            $addedd = $added;
-            $after = $added;
+            $addedd = $ProductQuantity;
+            $after = $ProductQuantity;
         }
-            $ins->bindValue(4,($addedd));
+            $ins->bindValue(4,($ProductQuantity));
             $ins->bindValue(5,($after));
-            $ins->bindValue(6,(warehouseIdFromName($IsProductBox)));
-            $ins->bindValue(7,($addedd));
+            $ins->bindValue(6,($WarehouseId));
+            $ins->bindValue(7,($ProductQuantity));
         $ok = $ins->execute();
         if ($ok) {
           $cnt++;
         }else{
          //   echo "<br />No";
-            print_r($ins->errorInfo());
+            // print_r($ins->errorInfo());
+            echo "Failed, try again later ...";
         }
+        
        }
     }
 
@@ -187,15 +214,15 @@ if(isset($_POST['Submit'])){
     echo $html;
     echo "<span style='font-size:20px'> <span style='font-size:26px;color:green;font-weight:bolder'> ".$cnt. "</span> Data Recorded.</span>";
 
-    echo "<center><br><a href='product' class='btn btn-success' class='btn btn-success'>OK</a></center>"  ;
+    echo "<center><br><a href='warehouse' class='btn btn-success' class='btn btn-success'>OK</a></center>"  ;
   }else { 
-    die("<br/>Sorry, File type is not allowed. Only Excel file."); 
+    die("<br/><p style='color:red;font-weight:bolder'>Sorry, File type is not allowed. Only Excel (.xls) file.</p>"); 
   }
 ?>
 <script type="text/javascript">
-setTimeout(function(){
-            window.location.href = 'product';
-         }, 7000);
+// setTimeout(function(){
+//             window.location.href = 'warehouse';
+//          }, 20000);
 </script>
 <?php
 

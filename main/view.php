@@ -179,6 +179,26 @@ class MainView extends DBConnect
 		return print(json_encode($arr));
 	}
 
+	public function available_products_in_warehouse_stock($warehouseId)		//================================= SELECT AVAILABLE PRODUCTS IN WAREHOUSE
+	{
+		$con = parent::connect();
+		$sel = $con->prepare("SELECT * FROM products,mainstock WHERE products.ProductId=mainstock.ProductId AND mainstock.WarehouseId='$warehouseId' AND products.ProductSatatus=1 order by products.ProductName");
+		$sel->execute();
+		$arr = [];
+		if ($sel->rowCount()>=1) {
+			$cnt = 0;
+			while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+				$arr['found'] = 1;
+				$arr['res'][$cnt]['product_id'] = $ft_sel['ProductId'];
+				$arr['res'][$cnt]['product_name'] = $ft_sel['ProductName'];
+				$cnt++;
+			}
+		}else{
+			$arr['found'] = 0;
+		}
+		return print(json_encode($arr));
+	}
+
 	public function available_products_in_branch_stock()		//================================= SELECT AVAILABLE PRODUCTS IN Branch-STOCK 
 	{
 		$branch_id = $_SESSION['sms_user_branch_id'];
@@ -235,9 +255,9 @@ class MainView extends DBConnect
 				$arr['res'][$cnt]['branch_name'] = $ft_sel['BranchName'];
 				$branch = $ft_sel['BranchId'];
 				if ($emp==0) {
-					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'");
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch'");
 				}else{
-					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch' AND employees.EmployeesId='$emp'");
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' AND employees.EmployeesId='$emp'");
 				}
 				$ssel->execute();
 				if ($ssel->rowCount()>=1) {
@@ -1049,6 +1069,8 @@ if (isset($_POST['available_branches'])) {
 	echo $MainFunctions->IsProductBox($_POST['product_id']);
 }else if (isset($_POST['available_products_in_head_stock'])) {
 	$MainView->available_products_in_head_stock();
+}else if (isset($_POST['available_products_in_warehouse_stock'])) {
+	$MainView->available_products_in_warehouse_stock($_POST['warehouseId']);
 }else if (isset($_POST['available_products_in_main_stock'])) {
 	$MainView->available_products_in_main_stock();
 }else if (isset($_POST['available_products_in_branch_stock'])) {
