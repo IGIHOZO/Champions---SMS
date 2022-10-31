@@ -405,6 +405,7 @@ $("#StockOut").click(function(){		//============================================
 	var clientPhone = $("#clientPhone").val();
 	var member = $("#mmbrName").val();
 	var mpin = $("#memberspin").val();
+	var rempin = $("#re_memberspin").val();
 	var paymentWay = null;
 	if (paymentMethod==1 || paymentMethod=='1') {
 		paymentWay = paymentWayPaid;
@@ -412,60 +413,67 @@ $("#StockOut").click(function(){		//============================================
 		paymentWay = paymentWayDebt;
 	}
 
-
-	if (product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='' || invNumbr=='' || member=='' || mpin=='') {
+	if(mpin==rempin){
+		if (product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='' || invNumbr=='' || member=='') {
+			$("#respp").addClass("bg-red");
+			$("#respp").css("display","block");
+			$("#respp").html("Fill all fields ...");
+			setTimeout(hide,10000,"#respp");
+		}else{
+			$("#StockOut").prop('disabled',true);
+			$("#StockOut").html('Please wait...');
+			var StockOut = true;
+	
+			$.ajax({url:"../../main/action.php",
+					type:"GET",data:{StockOut:StockOut,product_id:product_id,IsProductBox:IsProductBox,soldPrice:soldPrice,quantitySold:quantitySold,paymentMethod:paymentMethod,paymentWay:paymentWay,clientName:clientName,companyName:companyName,clientPhone:clientPhone,invNumbr:invNumbr,member:member,mpin:mpin},cache:false,success:function(res){
+				$("#StockOut").prop('disabled',false);
+				$("#StockOut").html('Ok, Save');
+				switch(res){
+					case 'success':
+						$("#respp").addClass("bg-green");
+						$("#respp").css("display","block");
+						$("#respp").html('Successful recorded !');
+						setTimeout(window.location.reload(true),10000);
+						setTimeout(hide,10000,"#respp");
+						setTimeout($("#product_id").val(''),$("#IsProductBox").val(''),$("#soldPrice").val(''),$("#quantitySold").val(''),$("#paymentMethod").val(''),$("#paymentWayPaid").val(''),$("#paymentWayDebt").val(''),$("#clientName").val(''),$("#clientPhone").val(''),$("#companyName").val(''),4000);
+					break;
+					case 'failed':
+						$("#respp").addClass("bg-red");
+						$("#respp").css("display","block");
+						$("#respp").html("Failed, try again later ...");
+						// $("#respp").html(res);
+	
+						setTimeout(hide,10000,"#respp");
+					break;
+					case 'not_enough':
+						$("#respp").addClass("bg-yellow");
+						$("#respp").css("display","block");
+						$("#respp").html("Amount entered is more than the one remaining in stock ...");
+						setTimeout(hide,10000,"#respp");
+					break;
+					case 'invalid':
+						$("#respp").addClass("bg-yellow");
+						$("#respp").css("display","block");
+						$("#respp").html("Invalid PIN ...");
+						setTimeout(hide,10000,"#respp");
+					break;
+					default:
+						$("#respp").addClass("bg-red");
+						$("#respp").css("display","block");
+						$("#respp").html(res);
+						setTimeout(hide,10000,"#respp");
+					break;
+				}
+			}});
+	
+		}
+	}else{
 		$("#respp").addClass("bg-red");
 		$("#respp").css("display","block");
-		$("#respp").html("Fill all fields ...");
+		$("#respp").html("PIN not match ...");
 		setTimeout(hide,10000,"#respp");
-	}else{
-		$("#StockOut").prop('disabled',true);
-		$("#StockOut").html('Please wait...');
-		var StockOut = true;
-
-		$.ajax({url:"../../main/action.php",
-				type:"GET",data:{StockOut:StockOut,product_id:product_id,IsProductBox:IsProductBox,soldPrice:soldPrice,quantitySold:quantitySold,paymentMethod:paymentMethod,paymentWay:paymentWay,clientName:clientName,companyName:companyName,clientPhone:clientPhone,invNumbr:invNumbr,member:member,mpin:mpin},cache:false,success:function(res){
-			$("#StockOut").prop('disabled',false);
-			$("#StockOut").html('Ok, Save');
-			switch(res){
-				case 'success':
-					$("#respp").addClass("bg-green");
-					$("#respp").css("display","block");
-					$("#respp").html('Successful recorded !');
-					setTimeout(window.location.reload(true),10000);
-					setTimeout(hide,10000,"#respp");
-					setTimeout($("#product_id").val(''),$("#IsProductBox").val(''),$("#soldPrice").val(''),$("#quantitySold").val(''),$("#paymentMethod").val(''),$("#paymentWayPaid").val(''),$("#paymentWayDebt").val(''),$("#clientName").val(''),$("#clientPhone").val(''),$("#companyName").val(''),4000);
-				break;
-				case 'failed':
-					$("#respp").addClass("bg-red");
-					$("#respp").css("display","block");
-					$("#respp").html("Failed, try again later ...");
-					// $("#respp").html(res);
-
-					setTimeout(hide,10000,"#respp");
-				break;
-				case 'not_enough':
-					$("#respp").addClass("bg-yellow");
-					$("#respp").css("display","block");
-					$("#respp").html("Amount entered is more than the one remaining in stock ...");
-					setTimeout(hide,10000,"#respp");
-				break;
-				case 'invalid':
-					$("#respp").addClass("bg-yellow");
-					$("#respp").css("display","block");
-					$("#respp").html("Invalid PIN ...");
-					setTimeout(hide,10000,"#respp");
-				break;
-				default:
-					$("#respp").addClass("bg-red");
-					$("#respp").css("display","block");
-					$("#respp").html(res);
-					setTimeout(hide,10000,"#respp");
-				break;
-			}
-		}});
-
 	}
+
 })
 
 $("#StockOutAllTrans").click(function(){		//========================================================= STOCK-OUT FOR ALL TRANSACTIONS
@@ -483,7 +491,8 @@ $("#StockOutAllTrans").click(function(){		//====================================
 	var companyName = $("#hdn_companyName").val();
 	var clientPhone = $("#hdn_clientPhone").val();
 	var memberID = $("#hdn_mmbrName").val();
-	var mpin = $("#hdn_memberspin").val();
+	var mpin = $("#memberspin").val();
+	var re_memberspin = $("#re_memberspin").val();
 	var paymentWay = null;
 	if (paymentMethod==1 || paymentMethod=='1') {
 		paymentWay = paymentWayPaid;
@@ -491,7 +500,7 @@ $("#StockOutAllTrans").click(function(){		//====================================
 		paymentWay = paymentWayDebt;
 	}
 
-
+if(mpin==re_memberspin){
 	if (memberID=='' || mpin=='' || product_id=='' || IsProductBox=='' || soldPrice=='' || quantitySold=='' || paymentMethod=='' || paymentWay=='' || clientName=='' || clientPhone=='' || invNumbr=='') {
 		$("#respp").addClass("bg-red");
 		$("#respp").css("display","block");
@@ -540,6 +549,14 @@ $("#StockOutAllTrans").click(function(){		//====================================
 		}});
 
 	}
+}else{
+	$("#respp").addClass("bg-red");
+	$("#respp").css("display","block");
+	$("#respp").html("PIN not match ...");
+	setTimeout(hide,10000,"#respp");
+}
+
+
 })
 
 $("#AddNewTrans").click(function(){		//======================================================================================== Add New StockOut
