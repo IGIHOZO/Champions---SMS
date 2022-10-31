@@ -10,6 +10,125 @@ echo "<script>window.location='../home'</script>";
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
+      <!-- /.row -->
+      <div class="modal fade" id="newRequestModal" tabindex="-1" role="dialog" aria-labelledby="newRequestModalLabel" aria-hidden="false" sty>
+      <div class="modal-dialog" style="min-width: 90%" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="exampleModalLabel">Record Expenses</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="false">×</span>
+            </button>
+          </div>
+            <div class="modal-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box">
+            <div class="box-body">
+              <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
+              <!-- Date dd/mm/yyyy -->
+              <div class="form-group" id="product_idDiv">
+                <label>Expense Name:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-trophy"></i> -->
+                  </div>
+                  <input type="text" class="form-control" id="ExpenseName" placeholder="ExpenseName here"> 
+                </div>
+                <!-- /.input group -->
+              </div>
+
+              <div class="form-group" id="product_idDiv">
+                <label>Expense Price:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-trophy"></i> -->
+                  </div>
+                  <input type="number" class="form-control" id="ExpensePrice" placeholder="ExpensePrice here"> 
+                </div>
+                <!-- /.input group -->
+              </div>
+
+
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+
+        <div class="col-md-6">
+          <div class="box">
+            <div class="box-body">
+              <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
+              <!-- Date dd/mm/yyyy -->
+
+              <div class="form-group" id="product_idDiv">
+                <label>Expense Quantity:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-trophy"></i> -->
+                  </div>
+                  <input type="number" class="form-control" id="ExpenseQuantity" placeholder="ExpenseQuantity here"> 
+                </div>
+                <!-- /.input group -->
+              </div>
+              <div class="form-group" id="product_idDiv">
+                <label>Payment Method:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <!-- <i class="fa fa-trophy"></i> -->
+                  </div>
+                  <select class="form-control" id="ExpenseMethod">
+                    <option>Cash</option>
+                    <option>Momo</option>
+                    <option>Cheque</option>
+                    <option>Credit</option>
+                  </select>
+                </div>
+                <!-- /.input group -->
+              </div>
+                <!-- /.input group -->
+              </div>
+
+
+
+              <div class="form-group">
+        
+                <div class="input-group">
+                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="SaveExpenses">Save</button>
+                  <br>
+                </div>
+                <!-- /.input group -->
+              </div>
+
+              <!-- /.form group -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      </div>
+            </div>
+            <div class="modal-footer">
+                      <div class="form-group">
+                        <div class="input-group">
+                          <!-- <button class="btn btn-success" id="RegisterWareHouse">Register</button> -->
+
+                        </div>
+                        <a href=""  style="float:right;" class="btn btn-default">Close</a>
+                        <!-- /.input group -->
+                      </div>
+            </div>
+          <!-- </form> -->
+        </div>
+      </div>
+    </div>
+    <button style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">New</button>
+
     <section class="content-header">
       <h1>
         Orient Products
