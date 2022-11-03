@@ -185,7 +185,7 @@ require("../../../assets/header44.php");
               <a class="btn btn-success" style="font-weight: bolder;">Export Excel</a>
                 <a style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">Orient To SubStock</a>
               <center><div style="text-align: center;margin: 0 auto">
-                <table class="table table-reaponsive">
+                <table class="table table-reaponsive" id="respTbl">
                   <thead>
                     <th>
                       #
@@ -264,6 +264,8 @@ require("../../../assets/header44.php");
 <script src="../../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap color picker -->
 <script src="../../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <!-- bootstrap time picker -->
 <script src="../../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
@@ -450,6 +452,8 @@ $("#product_id").change(function(){
           }else{
             $("#report_div").html("<tr> <td colspan=6> No Stock available</td></tr>");
           }
+          $('#respTbl').DataTable();
+
           }
       });
 

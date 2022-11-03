@@ -3,6 +3,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("../../assets/header2222.php");
+if (!isset($_SESSION['sms_user_id'])) {
+  echo "<script>window.location='../home'</script>";
+  }
 ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 
@@ -147,7 +150,7 @@ require("../../assets/header2222.php");
               <div class="form-group">
         
                 <div class="input-group">
-                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="SavePurchase">Save</button>
+                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="SavePurchaseBranch">Save</button>
                   <br>
                 </div>
                 <!-- /.input group -->
@@ -389,7 +392,7 @@ require("../../assets/header2222.php");
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-<?php require("../assets/footer.php");?>
+<?php require("../../assets/footer.php");?>
 
 
   <!-- /.control-sidebar -->
@@ -407,35 +410,35 @@ require("../../assets/header2222.php");
 });
 </script>
 <!-- jQuery 3 -->
-<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- Select2 -->
-<script src="../bower_components/select2/dist/js/select2.full.min.js"></script>
+<script src="../../bower_components/select2/dist/js/select2.full.min.js"></script>
 <!-- InputMask -->
-<script src="../plugins/input-mask/jquery.inputmask.js"></script>
-<script src="../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-<script src="../plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<script src="../../plugins/input-mask/jquery.inputmask.js"></script>
+<script src="../../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="../../plugins/input-mask/jquery.inputmask.extensions.js"></script>
 <!-- date-range-picker -->
-<script src="../bower_components/moment/min/moment.min.js"></script>
-<script src="../bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="../../bower_components/moment/min/moment.min.js"></script>
+<script src="../../bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 <!-- bootstrap datepicker -->
-<script src="../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap color picker -->
-<script src="../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+<script src="../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 <!-- bootstrap time picker -->
-<script src="../plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
-<script src="../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- iCheck 1.0.1 -->
-<script src="../plugins/iCheck/icheck.min.js"></script>
+<script src="../../plugins/iCheck/icheck.min.js"></script>
 <!-- FastClick -->
-<script src="../bower_components/fastclick/lib/fastclick.js"></script>
+<script src="../../bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="../../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="../dist/js/demo.js"></script>
-<script src="../assets/js/main.js"></script>
+<script src="../../dist/js/demo.js"></script>
+<script src="../../assets/js/main.js"></script>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 
 <script>
@@ -454,7 +457,7 @@ function updatePurchaseModal(purchaseId,SupplierTin,SupplierName,ItemName,Invoic
 
 function deletePurchases(idd) {
   var deletePurchases = true;
-    $.ajax({url:"../main/action.php",
+    $.ajax({url:"../../main/action.php",
       type:"POST",data:{deletePurchases:deletePurchases,idd:idd},cache:false,success:function(res){  
         window.location.reload();
         // console.log(res);
@@ -486,7 +489,7 @@ function ExportToExcel(type, fn, dl) {
 
       if (purchaseId!='' && SupplierTin!='' && SupplierName!='' && ItemName!='' && InvoiceNumber!='' && InvoiceDate!='' && TotalAmountTaxInclusive!='' && VATAmount!='') {
           var updSavePurchase = true;
-            $.ajax({url:"../main/action.php",
+            $.ajax({url:"../../main/action.php",
               type:"POST",data:{updSavePurchase:updSavePurchase,purchaseId:purchaseId,SupplierTin:SupplierTin,SupplierName:SupplierName,ItemName:ItemName,InvoiceNumber:InvoiceNumber,InvoiceDate:InvoiceDate,TotalAmountTaxInclusive:TotalAmountTaxInclusive,VATAmount:VATAmount},cache:false,success:function(res){  
                 window.location.reload();
                 // console.log(res);
@@ -500,9 +503,9 @@ function ExportToExcel(type, fn, dl) {
 
 
 
-      var AllPurchases = true;
-      $.ajax({url:"../main/view.php",
-        type:"POST",data:{AllPurchases:AllPurchases},cache:false,success:function(res){  
+      var AllPurchasesBranch = true;
+      $.ajax({url:"../../main/view.php",
+        type:"POST",data:{AllPurchasesBranch:AllPurchasesBranch},cache:false,success:function(res){  
           var res = JSON.parse(res);
           console.log(res.found);
           if (res.found===1) {

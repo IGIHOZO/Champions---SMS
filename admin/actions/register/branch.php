@@ -178,13 +178,7 @@ require("../../../assets/header4.php");
 </div>
 <!-- ./wrapper -->
 <script  type="text/javascript" src=" https://code.jquery.com/jquery-3.5.1.js"></script>
-<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-<script type="text/javascript">
- $(document).ready(function () {
-    $('#respTale').DataTable();
-});
-</script>
+
 <!-- jQuery 3 -->
 <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
@@ -202,6 +196,8 @@ require("../../../assets/header4.php");
 <script src="../../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap color picker -->
 <script src="../../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <!-- bootstrap time picker -->
 <script src="../../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
@@ -263,6 +259,7 @@ function deleteBranch(iid){
           }else{
             $("#report_div").html("<tr> <td colspan=2> No Stock available</td></tr>");
           }
+          $('#respTale').DataTable();
           }
       });
 

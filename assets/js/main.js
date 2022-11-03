@@ -752,6 +752,27 @@ $("#SavePurchase").click(function(){
   }
 })
 
+$("#SavePurchaseBranch").click(function(){
+	var TINNumber = $("#TINNumber").val();
+	var SupplierName = $("#SupplierName").val();
+	var ItemName = $("#ItemName").val();
+	var InvoiceNumber = $("#InvoiceNumber").val();
+	var InvoiceDate = $("#InvoiceDate").val();
+	var Inclusive = $("#Inclusive").val();
+	var VATAmount = $("#VATAmount").val();
+	if (TINNumber!='' && SupplierName!='' && ItemName!='' && InvoiceNumber!='' && InvoiceDate!='' && Inclusive!='' && VATAmount!='') {
+	  var SavePurchaseBranch = true;
+		$.ajax({url:"../main/action.php",
+		  type:"POST",data:{SavePurchaseBranch:SavePurchaseBranch,TINNumber:TINNumber,SupplierName:SupplierName,ItemName:ItemName,InvoiceNumber:InvoiceNumber,InvoiceDate:InvoiceDate,Inclusive:Inclusive,VATAmount:VATAmount},cache:false,success:function(res){  
+			window.location.reload();
+			// console.log(res);
+			}
+		});
+	}else{
+	  alert("Fill all fields ...");
+	}
+  })
+
 $("#SaveImports").click(function(){
   var CustomStation = $("#CustomStation").val();
   var CustomDeclarationNo = $("#CustomDeclarationNo").val();
@@ -772,6 +793,27 @@ $("#SaveImports").click(function(){
   }
 })
 
+$("#SaveImportsBranch").click(function(){
+	var CustomStation = $("#CustomStation").val();
+	var CustomDeclarationNo = $("#CustomDeclarationNo").val();
+	var CustomDeclarationDate = $("#CustomDeclarationDate").val();
+	var ItemName = $("#ItemName").val();
+	var CustomValue = $("#CustomValue").val();
+	var VATPaid = $("#VATPaid").val();
+	if (CustomStation!='' && CustomDeclarationNo!='' && CustomDeclarationDate!='' && ItemName!='' && CustomValue!='' && VATPaid!='') {
+	  var SaveImportsBranch = true;
+		$.ajax({url:"../main/action.php",
+		  type:"POST",data:{SaveImportsBranch:SaveImportsBranch,CustomStation:CustomStation,CustomDeclarationNo:CustomDeclarationNo,CustomDeclarationDate:CustomDeclarationDate,ItemName:ItemName,CustomValue:CustomValue,VATPaid:VATPaid},cache:false,success:function(res){  
+			window.location.reload();
+			// console.log(res);
+			}
+		});
+	}else{
+	  alert("Fill all fields ...");
+	}
+  })
+
+
 $("#SaveExpenses").click(function(){
   var ExpenseName = $("#ExpenseName").val();
   var ExpensePrice = $("#ExpensePrice").val();
@@ -790,6 +832,25 @@ $("#SaveExpenses").click(function(){
     alert("Fill all fields ...");
   }
 })
+
+$("#SaveExpensesBranch").click(function(){
+	var ExpenseName = $("#ExpenseName").val();
+	var ExpensePrice = $("#ExpensePrice").val();
+	var ExpenseQuantity = $("#ExpenseQuantity").val();
+	var ExpenseMethod = $("#ExpenseMethod").val();
+  
+	if (ExpenseName!='' && ExpensePrice!='' && ExpenseQuantity!='' && ExpenseMethod!='') {
+	  var SaveExpensesBranch = true;
+		$.ajax({url:"../main/action.php",
+		  type:"POST",data:{SaveExpensesBranch:SaveExpensesBranch,ExpenseName:ExpenseName,ExpensePrice:ExpensePrice,ExpenseQuantity:ExpenseQuantity,ExpenseMethod:ExpenseMethod},cache:false,success:function(res){  
+			window.location.reload();
+			// console.log(res);
+			}
+		});
+	}else{
+	  alert("Fill all fields ...");
+	}
+  })
 
 
 

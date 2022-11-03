@@ -7,9 +7,7 @@ require("../../../assets/header44.php");
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
 
-</script>
 <style type="text/css">
   .signupdiv{
       background: #fff;
@@ -72,7 +70,7 @@ require("../../../assets/header44.php");
                 <a style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">Orient Product</a>
 
               <center><div style="text-align: center;margin: 0 auto">
-                <table class="table table-reaponsive">
+                <table class="table table-reaponsive" id="respTbl">
                   <thead>
                     <th>
                       #
@@ -238,6 +236,8 @@ require("../../../assets/header44.php");
 <!-- bootstrap color picker -->
 <script src="../../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 <!-- bootstrap time picker -->
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script src="../../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
 <script src="../../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
@@ -377,16 +377,22 @@ $("#product").change(function(){
         type:"POST",data:{WarehouseProducts:WarehouseProducts},cache:false,success:function(res){  
           var res = JSON.parse(res);
           console.log(res.found);
+          // $('#respTbl').DataTable();
           if (res.found===1) {
             var cnt = 1;
+            // $('#respTbl').DataTable();
             for (const key in res.res) {
               // console.log(res.res[key]);
               $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].ProductName+"</td> <td>"+res.res[key].ProductCategory+"</td><td>"+res.res[key].IsProductBox+"</td><td>"+res.res[key].Qnt+"</td> <td>"+res.res[key].ProductBoxPieces+"</td> <td>"+res.res[key].WarehouseName+"</td><td>"+res.res[key].ProductDate+"</td> </tr>");
+              
               cnt++;
             }
           }else{
             $("#report_div").html("<tr> <td colspan=6> No Stock available</td></tr>");
+            // $('#respTbl').DataTable();
           }
+          $('#respTbl').DataTable();
+
           }
       });
 
@@ -399,5 +405,11 @@ $("#product").change(function(){
   $("#product").select2();
  }); 
 </script>
+
+<!-- <script type="text/javascript">
+ $(document).ready(function () {
+    
+});
+</script> -->
 </body>
 </html>

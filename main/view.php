@@ -726,9 +726,60 @@ function AllPurchases(){
 	return print(json_encode($arr));
 }
 
+function AllPurchasesBranch(){
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT * FROM purchase WHERE purchase.PurchaseStatus=1 AND purchase.BranchId=?");
+	$sel->bindValue(1,$_SESSION['sms_user_branch_id']);
+	$sel->execute();
+	if ($sel->rowCount()>=1) {
+		$cnt = 0;
+		while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+					$arr['found'] = 1;
+					$arr['res'][$cnt]['PurchaseId'] = $ft_sel['PurchaseId'];
+					$arr['res'][$cnt]['SupplierTin'] = $ft_sel['SupplierTin'];
+					$arr['res'][$cnt]['SupplierName'] = $ft_sel['SupplierName'];
+					$arr['res'][$cnt]['ItemName'] = $ft_sel['ItemName'];
+					$arr['res'][$cnt]['InvoiceNumber'] = $ft_sel['InvoiceNumber'];
+					$arr['res'][$cnt]['InvoiceDate'] = $ft_sel['InvoiceDate'];
+					$arr['res'][$cnt]['TotalAmountTaxInclusive'] = $ft_sel['TotalAmountTaxInclusive'];
+					$arr['res'][$cnt]['VATAmount'] = $ft_sel['VATAmount'];
+					$arr['res'][$cnt]['InsertDate'] = $ft_sel['InsertDate'];
+					$cnt++;
+		}
+	}else{
+		$arr['found'] = 0;
+	}
+	return print(json_encode($arr));
+}
+
 function AllImports(){
 	$con = parent::connect();
 	$sel = $con->prepare("SELECT * FROM imports WHERE imports.ImportStatus=1");
+	$sel->execute();
+	if ($sel->rowCount()>=1) {
+		$cnt = 0;
+		while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+			$arr['found'] = 1;
+			$arr['res'][$cnt]['ImportId'] = $ft_sel['ImportId'];
+			$arr['res'][$cnt]['CustomStation'] = $ft_sel['CustomStation'];
+			$arr['res'][$cnt]['CustomDeclarationNo'] = $ft_sel['CustomDeclarationNo'];
+			$arr['res'][$cnt]['CustomDeclarationDate'] = $ft_sel['CustomDeclarationDate'];
+			$arr['res'][$cnt]['ItemName'] = $ft_sel['ItemName'];
+			$arr['res'][$cnt]['CustomValue'] = $ft_sel['CustomValue'];
+			$arr['res'][$cnt]['VATPaid'] = $ft_sel['VATPaid'];
+			$arr['res'][$cnt]['ImportDate'] = substr($ft_sel['ImportDate'],0,10);
+			$cnt++;
+		}
+	}else{
+		$arr['found'] = 0;
+	}
+	return print(json_encode($arr));
+}
+
+function AllImportsBranch(){
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT * FROM imports WHERE imports.ImportStatus=1 AND imports.BranchId=?");
+	$sel->bindValue(1,$_SESSION['sms_user_branch_id']);
 	$sel->execute();
 	if ($sel->rowCount()>=1) {
 		$cnt = 0;
@@ -778,6 +829,29 @@ function WarehouseCategoryProductsQuantitty(){
 function AllExpenses(){
 	$con = parent::connect();
 	$sel = $con->prepare("SELECT * FROM expenses WHERE expenses.ExpenseStatus=1");
+	$sel->execute();
+	if ($sel->rowCount()>=1) {
+		$cnt = 0;
+		while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+					$arr['found'] = 1;
+					$arr['res'][$cnt]['ExpenseId'] = $ft_sel['ExpenseId'];
+					$arr['res'][$cnt]['ExpenseName'] = $ft_sel['ExpenseName'];
+					$arr['res'][$cnt]['ExpensePrice'] = $ft_sel['ExpensePrice'];
+					$arr['res'][$cnt]['ExpenseQuantity'] = $ft_sel['ExpenseQuantity'];
+					$arr['res'][$cnt]['ExpenseMethod'] = $ft_sel['ExpenseMethod'];
+					$arr['res'][$cnt]['ExpenseDate'] = substr($ft_sel['ExpenseDate'],0,10);
+					$cnt++;
+		}
+	}else{
+		$arr['found'] = 0;
+	}
+	return print(json_encode($arr));
+}
+
+function AllExpensesBranch(){
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT * FROM expenses WHERE expenses.ExpenseStatus=1 AND expenses.BranchId=?");
+	$sel->bindValue(1,$_SESSION['sms_user_branch_id']);
 	$sel->execute();
 	if ($sel->rowCount()>=1) {
 		$cnt = 0;
@@ -1111,10 +1185,16 @@ if (isset($_POST['available_branches'])) {
 	$MainView->ProductsOfWarehouse($_POST['warehouse']);
 }else if (isset($_POST['AllPurchases'])) {
 	$MainView->AllPurchases();
+}else if (isset($_POST['AllPurchasesBranch'])) {
+	$MainView->AllPurchasesBranch();
 }else if (isset($_POST['AllImports'])) {
-	$MainView->AllImports();
+	$MainView->AllImports();			
+}else if (isset($_POST['AllImportsBranch'])) {
+	$MainView->AllImportsBranch();			
 }else if (isset($_POST['AllExpenses'])) {
 	$MainView->AllExpenses();
+}else if (isset($_POST['AllExpensesBranch'])) {
+	$MainView->AllExpensesBranch();
 }else if (isset($_POST['EmployeesSellingOrder'])) {
 	$MainView->EmployeesSellingOrder();
 }else if (isset($_POST['stockDown_Branch'])) {

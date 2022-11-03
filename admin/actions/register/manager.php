@@ -73,7 +73,7 @@ require("../../../assets/header4.php");
                 <a style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">New Member</a>
 
               <center><div style="text-align: center;margin: 0 auto">
-                <table class="table table-reaponsive">
+                <table class="table table-reaponsive" id="respTale">
                   <thead>
                     <th>
                       #
@@ -330,6 +330,8 @@ require("../../../assets/header4.php");
 <script src="../../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap color picker -->
 <script src="../../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <!-- bootstrap time picker -->
 <script src="../../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
@@ -493,6 +495,7 @@ function deleteEmployee(empid){
           }else{
             $("#report_div").html("<tr> <td colspan=5> No Stock available</td></tr>");
           }
+          $('#respTale').DataTable();
           }
       });
 

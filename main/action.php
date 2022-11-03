@@ -638,7 +638,6 @@ public function Login($username,$password)			//=================================
 	if ($sel->rowCount()==1) {
 		$ft_sel = $sel->fetch(PDO::FETCH_ASSOC);
 		if ($ft_sel['emp_type']==2) {		// 2    reserved for normal employees who're not allowed to logIn to the System
-			// $sel_bra =
 			$_SESSION['sms_user_branch_id'] = $ft_sel['emp_branch'];
 			$_SESSION['sms_user_id'] = $ft_sel['idd'];
 			$_SESSION['user']['name'] = $ft_sel['nname'];
@@ -797,6 +796,27 @@ public function SavePurchase($TINNumber,$SupplierName,$ItemName,$InvoiceNumber,$
 
 }
 
+public function SavePurchaseBranch($TINNumber,$SupplierName,$ItemName,$InvoiceNumber,$InvoiceDate,$Inclusive,$VATAmount)
+{
+	$con = parent::connect();
+	$ins = $con->prepare("INSERT INTO purchase(SupplierTin,SupplierName,ItemName,InvoiceNumber,InvoiceDate,TotalAmountTaxInclusive,VATAmount,BranchId) VALUES(?,?,?,?,?,?,?,?)");
+	$ins->bindValue(1,$TINNumber);
+	$ins->bindValue(2,$SupplierName);
+	$ins->bindValue(3,$ItemName);
+	$ins->bindValue(4,$InvoiceNumber);
+	$ins->bindValue(5,$InvoiceDate);
+	$ins->bindValue(6,$Inclusive);
+	$ins->bindValue(7,$VATAmount);
+	$ins->bindValue(8,$_SESSION['sms_user_branch_id']);
+	$ok = $ins->execute();
+	if ($ok) {
+		echo "success";
+	}else{
+		echo "failed";
+	}
+
+}
+
 public function SaveImports($CustomStation,$CustomDeclarationNo,$CustomDeclarationDate,$ItemName,$CustomValue,$VATPaid)
 {
 	$con = parent::connect();
@@ -816,6 +836,26 @@ public function SaveImports($CustomStation,$CustomDeclarationNo,$CustomDeclarati
 	}
 
 }
+public function SaveImportsBranch($CustomStation,$CustomDeclarationNo,$CustomDeclarationDate,$ItemName,$CustomValue,$VATPaid)
+{
+	$con = parent::connect();
+	$ins = $con->prepare("INSERT INTO imports(CustomStation,CustomDeclarationNo,CustomDeclarationDate,ItemName,CustomValue,VATPaid,BranchId) VALUES(?,?,?,?,?,?,?)");
+	$ins->bindValue(1,$CustomStation);
+	$ins->bindValue(2,$CustomDeclarationNo);
+	$ins->bindValue(3,$CustomDeclarationDate);
+	$ins->bindValue(4,$ItemName);
+	$ins->bindValue(5,$CustomValue);
+	$ins->bindValue(6,$VATPaid);
+	$ins->bindValue(7,$_SESSION['sms_user_branch_id']);
+	$ok = $ins->execute();
+	if ($ok) {
+		echo "success";
+	}else{
+		echo "failed";
+		// print_r($ins->errorInfo());
+	}
+
+}
 
 public function SaveExpenses($ExpenseName,$ExpensePrice,$ExpenseQuantity,$ExpenseMethod)
 {
@@ -825,6 +865,25 @@ public function SaveExpenses($ExpenseName,$ExpensePrice,$ExpenseQuantity,$Expens
 	$ins->bindValue(2,$ExpensePrice);
 	$ins->bindValue(3,$ExpenseQuantity);
 	$ins->bindValue(4,$ExpenseMethod);
+	$ok = $ins->execute();
+	if ($ok) {
+		echo "success";
+	}else{
+		// echo "failed";
+		print_r($ins->errorInfo());
+	}
+
+}
+
+public function SaveExpensesBranch($ExpenseName,$ExpensePrice,$ExpenseQuantity,$ExpenseMethod)
+{
+	$con = parent::connect();
+	$ins = $con->prepare("INSERT INTO expenses(ExpenseName,ExpensePrice,ExpenseQuantity,ExpenseMethod,BranchId) VALUES(?,?,?,?,?)");
+	$ins->bindValue(1,$ExpenseName);
+	$ins->bindValue(2,$ExpensePrice);
+	$ins->bindValue(3,$ExpenseQuantity);
+	$ins->bindValue(4,$ExpenseMethod);
+	$ins->bindValue(5,$_SESSION['sms_user_branch_id']);
 	$ok = $ins->execute();
 	if ($ok) {
 		echo "success";
@@ -994,10 +1053,16 @@ if (isset($_GET['BranchEmployeeSignUp'])) {
 	$MainActions->UpdateProductStockh($_POST['hdnproductid'],$_POST['initialStock'],$_POST['totalIn'],$_POST['totalOut'],$_POST['remaining'],$_POST['branchid']);
 }elseif (isset($_POST['SavePurchase'])) {
 	$MainActions->SavePurchase($_POST['TINNumber'],$_POST['SupplierName'],$_POST['ItemName'],$_POST['InvoiceNumber'],$_POST['InvoiceDate'],$_POST['Inclusive'],$_POST['VATAmount']);
+}elseif (isset($_POST['SavePurchaseBranch'])) {
+	$MainActions->SavePurchaseBranch($_POST['TINNumber'],$_POST['SupplierName'],$_POST['ItemName'],$_POST['InvoiceNumber'],$_POST['InvoiceDate'],$_POST['Inclusive'],$_POST['VATAmount']);
 }elseif (isset($_POST['SaveImports'])) {
 	$MainActions->SaveImports($_POST['CustomStation'],$_POST['CustomDeclarationNo'],$_POST['CustomDeclarationDate'],$_POST['ItemName'],$_POST['CustomValue'],$_POST['VATPaid']);
+}elseif (isset($_POST['SaveImportsBranch'])) {
+	$MainActions->SaveImportsBranch($_POST['CustomStation'],$_POST['CustomDeclarationNo'],$_POST['CustomDeclarationDate'],$_POST['ItemName'],$_POST['CustomValue'],$_POST['VATPaid']);
 }elseif (isset($_POST['SaveExpenses'])) {
 	$MainActions->SaveExpenses($_POST['ExpenseName'],$_POST['ExpensePrice'],$_POST['ExpenseQuantity'],$_POST['ExpenseMethod']);
+}elseif (isset($_POST['SaveExpensesBranch'])) {
+	$MainActions->SaveExpensesBranch($_POST['ExpenseName'],$_POST['ExpensePrice'],$_POST['ExpenseQuantity'],$_POST['ExpenseMethod']);
 }elseif (isset($_POST['updSavePurchase'])) {
 	$MainActions->updSavePurchase($_POST['purchaseId'],$_POST['SupplierTin'],$_POST['SupplierName'],$_POST['ItemName'],$_POST['InvoiceNumber'],$_POST['InvoiceDate'],$_POST['TotalAmountTaxInclusive'],$_POST['VATAmount']);
 }elseif (isset($_POST['updSaveImports'])) {

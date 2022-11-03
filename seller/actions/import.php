@@ -3,6 +3,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("../../assets/header2222.php");
+if (!isset($_SESSION['sms_user_id'])) {
+  echo "<script>window.location='../home'</script>";
+  }
 ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 
@@ -128,7 +131,7 @@ require("../../assets/header2222.php");
               <div class="form-group">
         
                 <div class="input-group">
-                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="SaveImports">Save</button>
+                  <button class="btn btn-success" style="font-weight: bold;margin: 10px" id="SaveImportsBranch">Save</button>
                   <br>
                 </div>
                 <!-- /.input group -->
@@ -347,7 +350,7 @@ require("../../assets/header2222.php");
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-<?php require("../assets/footer.php");?>
+<?php require("../../assets/footer.php");?>
 
 
   <!-- /.control-sidebar -->
@@ -456,9 +459,9 @@ function deleteImports(idd) {
       }
     })
 
-      var AllImports = true;
+      var AllImportsBranch = true;
       $.ajax({url:"../../main/view.php",
-        type:"POST",data:{AllImports:AllImports},cache:false,success:function(res){  
+        type:"POST",data:{AllImportsBranch:AllImportsBranch},cache:false,success:function(res){  
           var res = JSON.parse(res);
           console.log(res.found);
           if (res.found===1) {

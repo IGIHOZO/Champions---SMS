@@ -108,7 +108,7 @@ td {
               <center>
 
                 <div id="report_div" style="text-align: center;margin: 0 auto">
-                  <table class="table table-reaponsive">
+                  <table class="table table-reaponsive" id="respTable"> 
                     <thead>
                       <th>#</th>
                       <th>ItemName</th>
@@ -168,6 +168,8 @@ td {
 <script src="../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap color picker -->
 <script src="../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <!-- bootstrap time picker -->
 <script src="../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
@@ -188,13 +190,7 @@ td {
   }
 </style>
 <!-- Page script -->
-<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-<script type="text/javascript">
-//  $(document).ready(function () {
-//     $('#resp').DataTable();
-// });
-</script>
+
 <script>
   function PaymentMethod(method){
     switch(method){
@@ -256,9 +252,9 @@ $("#warehouses").change(function(){
             }
             $("#resp").css("width","200%");
           }else{
-            $("#resp").html("<tr> <td colspan='7'> <center>No Stock available</center></td></tr>");
+            $("#resp").html("<tr> <td > <center>No Stock available</center></td></tr>");
           }
-    $('#resp').DataTable();
+         $('#respTable').DataTable();
 
           }
       });
