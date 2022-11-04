@@ -703,7 +703,7 @@ function ProductsOfWarehouse($warehouse){
 
 function AllPurchases(){
 	$con = parent::connect();
-	$sel = $con->prepare("SELECT * FROM purchase WHERE purchase.PurchaseStatus=1");
+	$sel = $con->prepare("SELECT * FROM purchase WHERE purchase.PurchaseStatus=1 AND purchase.BranchId IS NULL");
 	$sel->execute();
 	if ($sel->rowCount()>=1) {
 		$cnt = 0;
@@ -754,7 +754,7 @@ function AllPurchasesBranch(){
 
 function AllImports(){
 	$con = parent::connect();
-	$sel = $con->prepare("SELECT * FROM imports WHERE imports.ImportStatus=1");
+	$sel = $con->prepare("SELECT * FROM imports WHERE imports.ImportStatus=1 AND imports.BranchID IS NULL");
 	$sel->execute();
 	if ($sel->rowCount()>=1) {
 		$cnt = 0;
@@ -778,7 +778,7 @@ function AllImports(){
 
 function AllImportsBranch(){
 	$con = parent::connect();
-	$sel = $con->prepare("SELECT * FROM imports WHERE imports.ImportStatus=1 AND imports.BranchId=?");
+	$sel = $con->prepare("SELECT * FROM imports WHERE imports.ImportStatus=1 AND imports.BranchId IS NULL");
 	$sel->bindValue(1,$_SESSION['sms_user_branch_id']);
 	$sel->execute();
 	if ($sel->rowCount()>=1) {
@@ -828,7 +828,7 @@ function WarehouseCategoryProductsQuantitty(){
 
 function AllExpenses(){
 	$con = parent::connect();
-	$sel = $con->prepare("SELECT * FROM expenses WHERE expenses.ExpenseStatus=1");
+	$sel = $con->prepare("SELECT * FROM expenses WHERE expenses.ExpenseStatus=1 AND expenses.BranchId IS NULL");
 	$sel->execute();
 	if ($sel->rowCount()>=1) {
 		$cnt = 0;
