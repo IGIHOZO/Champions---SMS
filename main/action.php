@@ -104,12 +104,12 @@ class MainActions extends DBConnect
 		if ($sel->rowCount()>=1) {
 			$response = "already";
 		}else{
-			$ins = $con->prepare("INSERT INTO products(ProductName,ProductCategory,IsProductBox,ProductBoxPieces) VALUES(?,?,?,?)");
+			$ins = @$con->prepare("INSERT INTO products(ProductName,ProductCategory,IsProductBox,ProductBoxPieces) VALUES(?,?,?,?)");
 			$ins->bindValue(1,$name);
 			$ins->bindValue(2,$category);
 			$ins->bindValue(3,$IsProductBox);
 			$ins->bindValue(4,$ProductBoxPieces);
-			$ok = $ins->execute();
+			$ok = @$ins->execute();
 			if ($ok) {
 				$response = "success";
 			}else{
@@ -494,7 +494,6 @@ public function StockOut($product,$IsProductBox,$SoldPrice,$QuantitySold,$Client
 				case 1:
 					$QuantitySold *= $pro_added;
 					break;
-				
 				default:
 					$QuantitySold = $QuantitySold;
 					break;

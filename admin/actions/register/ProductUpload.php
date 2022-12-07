@@ -1,7 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(0);
+ini_set('display_errors', 0);
 require("../../../main/drive/config.php");
 @require("../../../assets/header4.php");
 
@@ -139,8 +138,9 @@ if(isset($_POST['Submit'])){
         if ($ok) {
           $cnt++;
         }else{
-         //   echo "<br />No";
-            print_r($ins->errorInfo());
+          //  echo "<br />No";
+            // print_r($ins->errorInfo());
+            echo "<h3><b>".$Row[0]."</b> is arleady exist</h3>";
         }
        }
     }

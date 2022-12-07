@@ -339,7 +339,7 @@ $("#OrientProductsToBranchStock").click(function(){	//==========================
 	var branch_id = $("#branch_id").val();
 	var product_id = $("#product_id").val();
 	var IsProductBox = $("#IsProductBox").val();
-	// var product_price = $("#product_price").val();
+	var product_price = 1;
 	var warehouseId = $("#warehouseId").val();
 	var added = $("#added").val();
 
@@ -352,9 +352,22 @@ $("#OrientProductsToBranchStock").click(function(){	//==========================
 		$("#OrientProductsToBranchStock").prop('disabled',true);
 		$("#OrientProductsToBranchStock").html('Please wait...');
 		var OrientProductsToBranchStock = true;
-
+		console.log(OrientProductsToBranchStock+"\n");
+		console.log(branch_id+"\n");
+		console.log(product_id+"\n");
+		console.log(IsProductBox+"\n");
+		console.log(product_price+"\n");
+		console.log(added+"\n");
+		console.log(warehouseId+"\n");
 		$.ajax({url:"../../../main/action.php",
-				type:"GET",data:{OrientProductsToBranchStock:OrientProductsToBranchStock,branch_id:branch_id,product_id:product_id,IsProductBox:IsProductBox,product_price:product_price,added:added,warehouseId:warehouseId},cache:false,success:function(res){
+				type:"GET",data:{
+					OrientProductsToBranchStock:OrientProductsToBranchStock,
+					branch_id:branch_id,
+					product_id:product_id,
+					IsProductBox:IsProductBox,
+					product_price:product_price,
+					added:added,
+					warehouseId:warehouseId},cache:false,success:function(res){
 			$("#OrientProductsToBranchStock").prop('disabled',false);
 			$("#OrientProductsToBranchStock").html('Register');
 			switch(res){
