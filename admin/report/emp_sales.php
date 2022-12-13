@@ -2,6 +2,7 @@
 if (!isset($_GET['emp'])) {
     ?>
     <script>window.location='sales';</script>
+    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
     <?php
 }
 ini_set('display_errors', 1);

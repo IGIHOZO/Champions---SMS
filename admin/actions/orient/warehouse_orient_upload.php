@@ -4,7 +4,9 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("../../../main/drive/config.php");
 @require("../../../assets/header444.php");
-
+?>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<?php
 function productIdFromName($product, $con){
     $sel = $con->prepare("SELECT * FROM products WHERE products.ProductName LIKE '%$product%' LIMIT 1");
     $sel->execute();

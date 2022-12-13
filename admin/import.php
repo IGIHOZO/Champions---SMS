@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("../assets/header2.php");
 ?>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -357,13 +357,7 @@ require("../assets/header2.php");
 </div>
 <!-- ./wrapper -->
 <script  type="text/javascript" src=" https://code.jquery.com/jquery-3.5.1.js"></script>
-<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-<script type="text/javascript">
- $(document).ready(function () {
-    $('#respTale').DataTable();
-});
-</script>
+
 <!-- jQuery 3 -->
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
@@ -377,6 +371,8 @@ require("../assets/header2.php");
 <!-- date-range-picker -->
 <script src="../bower_components/moment/min/moment.min.js"></script>
 <script src="../bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <!-- bootstrap datepicker -->
 <script src="../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap color picker -->
@@ -477,6 +473,8 @@ function deleteImports(idd) {
           }else{
             $("#report_div").html("<tr> <td colspan=8> No Stock available</td></tr>");
           }
+          $('#respTale').DataTable();
+
           }
       });
 

@@ -7,7 +7,7 @@ if (!isset($_SESSION['sms_user_id'])) {
   echo "<script>window.location='../home'</script>";
   }
 ?>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -360,13 +360,7 @@ if (!isset($_SESSION['sms_user_id'])) {
 </div>
 <!-- ./wrapper -->
 <script  type="text/javascript" src=" https://code.jquery.com/jquery-3.5.1.js"></script>
-<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-<script type="text/javascript">
- $(document).ready(function () {
-    $('#respTale').DataTable();
-});
-</script>
+
 <!-- jQuery 3 -->
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
@@ -384,6 +378,8 @@ if (!isset($_SESSION['sms_user_id'])) {
 <script src="../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap color picker -->
 <script src="../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <!-- bootstrap time picker -->
 <script src="../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
@@ -480,6 +476,8 @@ function deleteImports(idd) {
           }else{
             $("#report_div").html("<tr> <td colspan=8> No Stock available</td></tr>");
           }
+          $('#respTale').DataTable();
+
           }
       });
 

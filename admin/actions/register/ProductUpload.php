@@ -3,7 +3,9 @@ error_reporting(0);
 ini_set('display_errors', 0);
 require("../../../main/drive/config.php");
 @require("../../../assets/header4.php");
-
+?>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<?php
 function categoryIdFromName($category, $con){
   $sel = $con->prepare("SELECT * FROM productcategories WHERE productcategories.CategoryName LIKE '%$category%' LIMIT 1");
   $sel->execute();

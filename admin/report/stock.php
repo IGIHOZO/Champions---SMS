@@ -4,6 +4,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("../../assets/header333.php");
 ?>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+
 <style type="text/css">
   .thead-dark th{
     text-align: left;
@@ -145,6 +147,8 @@ td {
 <!-- bootstrap color picker -->
 <script src="../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 <!-- bootstrap time picker -->
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script src="../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
 <script src="../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
@@ -199,11 +203,11 @@ td {
           // console.log(res.res);
           if (res.found===1) {
             for (const key in res.res) {
-              $("#report_div").append("<table id='"+key+"' class='table table-stripe'> <thead> <th colspan='8'> <center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center> </th> </thead> "+
+              $("#report_div").append("<center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center>"+
 
-                "<thead  class='thead-dark'>  <th>#</th>  <th>ItemName</th>  <th>DateRegistered</th>  <th>InitialStock</th>  <th>Total-In</th>  <th>Total-Out</th>  <th>Remaining</th>  <th>Actions</th>  </thead> </table><tbody> ");
+                "<table id='tbl"+key+"' class='table table-stripe'> <thead  class='thead-dark'>  <th>#</th>  <th>ItemName</th>  <th>DateRegistered</th>  <th>InitialStock</th>  <th>Total-In</th>  <th>Total-Out</th>  <th>Remaining</th>  <th>Actions</th>  </thead> <tbody> ");
               if (res.res[key].is_found==0) {
-                $("#"+key+"").append("<tr> <td colspan='8'><center>No data found ...</center></td> </tr>");
+                $("#tbl"+key+"").append("<tr> <td colspan='8'><center>No data found ...</center></td> </tr>");
               }else{
                 let finalData = res.res[key].data;
                 let ll = finalData.length;
@@ -211,11 +215,10 @@ td {
 
                 for (var i = 0; i < ll; i++) {
                   // console.log(res.res[key].data[i].SoldPrice);
-                $("#"+key+"").append("<tr> ");
+                // $("#tbl"+key+"").append("");
                 var nn = '"'+res.res[key].data[i].product_name+'"';
-                $("#"+key+"").append("<td>"+ (i+1) +"</td><td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ProductDate+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].ProductInitialStock)+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].ProductIn)+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].ProductOut)+"</td> <td>"+Intl.NumberFormat().format(res.res[key].data[i].Remaining)+"</td> <td> <tutton onclick='return updateProductStockModal("+res.res[key].data[i].product_id+","+nn+","+res.res[key].data[i].ProductInitialStock+","+res.res[key].data[i].ProductIn+","+res.res[key].data[i].ProductOut+","+res.res[key].data[i].Remaining+","+res.res[key].data[i].BranchId+")' class='btn btn-link'>Update</button> </td>");
-                $("#"+key+"").append("<tr> ");
-                $("#"+key+"").append("<tr> ");
+                $("#tbl"+key+"").append("<tr> <td>"+ (i+1) +"</td><td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ProductDate+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].ProductInitialStock)+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].ProductIn)+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].ProductOut)+"</td> <td>"+Intl.NumberFormat().format(res.res[key].data[i].Remaining)+"</td> <td> <tutton onclick='return updateProductStockModal("+res.res[key].data[i].product_id+","+nn+","+res.res[key].data[i].ProductInitialStock+","+res.res[key].data[i].ProductIn+","+res.res[key].data[i].ProductOut+","+res.res[key].data[i].Remaining+","+res.res[key].data[i].BranchId+")' class='btn btn-link'>Update</button> </td></tr>");
+
 
                 ttlInitial+= parseInt(res.res[key].data[i].ProductInitialStock);
                 ttlTTLIn+= parseInt(res.res[key].data[i].ProductIn);
@@ -223,8 +226,10 @@ td {
                 ttlRemaining+= parseInt(res.res[key].data[i].Remaining);
 
                 }
-                $("#"+key+"").append("<tfoot> <th colspan='3'></th> <th>"+Intl.NumberFormat().format(ttlInitial)+"</th> <th>"+Intl.NumberFormat().format(ttlTTLIn)+"</th> <th>"+Intl.NumberFormat().format(ttlTTLOut)+"</th> <th>"+Intl.NumberFormat().format(ttlRemaining)+"</th> <th></th> </tfoot> ")
-                $("#"+key+"").append(" </tbody> ");
+              $("#tbl"+key+"").DataTable();
+
+                $("#tbl"+key+"").append(" </tbody></table> ");
+                $("#tbl"+key+"").append("<tfoot> <th colspan='3'></th> <th>"+Intl.NumberFormat().format(ttlInitial)+"</th> <th>"+Intl.NumberFormat().format(ttlTTLIn)+"</th> <th>"+Intl.NumberFormat().format(ttlTTLOut)+"</th> <th>"+Intl.NumberFormat().format(ttlRemaining)+"</th> <th></th> </tfoot> ")
 
               }
 
