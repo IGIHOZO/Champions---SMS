@@ -1,11 +1,11 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(0);
+ini_set('display_errors', 0);
 require("../../../assets/header44.php");
 ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 
@@ -183,6 +183,7 @@ require("../../../assets/header44.php");
           <div class="box" style="margin-left: 0.5%">
             <div class="box-body">
               <a class="btn btn-success" style="font-weight: bolder;">Export Excel</a>
+              <a href="branch_orient_upload" style="margin-left: 30%;font-weight: bold ;" class="btn btn-info">Import List From Excel File</a>
                 <a style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">Orient To SubStock</a>
               <center><div style="text-align: center;margin: 0 auto">
                 <table class="table table-reaponsive" id="respTbl">
@@ -205,9 +206,9 @@ require("../../../assets/header44.php");
                     <th>
                       Qnt Available
                     </th>
-                    <th>
+                <!--     <th>
                       Box_Pieces
-                    </th>
+                    </th> -->
                     <th>
                       Date Ragistered
                     </th>
@@ -444,7 +445,7 @@ $("#product_id").change(function(){
             var ttlQnt = 0;
             for (const key in res.res) {
               // console.log(res.res[key]);
-              $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].StockName+"</td> <td>"+res.res[key].ProductName+"</td> <td>"+res.res[key].ProductCategory+"</td><td>"+res.res[key].IsProductBox+"</td><td>"+res.res[key].Qnt+"</td> <td>"+res.res[key].ProductBoxPieces+"</td><td>"+res.res[key].ProductDate+"</td> </tr>");
+              $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].StockName+"</td> <td>"+res.res[key].ProductName+"</td> <td>"+res.res[key].ProductCategory+"</td><td>"+res.res[key].IsProductBox+"</td><td>"+res.res[key].Qnt+"</td> <td>"+res.res[key].ProductDate+"</td> </tr>");
               ttlQnt+=parseInt(res.res[key].Qnt);
               $("#rep_footer").html("<th colspan='5'><hr>Total</th> <th><hr>"+ttlQnt+"</th> <hr><th colspan='2'></th>");
               cnt++;

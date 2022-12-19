@@ -2,9 +2,9 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require("../assets/header222.php");
+require("../assets/header2.php");
 ?>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -361,7 +361,7 @@ require("../assets/header222.php");
                       InvoiceDate
                     </th>
                     <th>
-                      TotalAmountTaxInclusive
+                      TaxInclusive
                     </th>
                     <th>
                       VATAmount
@@ -401,11 +401,6 @@ require("../assets/header222.php");
 <script  type="text/javascript" src=" https://code.jquery.com/jquery-3.5.1.js"></script>
 <script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-<script type="text/javascript">
- $(document).ready(function () {
-    $('#respTale').DataTable();
-});
-</script>
 <!-- jQuery 3 -->
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
@@ -424,6 +419,8 @@ require("../assets/header222.php");
 <!-- bootstrap color picker -->
 <script src="../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 <!-- bootstrap time picker -->
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script src="../plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- SlimScroll -->
 <script src="../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
@@ -521,6 +518,9 @@ function ExportToExcel(type, fn, dl) {
           }else{
             $("#report_div").html("<tr> <td colspan=8> No Stock available</td></tr>");
           }
+
+          $("#respTale").DataTable();
+
           }
       });
 

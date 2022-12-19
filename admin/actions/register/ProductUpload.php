@@ -1,9 +1,35 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(0);
+ini_set('display_errors', 0);
 require("../../../main/drive/config.php");
 @require("../../../assets/header4.php");
+?>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<?php
+function categoryIdFromName($category, $con){
+  $sel = $con->prepare("SELECT * FROM productcategories WHERE productcategories.CategoryName LIKE '%$category%' LIMIT 1");
+  $sel->execute();
+  if ($sel->rowCount()>=1) {
+      $ft_sel = $sel->fetch(PDO::FETCH_ASSOC);
+      $pri_id = $ft_sel['CategoryId'];
+  }else{
+      $pri_id = NULL;
+  }
+  return $pri_id;
+}
+
+function UnitIdFromName($type){
+  switch ($type) {
+      case 'Single':
+          $iid = 0;
+          break;
+      
+      default:
+          $iid = 1;
+          break;
+  }
+  return $iid;
+}
 
 ?>
 
@@ -76,8 +102,8 @@ if(isset($_POST['Submit'])){
     echo "<span style='font-size:20px'>You have total <span style='font-size:26px;color:green;font-weight:bolder'>".$totalSheet." </span>sheet(s)</span>".
 
 
-    $html="<table class='table'>";
-    $html.="<tr><th>itemName</th><th>itemcategory</th><th>IsProductBox</th><th>ProductBoxPieces</th></tr>";
+    $html="<center><table class='table'>";
+    $html.="<tr><th>itemName</th></tr>";
 
 
     /* For Loop for all sheets */
@@ -91,18 +117,18 @@ if(isset($_POST['Submit'])){
       {
         $html.="<tr>";
         $itemName = isset($Row[0]) ? $Row[0] : '';
-        $itemcategory = isset($Row[1]) ? $Row[1] : '';
-        $IsProductBox = isset($Row[2]) ? $Row[2] : '';
-        $ProductBoxPieces = isset($Row[3]) ? $Row[3] : '';
+        $itemcategory = isset($Row[1]) ? categoryIdFromName($Row[1],$con) : '';
+        $IsProductBox = isset($Row[2]) ? UnitIdFromName($Row[2]) : '';
+        $ProductBoxPieces = 1;
         $html.="<td>".$itemName."</td>";
-        $html.="<td>".$itemcategory."</td>";
-        $html.="<td>".$IsProductBox."</td>";
-        $html.="<td>".$ProductBoxPieces."</td>";
+        // $html.="<td>".$itemcategory."</td>";
+        // $html.="<td>".$IsProductBox."</td>";
+        // $html.="<td>".$ProductBoxPieces."</td>";
         $html.="</tr>";
 
-        if ($ProductBoxPieces==0) {
-          $ProductBoxPieces = NULL;
-        }
+        // if ($ProductBoxPieces==0) {
+        //   $ProductBoxPieces = NULL;
+        // }
 
 
         $ins = $con->prepare("INSERT INTO products(ProductName,ProductCategory,IsProductBox,ProductBoxPieces) VALUES(?,?,?,?)");
@@ -114,14 +140,17 @@ if(isset($_POST['Submit'])){
         if ($ok) {
           $cnt++;
         }else{
-         //   echo "<br />No";
-            print_r($ins->errorInfo());
+          //  echo "<br />No";
+            // print_r($ins->errorInfo());
+            if($Row[0]!='ItemName'){
+              echo "<h3><b>".$Row[0]."</b> is arleady exist</h3>";
+            }
         }
        }
     }
 
 
-    $html.="</table>";
+    $html.="</table></center>";
     echo $html;
     echo "<span style='font-size:20px'> <span style='font-size:26px;color:green;font-weight:bolder'> ".$cnt. "</span> Data Recorded.</span>";
 

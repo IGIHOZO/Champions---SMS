@@ -3,8 +3,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("../../../main/drive/config.php");
-@require("../../../assets/header4.php");
-
+@require("../../../assets/header444.php");
+?>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<?php
 function productIdFromName($product, $con){
     $sel = $con->prepare("SELECT * FROM products WHERE products.ProductName LIKE '%$product%' LIMIT 1");
     $sel->execute();
@@ -49,6 +51,7 @@ function UnitIdFromName($type){
             $iid = 1;
             break;
     }
+    return $iid;
 }
 ?>
 
@@ -75,7 +78,6 @@ function UnitIdFromName($type){
           <div class="box" style="margin-left: 0.5%">
             <div class="box-body">
               <!-- <button class="btn btn-success" style="font-weight: bolder;" onclick="return ExportToExcel()">Export Excel</button> -->
-               
                   <!-- <button style="margin-left: 30%;font-weight: bold ;" class="btn btn-info">Download Sample & Guidelines</button> -->
     <h1 style=" float: justify;">Orient  to Warehouse by Uploading single excel file</h1>
 
@@ -122,7 +124,7 @@ if(isset($_POST['Submit'])){
 
 
     $html="<table class='table'>";
-    $html.="<tr><th>Item Name</th><th>Category</th><th>Set-Type</th><th>Qnt Available</th><th>Box_Pieces</th><th>Warehouse</th></tr>";
+    $html.="<tr><th>Item Name</th><th>Category</th><th>Set-Type</th><th>Qnt Available</th><th>Warehouse</th></tr>";
 
 
     /* For Loop for all sheets */
@@ -140,29 +142,43 @@ if(isset($_POST['Submit'])){
         $itemcategory = isset($Row[1]) ? (int)categoryIdFromName($Row[1],$con) : ''; //Category
         $IsProductBox = isset($Row[2]) ? (int)UnitIdFromName($Row[2]) : '';  //UnityType
         $ProductQuantity = isset($Row[3]) ? (int)$Row[3] : ''; //Product Quantity
-        $ProductBoxPieces = isset($Row[4]) ? (int)$Row[4] : '';  //Pieces
-        $WarehouseId = isset($Row[0]) ? warehouseIdFromName($Row[5], $con) : ''; //Warehouse
-        if ((productIdFromName($Row[0],$con)==NULL) OR (categoryIdFromName($Row[1],$con)) OR (UnitIdFromName($Row[2])==NULL) OR (warehouseIdFromName($Row[5], $con==NULL))) {
+        $ProductBoxPieces = 1;  //Pieces
+        $WarehouseId = isset($Row[0]) ? warehouseIdFromName($Row[4], $con) : ''; //Warehouse
+
+        if ((productIdFromName($Row[0],$con)==NULL) OR (categoryIdFromName($Row[1],$con)==NULL) OR (warehouseIdFromName($Row[4], $con)==NULL)) {
           if ($rrow==1) {
             ?>
             <center>
-              <h4 style="color:brown;font-size: 30px;">Operation failed for: </h4>
+              <!-- <h4 style="color:brown;font-size: 30px;">Operation failed for: </h4> -->
               <hr>
             </center>
             <?php
           }
           echo "<ul>";
+          if ( $ProductQuantity=="General") {
+            if($Row[0]!='ItemName'){
+              echo "<li style='font-size:30px;'>Qnt Available on column <b style='color:red'>4</b> and Box_Pieces on column <b style='color:red'>5</b> must be <b><u>Number Cell Formated</u></b> </li> ";
+            }
+          }
           if (productIdFromName($Row[0], $con)==NULL) {
-            echo "<li style='font-size:30px;'>Item <b style='color:red'>".$Row[0]."</b> on row ".$rrow." not found </li> ";
+            if ($Row[0]!='ItemName') {
+              echo "<li style='font-size:30px;'>Item <b style='color:red'>".$Row[0]."</b> on row ".$rrow." not found </li> ";
+            }
           }
           if (categoryIdFromName($Row[1],$con)==NULL) {
-            echo "<li style='font-size:30px;'>Category <b style='color:red'>".$Row[1]."</b> on row ".$rrow." not found </li> ";
+            if ($Row[1]!='Category') {
+              echo "<li style='font-size:30px;'>Category <b style='color:red'>".$Row[1]."</b> on row ".$rrow." not found </li> ";
+            }
           }
           if (UnitIdFromName($Row[2])) {
-            echo "<li style='font-size:30px;'>Set-Type <b style='color:red'>".$Row[2]."</b> on row ".$rrow." not found </li> ";
+            if ($Row[2]!='UnitType') {
+              echo "<li style='font-size:30px;'>Set-Type <b style='color:red'>".$Row[2]."</b> on row ".$rrow." not found </li> ";
+            }
           }
-          if (warehouseIdFromName($Row[5], $con)==NULL) {
-            echo "<li style='font-size:30px;'>Warehouse <b style='color:red'>".$Row[5]."</b> on row ".$rrow." not found </li>";
+          if (warehouseIdFromName($Row[4], $con)==NULL) {
+            if ($Row[4]!='WarehouseName') {
+              echo "<li style='font-size:30px;'>Warehouse <b style='color:red'>".$Row[4]."</b> on row ".$rrow." not found </li>";
+            }
           }
           $rrow++;
           echo "</ul>";
@@ -173,13 +189,13 @@ if(isset($_POST['Submit'])){
         $html.="<td>".$Row[1]."</td>";
         $html.="<td>".$Row[2]."</td>";
         $html.="<td>".$Row[3]."</td>";
+        // $html.="<td>".$Row[4]."</td>";
         $html.="<td>".$Row[4]."</td>";
-        $html.="<td>".$Row[5]."</td>";
         $html.="</tr>";
 
-        if ($ProductBoxPieces==0) {
-          $ProductBoxPieces = NULL;
-        }
+        // if ($ProductBoxPieces==0) {
+        //   $ProductBoxPieces = NULL;
+        // }
 
 
         $ins = $con->prepare("INSERT INTO mainstock(ProductId,IsProductBox,QuantityBefore,QuantityAdded,QuantityAfter,WarehouseId,InitialStock) VALUES(?,?,?,?,?,?,?)");
@@ -187,8 +203,8 @@ if(isset($_POST['Submit'])){
         $ins->bindValue(2,$IsProductBox);
         $ins->bindValue(3,0);
         if ($IsProductBox==1) {
-            $addedd = $ProductQuantity*$Row[4];
-            $after = $ProductQuantity*$Row[4];
+            $addedd = $ProductQuantity*1;
+            $after = $ProductQuantity*1;
         }else{
             $addedd = $ProductQuantity;
             $after = $ProductQuantity;

@@ -203,7 +203,7 @@ class MainView extends DBConnect
 	{
 		$branch_id = $_SESSION['sms_user_branch_id'];
 		$con = parent::connect();
-		$sel = $con->prepare("SELECT * FROM products,branchstock WHERE products.ProductId=branchstock.ProductId AND branchstock.BranchId='$branch_id' AND products.ProductSatatus=1 order by products.ProductName");
+		$sel = $con->prepare("SELECT * FROM products,branchstock WHERE products.ProductId=branchstock.ProductId AND branchstock.BranchId='$branch_id' AND products.ProductSatatus=1 GROUP BY products.ProductId order by products.ProductName");
 		$sel->execute();
 		$arr = [];
 		if ($sel->rowCount()>=1) {
@@ -255,10 +255,152 @@ class MainView extends DBConnect
 				$arr['res'][$cnt]['branch_name'] = $ft_sel['BranchName'];
 				$branch = $ft_sel['BranchId'];
 				if ($emp==0) {
-					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch'");
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY stockout.StockOutId DESC");
 				}else{
-					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' AND employees.EmployeesId='$emp'");
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
 				}
+				$ssel->execute();
+				if ($ssel->rowCount()>=1) {
+					$arr['res'][$cnt]['is_found'] = 1;
+					$ccnntt = 0;
+					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+						if ($ft_ssel['CompanyName']==NULL) {
+							$ft_ssel['CompanyName'] = '-';
+						}
+						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$ccnntt++;
+					}
+				}else{
+					// $arr['is_found'][$cnt] = 0;
+					$arr['res'][$cnt]['is_found'] = 0;
+				}
+				$cnt++;
+			}
+		}else{
+			$arr['found'] = 0;
+		}
+		return print(json_encode($arr));
+	}
+
+	public function GeneralSallesReportSortBy($emp,$sortby)			//=========================== SORT BY ====== OVERALL SALES REPORT
+	{
+		$con = parent::connect();
+		$sel = $con->prepare("SELECT * FROM branches WHERE branches.BranchStatus=1");
+		$sel->execute();
+		$arr = [];
+		if ($sel->rowCount()>=1) {
+			$cnt = 0;
+			while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+				$arr['found'] = 1;
+				$arr['res'][$cnt]['branch_name'] = $ft_sel['BranchName'];
+				$branch = $ft_sel['BranchId'];
+				if ($emp==0) {
+					switch ($sortby) {
+						case 'Price':
+							$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY stockout.SoldPrice ASC,stockout.StockOutId DESC");
+							break;
+						case 'Date':
+							$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY stockout.StockOutDate ASC,stockout.StockOutId DESC");
+								break;
+						case 'Member':
+							$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY employees.EmployeeNames ASC,stockout.StockOutId DESC");
+							break;
+						case 'Stock':
+							$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY branches.BranchName ASC,stockout.StockOutId DESC");
+								break;
+						case 'Payment':
+							$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY stockout.PaymentWay ASC,stockout.StockOutId DESC");
+							break;
+						case 'Client':
+							$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY stockout.ClientName ASC,stockout.StockOutId DESC");
+							break;
+						case 'Company':
+							$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY stockout.CompanyName ASC,stockout.StockOutId DESC");
+							break;
+						case 'Item':
+							$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY products.ProductName ASC,stockout.StockOutId DESC");
+							break;
+						
+						default:
+						$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY stockout.StockOutId DESC");
+							break;
+					}
+					
+				}else{
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
+				}
+				$ssel->execute();
+				if ($ssel->rowCount()>=1) {
+					$arr['res'][$cnt]['is_found'] = 1;
+					$ccnntt = 0;
+					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+						if ($ft_ssel['CompanyName']==NULL) {
+							$ft_ssel['CompanyName'] = '-';
+						}
+						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$ccnntt++;
+					}
+				}else{
+					// $arr['is_found'][$cnt] = 0;
+					$arr['res'][$cnt]['is_found'] = 0;
+				}
+				$cnt++;
+			}
+		}else{
+			$arr['found'] = 0;
+		}
+		return print(json_encode($arr));
+	}
+
+
+
+	public function GeneralSallesReportBranch($emp)			//====================================== OVERALL SALES REPORT
+	{
+		$con = parent::connect();
+		$sel = $con->prepare("SELECT * FROM branches WHERE branches.BranchStatus=1");
+		// $sel->bindValue(1,$_SESSION['sms_user_branch_id']);
+		$sel->execute();
+		$arr = [];
+		if ($sel->rowCount()>=1) {
+			$cnt = 0;
+			while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+				$arr['found'] = 1;
+				$arr['res'][$cnt]['branch_name'] = $ft_sel['BranchName'];
+				$branch = $ft_sel['BranchId'];
+				if ($emp==0) {
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' ORDER BY stockout.StockOutId DESC");
+				}else{
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.BranchId='$branch' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
+				}
+				// $ssel->bindValue(1,$_SESSION['sms_user_branch_id']);
 				$ssel->execute();
 				if ($ssel->rowCount()>=1) {
 					$arr['res'][$cnt]['is_found'] = 1;
@@ -311,11 +453,71 @@ class MainView extends DBConnect
 				if ($emp==0) {
 					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
 				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
-				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo'");
+				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' ORDER BY stockout.StockOutId DESC");
 				}else{
 					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
 				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
-				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' AND employees.EmployeesId='$emp'");
+				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
+				}
+				
+				$ssel->execute();
+				if ($ssel->rowCount()>=1) {
+					$arr['res'][$cnt]['is_found'] = 1;
+					$ccnntt = 0;
+					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+						if ($ft_ssel['CompanyName']==NULL) {
+							$ft_ssel['CompanyName'] = '-';
+						}
+						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$ccnntt++;
+					}
+				}else{
+					// $arr['is_found'][$cnt] = 0;
+					$arr['res'][$cnt]['is_found'] = 0;
+				}
+				$cnt++;
+			}
+		}else{
+			$arr['found'] = 0;
+		}
+		return print(json_encode($arr));
+	}
+
+	public function GeneralSallesReportRangeBranch($dtFrom, $dtTo, $emp)			//============================= OVERALL SALES REPORT With Ranges
+	{
+		$con = parent::connect();
+		$sel = $con->prepare("SELECT * FROM branches WHERE branches.BranchStatus=1");
+		// $sel->bindValue(1,$_SESSION['sms_user_branch_id']);
+		$sel->execute();
+		$arr = [];
+		if ($sel->rowCount()>=1) {
+			$cnt = 0;
+			while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+				$arr['found'] = 1;
+				$arr['res'][$cnt]['branch_name'] = $ft_sel['BranchName'];
+				$branch = $ft_sel['BranchId'];
+				if ($emp==0) {
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
+				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
+				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' ORDER BY stockout.StockOutId DESC");
+				}else{
+					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
+				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
+				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
 				}
 				
 				$ssel->execute();
@@ -442,6 +644,51 @@ public function ProductAllOut($product,$branch)			//======================= Prod
 		}
 		return print(json_encode($arr));
 	}
+
+	public function GeneralStockReportBranch()			//====================================== OVERALL SALES REPORT
+	{
+		$con = parent::connect();
+		$sel = $con->prepare("SELECT * FROM branches WHERE branches.BranchStatus=1 AND branches.BranchId=?");
+		$sel->bindValue(1,$_SESSION['sms_user_branch_id']);
+		$sel->execute();
+		$arr = [];
+		if ($sel->rowCount()>=1) {
+			$cnt = 0;
+			while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+				$arr['found'] = 1;
+				$arr['res'][$cnt]['branch_name'] = $ft_sel['BranchName'];
+				$branch = $ft_sel['BranchId'];
+				$ssel = $con->prepare("SELECT * FROM branchstock,branches,products WHERE branchstock.BranchId=branches.BranchId AND branchstock.ProductId=products.ProductId AND branchstock.BranchId='$branch'");
+				$ssel->execute();
+				if ($ssel->rowCount()>=1) {
+					$arr['res'][$cnt]['is_found'] = 1;
+					$ccnntt = 0;
+					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+
+						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['BranchId'] = $ft_ssel['BranchId'];
+						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductInitialStock'] = $this->ProductInitialStock($ft_ssel['ProductId'],$branch);
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductIn'] = $this->ProductAllIn($ft_ssel['ProductId'],$branch);
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductOut'] = $this->ProductAllOut($ft_ssel['ProductId'],$branch);
+						$arr['res'][$cnt]['data'][$ccnntt]['ProductDate'] = $ft_ssel['ProductDate'];
+						$arr['res'][$cnt]['data'][$ccnntt]['Remaining'] = ($arr['res'][$cnt]['data'][$ccnntt]['ProductInitialStock']+$arr['res'][$cnt]['data'][$ccnntt]['ProductIn'])-$arr['res'][$cnt]['data'][$ccnntt]['ProductOut'];
+						$ccnntt++;
+					}
+				}else{
+					// $arr['is_found'][$cnt] = 0;
+					$arr['res'][$cnt]['is_found'] = 0;
+				}
+				$cnt++;
+			}
+		}else{
+			$arr['found'] = 0;
+		}
+		return print(json_encode($arr));
+	}
+
 
 	public function WarehouseStockReport($warehouse)			//====================================== WAREHOUSE STOCK REPORT
 	{
@@ -644,7 +891,7 @@ function branchStockProducts(){
 		$cnt = 0;
 		while ($ft_sell = $sell->fetch(PDO::FETCH_ASSOC)) {
 			$branchid = $ft_sell['BranchId'];
-			$sel = $con->prepare("SELECT * FROM products,productcategories,branchstock,branches WHERE products.ProductCategory=productcategories.CategoryId AND branchstock.ProductId=products.ProductId AND branchstock.BranchId=branches.BranchId  AND branchstock.BranchId='$branchid' AND products.ProductSatatus=1");
+			$sel = $con->prepare("SELECT * FROM products,productcategories,branchstock,branches WHERE products.ProductCategory=productcategories.CategoryId AND branchstock.ProductId=products.ProductId AND branchstock.BranchId=branches.BranchId  AND branchstock.BranchId='$branchid' AND products.ProductSatatus=1 GROUP BY products.ProductId");
 			$sel->execute();
 			if ($sel->rowCount()>=1) {
 				while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
@@ -905,11 +1152,11 @@ function AllClientsNumber(){
 
 function AllWarehouseQuantityPerCategory($category,$num){
 	$con = parent::connect();
-	$sel = $con->prepare("SELECT * FROM products,productcategories,mainstock,warehouses WHERE products.ProductCategory=productcategories.CategoryId AND mainstock.ProductId=products.ProductId AND mainstock.WarehouseId=warehouses.WarehouseId AND products.ProductSatatus=1 AND productcategories.CategoryName='$category'");
+	$sel = $con->prepare("SELECT * FROM products,productcategories,branchstock,warehouses WHERE products.ProductCategory=productcategories.CategoryId AND branchstock.ProductId=products.ProductId AND mainstock.WarehouseId=warehouses.WarehouseId AND products.ProductSatatus=1 AND productcategories.CategoryName='$category'");
 	$sel->execute();
 	if ($sel->rowCount()>=1) {
 		$cnt = 0;
-		$qnt1 = $qnt2 = $qnt3 = 0;
+		$qnt1 = $qnt2 = $qnt3 = $qnt4 = $qnt5 = $qnt6 = 0;
 		while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
 			if ($ft_sel['WarehouseId']==1) {
 				if ($ft_sel['IsProductBox'] == 0) {
@@ -941,6 +1188,36 @@ function AllWarehouseQuantityPerCategory($category,$num){
 					$ProductBoxPieces3 = $ft_sel['ProductBoxPieces'];
 					$qnt3 = $ft_sel['QuantityAfter']/$ProductBoxPieces3;
 				}
+			}else if ($ft_sel['WarehouseId']==4) {
+				if ($ft_sel['IsProductBox'] == 0) {
+					$IsProductBox4 = "Single";
+					$ProductBoxPieces4 = 1;
+					$qnt4 = $ft_sel['QuantityAfter'];
+				}else{
+					$IsProductBox4 = "Box";
+					$ProductBoxPieces4 = $ft_sel['ProductBoxPieces'];
+					$qnt4 = $ft_sel['QuantityAfter']/$ProductBoxPieces4;
+				}
+			}else if ($ft_sel['WarehouseId']==5) {
+				if ($ft_sel['IsProductBox'] == 0) {
+					$IsProductBox5 = "Single";
+					$ProductBoxPieces5 = 1;
+					$qnt5 = $ft_sel['QuantityAfter'];
+				}else{
+					$IsProductBox5 = "Box";
+					$ProductBoxPieces5 = $ft_sel['ProductBoxPieces'];
+					$qnt5 = $ft_sel['QuantityAfter']/$ProductBoxPieces5;
+				}
+			}else if ($ft_sel['WarehouseId']==6) {
+				if ($ft_sel['IsProductBox'] == 0) {
+					$IsProductBox6 = "Single";
+					$ProductBoxPieces6 = 1;
+					$qnt6 = $ft_sel['QuantityAfter'];
+				}else{
+					$IsProductBox6 = "Box";
+					$ProductBoxPieces6 = $ft_sel['ProductBoxPieces'];
+					$qnt6 = $ft_sel['QuantityAfter']/$ProductBoxPieces6;
+				}
 			}
 
 			$cnt++;
@@ -955,6 +1232,15 @@ function AllWarehouseQuantityPerCategory($category,$num){
 			case 3:
 				echo $qnt3;
 				break;
+				case 4:
+					echo $qnt4;
+					break;
+				case 5:
+					echo $qnt5;
+					break;
+				case 6:
+					echo $qnt6;
+					break;
 			default:
 				// code...
 				break;
@@ -1117,6 +1403,111 @@ function CountEmployeesSellingOrder()
 	$sel->execute();
 	return $sel->rowCount();
 }
+function BranckCertainProduct($branch,$product){
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT ((branchstock.AllIn+branchstock.InitialStock)-branchstock.AllOut) AS Remaining FROM branchstock WHERE branchstock.BranchId=? AND branchstock.ProductId=? AND branchstock.StockStatus=1");
+	$sel->bindValue(1,$branch);
+	$sel->bindValue(2,$product);
+	$sel->execute();
+	if($sel->rowCount()>=1){
+		$num = $sel->fetch(PDO::FETCH_ASSOC)['Remaining'];
+	}else{
+		$num = 0;
+	}
+	return $num;
+}
+
+function WarehouseCertainProduct($warehouse,$product){
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT ((mainstock.AllIn+mainstock.InitialStock)-mainstock.AllOut) AS Remaining FROM mainstock WHERE mainstock.WarehouseId=? AND mainstock.ProductId=? AND mainstock.StockStatus=1");
+	$sel->bindValue(1,$warehouse);
+	$sel->bindValue(2,$product);
+	$sel->execute();
+	if($sel->rowCount()>=1){
+		$num = $sel->fetch(PDO::FETCH_ASSOC)['Remaining'];
+	}else{
+		$num = 0;
+	}
+	return $num;
+}
+
+function AllProductsHeader(){
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT * FROM warehouses WHERE warehouses.WarehouseStatus=1");
+	$sel->execute();
+	if ($sel->rowCount()>=1) {
+			$cnt = 0;
+		while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+			$arr['Warehouse']['found'] = 1;
+			$arr['Warehouse']['res'][$cnt]['WarehouseId'] = $ft_sel['WarehouseId'];
+			$arr['Warehouse']['res'][$cnt]['WarehouseName'] = $ft_sel['WarehouseName'];
+			$cnt++;
+		}
+	}else{
+		$arr['Warehouse']['found'] = 0;
+	}
+
+	$sell = $con->prepare("SELECT * FROM branches WHERE branches.BranchStatus=1");
+	$sell->execute();
+	if ($sell->rowCount()>=1) {
+			$cntt = 0;
+		while ($ft_sell = $sell->fetch(PDO::FETCH_ASSOC)) {
+			$arr['Branch']['found'] = 1;
+			$arr['Branch']['res'][$cntt]['BranchId'] = $ft_sell['BranchId'];
+			$arr['Branch']['res'][$cntt]['BranchName'] = $ft_sell['BranchName'];
+			$cntt++;
+		}
+	}else{
+		$arr['Branch']['found'] = 0;
+	}
+	return print(json_encode($arr));
+}
+
+function StockProductsAll(){
+	$con = parent::connect();
+	$selll = $con->prepare("SELECT * FROM products WHERE products.ProductSatatus=1");
+	$selll->execute();
+	if ($selll->rowCount()>=1) {
+		$arr = [];
+		$cnt = 0;
+		$arr['found'] = 1;
+		while ($ft_selll = $selll->fetch(PDO::FETCH_ASSOC)) {
+			$pr_id = $ft_selll['ProductId'];
+			$pr_name = $ft_selll['ProductName'];
+			$arr['StockProduct']['found'][$cnt] = 1;
+			$arr['StockProduct'][$cnt]['ProductName'] = $pr_name;
+			$arr['StockProduct'][$cnt]['ProductId'] = $pr_id;
+
+			$sel = $con->prepare("SELECT * FROM warehouses WHERE warehouses.WarehouseStatus=1");
+			$sel->execute();
+			if ($sel->rowCount()>=1) {
+					$w = 0;
+				while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+					$warehouse = $ft_sel['WarehouseId'];
+					$arr['StockProduct'][$cnt]['WarehouseCnt']['res'][$w] = self::WarehouseCertainProduct($warehouse, $pr_id);
+					$w++;
+				}
+			}
+
+			$sell = $con->prepare("SELECT * FROM branches WHERE branches.BranchStatus=1");
+			$sell->execute();
+			if ($sell->rowCount()>=1) {
+					$b = 0;
+				while ($ft_sell = $sell->fetch(PDO::FETCH_ASSOC)) {
+					$branch = $ft_sell['BranchId'];
+					$arr['StockProduct'][$cnt]['BranchCnt']['res'][$b] = self::BranckCertainProduct($branch, $pr_id);
+					$b++;
+				}
+			}
+
+		$cnt++;
+		}
+	}else{
+		$arr['found'] = 0;
+	}
+			return print(json_encode($arr));
+
+}
 
 
 
@@ -1153,7 +1544,20 @@ if (isset($_POST['available_branches'])) {
 	if (isset($_POST['emp'])) {
 		$MainView->GeneralSallesReport($_POST['emp']);
 	}else{
-		$MainView->GeneralSallesReport(0);
+		if (isset($_POST['sortby'])) {
+			$MainView->GeneralSallesReportSortBy(0,$_POST['sortby']);
+			// echo "One";
+		}else{
+			$MainView->GeneralSallesReport(0);
+			// echo "Two";
+		}
+	}
+	
+}else if (isset($_POST['GeneralSallesReportBranch'])) {
+	if (isset($_POST['emp'])) {
+		$MainView->GeneralSallesReportBranch($_POST['emp']);
+	}else{
+		$MainView->GeneralSallesReportBranch(0);
 	}
 	
 }else if (isset($_POST['GeneralSallesReportRange'])) {
@@ -1163,8 +1567,21 @@ if (isset($_POST['available_branches'])) {
 		$MainView->GeneralSallesReportRange($_POST['dtFrom'],$_POST['dtTo'],0);
 	}
 	
-}else if (isset($_POST['GeneralStockReport'])) {
+}else if (isset($_POST['GeneralSallesReportRangeBranch'])) {
+	if (isset($_POST['emp'])) {
+		$MainView->GeneralSallesReportRangeBranch($_POST['dtFrom'],$_POST['dtTo'],$_POST['emp']);
+	}else{
+		$MainView->GeneralSallesReportRangeBranch($_POST['dtFrom'],$_POST['dtTo'],0);
+	}
+	
+}else if (isset($_POST['sortby'])) {
+	$MainView->GeneralSallesReportSortBy(0,$_POST['sortby']);
+	// echo "One";
+}
+else if (isset($_POST['GeneralStockReport'])) {
 	$MainView->GeneralStockReport();
+}else if (isset($_POST['GeneralStockReportBranch'])) {
+	$MainView->GeneralStockReportBranch();
 }else if (isset($_POST['WarehouseStockReport'])) {
 	$MainView->WarehouseStockReport($_POST['warehouse']);
 }else if (isset($_POST['AllMembersWIthStocks'])) {
@@ -1203,11 +1620,19 @@ if (isset($_POST['available_branches'])) {
 	$MainView->recently_registered_products();
 }else if (isset($_POST['AvailableMembersForStock'])) {
 	$MainView->AvailableMembersForStock();
+}else if (isset($_POST['BranckCertainProduct'])) {
+	$MainView->BranckCertainProduct($_POST['branch'],$_POST['product']);
+}else if (isset($_POST['WarehouseCertainProduct'])) {
+	$MainView->WarehouseCertainProduct($_POST['warehouse'],$_POST['product']);
+}else if (isset($_POST['AllProductsHeader'])) {
+	$MainView->AllProductsHeader();
+}else if (isset($_POST['StockProductsAll'])) {
+	$MainView->StockProductsAll();
 }
 
 
 
 
 
- ?>
+?>
 

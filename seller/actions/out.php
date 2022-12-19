@@ -6,7 +6,23 @@ require("../../assets/header3.php");
 if (!isset($_SESSION['sms_user_id'])) {
 echo "<script>window.location='../home'</script>";
 }
+
 ?>
+<style>
+  input{
+    background-color: #fff;
+  }
+  .form-control,th,td{
+    font-weight: bolder;text-align: center;font-size: 17px;
+  }
+  td{
+    font-weight: bold;
+  }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.2.min.js"></script>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -24,246 +40,63 @@ echo "<script>window.location='../home'</script>";
       </ol>
     </section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="box">
-            <div class="box-body">
-              <div id="respp" style="font-weight: bold;display: none;text-align: center;font-size: 20px"></div>
-              <!-- Date dd/mm/yyyy -->
-              <div class="form-group" id="product_idDiv">
-                <label>Select Product:</label>
-
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-trophy"></i> -->
-                  </div>
-                  <select class="form-control" id="product_id" style="font-weight: lighter;"><option selected="">Select Product</option></select>
-                </div>
-                <!-- /.input group -->
-              </div>
-
-              <div class="form-group" id="IsProductBoxDiv">
-                <label>Product Unit type:</label>
-
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-phone"></i> -->
-                  </div>
-                  <select class="form-control" id="IsProductBox" disabled>
-                    <option value=0 selected>Piece</option>
-                    <option value=1>Box</option>
-                  </select>
-                </div>
-                <!-- /.input group -->
-              </div>
-              <div class="form-group" id="soldPriceDiv">
-                <label>Sold Price:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="number" class="form-control" placeholder="Sold price" id="soldPrice">
-                </div>
-                <!-- /.input group -->
-              </div>
-
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-
-        <div class="col-md-3">
-          <div class="box">
-            <div class="box-body">
-              <div class="form-group" id="quantitySoldDiv">
-                <label>Quantity sold:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="number" class="form-control" placeholder="Quantity sold" id="quantitySold">
-                </div>
-                <!-- /.input group -->
-              </div>
-              <div class="form-group" id="soldPriceDiv">
-                <label>Invoice number:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="text" class="form-control" placeholder="Invoice Number" id="invNumbr">
-                </div>
-                <!-- /.input group -->
-              </div>
-              <!-- /.form group -->
-              <div class="form-group" id="paymentMethodDiv">
-                <label>Sales method:</label>
-
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-phone"></i> -->
-                  </div>
-                  <select class="form-control" id="paymentMethod">
-                    <option value=''>Select Sales method</option>
-                    <option value=1>Paid</option>
-                    <option value=0>Debt</option>
-                  </select>
-                </div>
-                <!-- /.input group -->
-              </div>
+    <div class="row col-3" style="border: 2px solid #030;min-height:600px;width:80%;margin-left:10%;background-color:#fff">
+      <div style="border: 2px solid #030;width:40%;">
+        <table style="width: 100%;">
+          <tr>
+            <td style="font-weight: bold;">SDC NO:</td>
+            <td><input type="text" class="form-control" placeholder="Invoice Number" id="invNumbr"></td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold;">CLIENT NAME:</td>
+            <td><input type="text" class="form-control" placeholder="Client Name" id="clientName"></td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold;">COMPANY NAME:</td>
+            <td><input type="text" class="form-control" placeholder="Company Name" id="companyName"></td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold;">MEMBER NAME:</td>
+            <td> <select name="mmbrName" id="mmbrName" class="form-control"></select></td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold;">PHONE:</td>
+            <td><input type="text" class="form-control" placeholder="Client phone" id="clientPhone"></td>
+          </tr>
+        </table>
 
 
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col (right) -->
-
-
-
-        <div class="col-md-3">
-          <div class="box">
-            <div class="box-body">
-              <!-- Date dd/mm/yyyy -->
-              <div class="form-group" id="clientNameDiv" style="margin-left: 10px">
-                <label>Client Name:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="text" class="form-control" placeholder="Client Name" id="clientName">
-                </div>
-                <!-- /.input group -->
-              </div>
-              <div class="form-group" id="clientNameDiv" style="margin-left: 10px">
-                <label>Company Name:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="text" class="form-control" placeholder="Company Name" id="companyName">
-                </div>
-                <!-- /.input group -->
-              </div>
-                <!-- /.input group -->
-              </div>
-              <div class="form-group" id="clientPhoneDiv" style="margin-left: 10px">
-                <label>Phone:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <input type="text" class="form-control" placeholder="Client phone" id="clientPhone">
-                </div>
-                <!-- /.input group -->
-              </div>
-
-              <div class="form-group">
+      </div>
+      <br><br><br>
+      <div>
+      
+      <table border="1" style="width:100%;margin-left:0%">
+          <thead>
+            <th>#</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+          </thead>
+          <tbody id="resp_newItm">
+            <td style="font-weight: bolder;text-align:center;font-size:large">*</td>
+            <td><select class="form-control" id="product_id" style="font-weight: lighter;">
+                  <option selected>Select Product</option>
+              </select>
+            </td>
+            <td>
+              <input type="number" class="form-control" placeholder="Quantity sold" id="quantitySold" oninput="return ttlAdd();">
+            </td>
+            <td>
+            <input type="number" class="form-control" placeholder="Sold price" id="soldPrice" oninput="return ttlAdd();">
+            </td>
+            <td><input type="number" readonly id="ttl" class="form-control" style="font-weight: bolder;text-align:center;font-size:large;background-color:#fff"> </input></td>
+          </tbody>
+        </table>
         
-                <div class="input-group">
-                </div>
-                <!-- /.input group -->
-              </div>
+      </div>
 
-              <!-- /.form group -->
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-<div>
-<div class="col-md-3">
-          <div class="box">
-            <div class="box-body">
-              <!-- Date dd/mm/yyyy -->
-
-
-              <div class="form-group" id="paymentWayPaidDiv" style="display: none;">
-                <label>Payment ways:</label>
-
-                <div class="input-group"
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-phone"></i> -->
-                  </div>
-                  <select class="form-control" id="paymentWayPaid">
-                    <option value=''>Select payment way</option>
-                    <option>By Cash</option>
-                    <option>By Momo</option>
-                  </select>
-                </div>
-                <!-- /.input group -->
-              </div>
-              <div class="form-group" id="paymentWayDebtDiv" style="display: none;margin-left: 10px">
-                <label>Debt ways:</label>
-
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-phone"></i> -->
-                  </div>
-                  <select class="form-control" id="paymentWayDebt">
-                    <option value=''>Select debt way</option>
-                    <option> Cheque</option>
-                    <option> OP</option>
-                    <option> Purchase order</option>
-                    <option> Bank Slip</option>
-                  </select>
-                </div>
-                <!-- /.input group -->
-              </div>
-
-
-
-              <div class="form-group" id="paymentWayPaidDiv" style="display: none;">
-                <label>Payment ways:</label>
-
-                <div class="input-group"
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-phone"></i> -->
-                  </div>
-                  <select class="form-control" id="paymentWayPaid">
-                    <option value=''>Select payment way</option>
-                    <option>By Cash</option>
-                    <option>By Momo</option>
-                  </select>
-                </div>
-              <div class="form-group" id="quantitySoldDiv">
-                <label>Member name:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <!-- <i class="fa fa-shopping-cart"></i> -->
-                  </div>
-                  <select name="mmbrName" id="mmbrName" class="form-control"></select>
-                </div>
-                <!-- /.input group -->
-              </div> 
-              <!-- <div class="form-group" id="quantitySoldDiv">
-                <label>Member's PIN:
-                <div class="input-group">
-                  <div class="input-group-addon">
-                    <i class="fa fa-shopping-cart"></i> -->
-                  <!-- </div>
-                  <input class="form-control" type="password" name="memberspin" id="memberspin">
-                </div> -->
-                <!-- /.input group -->
-              <!-- </div>  -->
-
-              <div class="form-group">
-        
-                <div class="input-group">
-                </div>
-                <!-- /.input group -->
-              </div>
-
-              <!-- /.form group -->
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-<div>
-
+        <br>
   <input type="hidden" id="hdn_product_id">
   <input type="hidden" id="hdn_IsProductBox">
   <input type="hidden" id="hdn_soldPrice">
@@ -278,30 +111,50 @@ echo "<script>window.location='../home'</script>";
   <input type="hidden" id="hdn_clientPhone">
   <input type="hidden" id="hdn_mmbrName">
   <input type="hidden" id="hdn_memberspin">
+  <input type="hidden" id="hdn_memberspin">
+  <input type="hidden" id="hhdndn_ttl">
+          <!-- <button class="btn btn-primary">Add Product</button> -->
+          <button class="btn btn-primary" style="font-weight: bold;margin:10px" id="AddNewTrans">Add Product</button>
+          
 
-  <button class="btn btn-primary" style="font-weight: bold;margin:10px" id="AddNewTrans">Add New</button>
-  <button class="btn btn-success" style="font-weight: bold;float:right;margin:10px" data-toggle="modal" data-target="#newRequestModal">Ok, Save</button>
-</div>
+          <div style="float: right;">
+            <h1 style="float: right;">Total:<span id="resttl">0</span>.<span style="font-size: 25px;">00</span>&nbsp;&nbsp;</h1>
+            <br>
+
+              <button style="float: right;" class="btn btn-default">
+              <select class="form-control" id="paymentMethod">
+                <option value=''>Select Payment</option>
+                <option value=1>Paid</option>
+                <option value=0>Debt</option>
+              </select>
+            </button>
+                  <input type="hidden" id="IsProductBox" value=0>
+            <br>
+            <button style="float: right;display:none" id="BtnpaymentWayPaid" class="btn btn-default">
+            <select class="form-control" id="paymentWayPaid">
+                    <option value=''>Payment way</option>
+                    <option>By Cash</option>
+                    <option>By Momo</option>
+            </select>
+            </button>
+            <br>
+            <button style="float: right;display:none" id="BtnpaymentWayDebt" class="btn btn-default">
+            <select class="form-control" id="paymentWayDebt">
+                    <option value=''>Select debt way</option>
+                    <option> Cheque</option>
+                    <option> OP</option>
+                    <option> Purchase order</option>
+                    <option> Bank Slip</option>
+            </select>
+            </button>
+            <br><br>
+            <button class="btn btn-success" id="ApproveBtn" style="font-weight: bold;float:right;margin:10px" data-toggle="modal" data-target="#newRequestModal"><b>Approve</b></button>
+            <button class='btn btn-success' id="SaveBtn" data-toggle="modal" data-target="#AllnewRequestModal" style="display: none;">Save</button>
+            
         </div>
-        <!-- /.col (right) -->
-
-<div class="content">
-  <div class="row">
-    <div class="col-12" style="background-color: #fff;">
-      <span id="resp_newItm"></span>
-      <span style="display: none;" id="respBtn">
-        <button class='btn btn-warning' onclick='window.location.reload();'>Reset</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;<button class='btn btn-success' data-toggle="modal" data-target="#AllnewRequestModal">Save</button>
-      </span>
+        <br><br> <button style="float: left;" onclick="return location.reload();" class="btn btn-warning"> <b>Reset</b> </button>
     </div>
-  </div>
-</div>
-        
 
-
-
-      </div>
-      <!-- /.row -->
       <!-- /.row -->
       <div class="modal fade" id="newRequestModal" tabindex="-1" role="dialog" aria-labelledby="newRequestModalLabel" aria-hidden="false" sty>
       <div class="modal-dialog" style="min-width: 50%" role="document">
@@ -311,6 +164,7 @@ echo "<script>window.location='../home'</script>";
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="false">×</span>
             </button>
+            <div id="resppp"></div>
           </div>
             <div class="modal-body">
       <div class="row">
@@ -326,7 +180,7 @@ echo "<script>window.location='../home'</script>";
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="password" class="form-control" id="memberspin" placeholder="Enter PIN"> 
+                  <input type="password" class="form-control" id="memberspin1" placeholder="Enter PIN"> 
                 </div>
                 <!-- /.input group -->
               </div>
@@ -338,7 +192,7 @@ echo "<script>window.location='../home'</script>";
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="password" class="form-control" id="re_memberspin" placeholder="Re-Enter PIN"> 
+                  <input type="password" class="form-control" id="re_memberspin1" placeholder="Re-Enter PIN"> 
                 </div>
                 <!-- /.input group -->
               </div>
@@ -375,11 +229,13 @@ echo "<script>window.location='../home'</script>";
 
 
 
-    <div class="modal fade" id="AllnewRequestModal" tabindex="-1" role="dialog" aria-labelledby="newRequestModalLabel" aria-hidden="false" sty>
+      <div class="modal fade" id="AllnewRequestModal" tabindex="-1" role="dialog" aria-labelledby="newRequestModalLabel" aria-hidden="false" sty>
       <div class="modal-dialog" style="min-width: 50%" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <center><h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="exampleModalLabel">Confirm with Member's PIN</h5></center>
+            <center><h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="exampleModalLabel">Confirm with Member's PIN<br>
+              <span id="respp_alltr" >rresp</span>
+            </h5></center>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="false">×</span>
             </button>
@@ -398,7 +254,7 @@ echo "<script>window.location='../home'</script>";
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="password" class="form-control" id="memberspin" placeholder="Enter PIN"> 
+                  <input type="password" class="form-control" id="memberspin2" placeholder="Enter PIN"> 
                 </div>
                 <!-- /.input group -->
               </div>
@@ -410,7 +266,7 @@ echo "<script>window.location='../home'</script>";
                   <div class="input-group-addon">
                     <!-- <i class="fa fa-trophy"></i> -->
                   </div>
-                  <input type="password" class="form-control" id="re_memberspin" placeholder="Re-Enter PIN"> 
+                  <input type="password" class="form-control" id="re_memberspin2" placeholder="Re-Enter PIN"> 
                 </div>
                 <!-- /.input group -->
               </div>
@@ -492,6 +348,31 @@ echo "<script>window.location='../home'</script>";
 <script src="../../assets/js/main.js"></script>
 
 <script>
+function ttlAdd(){
+  var  quantitySold = $("#quantitySold").val();
+
+  if(quantitySold=='' || quantitySold==null){
+    quantitySold=0;
+  }
+  quantitySold = parseInt(quantitySold);
+  var soldPrice = $("#soldPrice").val();
+  if(soldPrice=='' || soldPrice==null){
+    soldPrice=0;
+  }
+  soldPrice = parseInt(soldPrice);
+  var bfr = $("#hhdndn_ttl").val();
+  if(bfr=='' || bfr==null){
+    bfr=0;
+  }
+
+  var ttl = soldPrice*quantitySold;
+  ttl = parseInt(ttl);  
+  document.getElementById("ttl").value=ttl;
+  $("#hhdndn_ttl").html(ttl);
+
+  $("#resttl").html(Intl.NumberFormat().format(ttl+0));
+
+}
   $(function () {
     //Initialize Select2 Elements
     $('.select2').select2()
@@ -588,7 +469,7 @@ $.ajax({url:"../../main/view.php",
         $("#mmbrName").append("<option value='"+res.res[key].EmployeesId+"'>"+res.res[key].EmployeeNames+"</option>");
       }
     }else{
-      $("#mmbrName").html("<option value=''>No product found</option>");
+      $("#mmbrName").html("<option value=''>No Employee found</option>");
     }
     }
 });
@@ -610,9 +491,29 @@ $("#product_id").change(function(){
       });
 });
 
+$("#paymentMethod").change(function(){
+  var paymentMethod = $("#paymentMethod").val();
+  if (paymentMethod==1) {
+    $("#BtnpaymentWayPaid").css("display","block");
+    $("#BtnpaymentWayDebt").css("display","none");
+  }else{
+    $("#BtnpaymentWayDebt").css("display","block");
+    $("#BtnpaymentWayPaid").css("display","none");
+  }
+});
+
+$("#quantitySold").change(function(){
+
 
 });
 
+
+
+});
+$(function(){
+  $("#product_id").select2();
+  $("#mmbrName").select2();
+ }); 
 </script>
 </body>
 </html>

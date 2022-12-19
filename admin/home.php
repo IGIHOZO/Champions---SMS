@@ -707,7 +707,7 @@ $MainView = new MainView();
        immediately after the control sidebar -->
   <div class="control-sidebar-bg"></div>
 <?php 
-$labell = $_SESSION['available_warehouses_fo_label_chart'];
+$labell = @$_SESSION['available_warehouses_fo_label_chart'];
 ?>
 </div>
 <!-- ./wrapper -->
@@ -781,7 +781,7 @@ $labell = $_SESSION['available_warehouses_fo_label_chart'];
   var salesChartCanvas = $('#salesChart').get(0).getContext('2d');
   // This will get the first returned node in the jQuery collection.
   var salesChart       = new Chart(salesChartCanvas);
-  // console.log(<?=$labell?>);
+  console.log(<?=$labell?>);
   var salesChartData = {
     
 
@@ -829,16 +829,7 @@ $labell = $_SESSION['available_warehouses_fo_label_chart'];
         pointHighlightStroke: 'rgba(160,35,200,0.8)',
         data                : [<?=$MainView->AllWarehouseQuantityPerCategory('Networking',2)?>, <?=$MainView->AllWarehouseQuantityPerCategory('Networking',1)?>, <?=$MainView->AllWarehouseQuantityPerCategory('Networking',3)?>]
       },
-      {
-        label               : 'Digital Goods',
-        fillColor           : 'rgba(46,234,123,0.9)',
-        strokeColor         : 'rgba(46,234,123,0.9)',
-        pointColor          : 'rgba(46,234,123,0.9)',
-        pointStrokeColor    : 'rgba(46,234,123,0.9)',
-        pointHighlightFill  : 'rgba(46,234,123,0.9)',
-        pointHighlightStroke: 'rgba(46,234,123,0.9)',
-        data                : [<?=$MainView->AllWarehouseQuantityPerCategory('Digital Goods',2)?>, <?=$MainView->AllWarehouseQuantityPerCategory('Digital Goods',1)?>, <?=$MainView->AllWarehouseQuantityPerCategory('Digital Goods',3)?>]
-      },
+
       {
         label               : 'Stetioneries',
         fillColor           : 'rgba(100,141,18,0.9)',

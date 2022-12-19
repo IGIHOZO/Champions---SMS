@@ -104,12 +104,12 @@ class MainActions extends DBConnect
 		if ($sel->rowCount()>=1) {
 			$response = "already";
 		}else{
-			$ins = $con->prepare("INSERT INTO products(ProductName,ProductCategory,IsProductBox,ProductBoxPieces) VALUES(?,?,?,?)");
+			$ins = @$con->prepare("INSERT INTO products(ProductName,ProductCategory,IsProductBox,ProductBoxPieces) VALUES(?,?,?,?)");
 			$ins->bindValue(1,$name);
 			$ins->bindValue(2,$category);
 			$ins->bindValue(3,$IsProductBox);
 			$ins->bindValue(4,$ProductBoxPieces);
-			$ok = $ins->execute();
+			$ok = @$ins->execute();
 			if ($ok) {
 				$response = "success";
 			}else{
@@ -385,17 +385,47 @@ class MainActions extends DBConnect
 						$upd_head_stock = $con->prepare("UPDATE mainstock SET mainstock.QuantityAdded=(0-$added),mainstock.QuantityBefore=mainstock.QuantityAfter,mainstock.QuantityAfter=(mainstock.QuantityAfter-$added) WHERE mainstock.ProductId='$ProductId' AND  mainstock.WarehouseId='$warehouseId'");
 						$ok_upd_head_stock = $upd_head_stock->execute();
 						if ($ok_upd_head_stock) {
-							//====== UPDATE branchstock
-							$upd_branch_stock = $con->prepare("UPDATE branchstock SET branchstock.QuantityBefore=branchstock.QuantityAfter, branchstock.QuantityAdded='$added',branchstock.QuantityAfter=(branchstock.QuantityAfter+$added),branchstock.EmployeeUpdated='$session_user_id',branchstock.AllIn=(branchstock.AllIn+$added) WHERE branchstock.ProductId='$ProductId' AND branchstock.BranchId='$branch_id'");
-							$ok_upd_branch_stock = $upd_branch_stock->execute();
-							if ($ok_upd_branch_stock) {
-								$con->commit();
-								$response = "success";
-								$MainFunctions->SaveStockTransaction($ProductId,$session_user_id,1,2,$IsProductBox,$ft_sel_qnty_in_head["QuantityAfter"],(0-$added),($ft_sel_qnty_in_head["QuantityAfter"]-$added));
-								$MainFunctions->SaveStockTransaction($ProductId,$session_user_id,2,3,$IsProductBox,$ft_sel_branch['QuantityAfter'],$added,($ft_sel_branch['QuantityAfter']+$added));
+							//select in branchstock
+							$sbr = $con->prepare("SELECT * FROM branchstock WHERE branchstock.BranchId=? AND branchstock.ProductId=?");
+							$sbr->bindValue(1,$ProductId);
+							$sbr->bindValue(2,$branch_id);
+							$sbr->execute();
+							if ($sbr->rowCount()>=1) {
+								//====== UPDATE branchstock
+								$upd_branch_stock = $con->prepare("UPDATE branchstock SET branchstock.QuantityBefore=branchstock.QuantityAfter, branchstock.QuantityAdded='$added',branchstock.QuantityAfter=(branchstock.QuantityAfter+$added),branchstock.EmployeeUpdated='$session_user_id',branchstock.AllIn=(branchstock.AllIn+$added) WHERE branchstock.ProductId='$ProductId' AND branchstock.BranchId='$branch_id'");
+								$ok_upd_branch_stock = $upd_branch_stock->execute();
+								if ($ok_upd_branch_stock) {
+									$con->commit();
+									$response = "success";
+									$MainFunctions->SaveStockTransaction($ProductId,$session_user_id,1,2,$IsProductBox,$ft_sel_qnty_in_head["QuantityAfter"],(0-$added),($ft_sel_qnty_in_head["QuantityAfter"]-$added));
+									$MainFunctions->SaveStockTransaction($ProductId,$session_user_id,2,3,$IsProductBox,$ft_sel_branch['QuantityAfter'],$added,($ft_sel_branch['QuantityAfter']+$added));
+								}else{
+									$con->rollback();
+									$response='failed';
+								}
 							}else{
-								$con->rollback();
-								$response='failed';
+								//  == insert into BranchStock
+								$ins_branch_stock = $con->prepare("INSERT INTO branchstock(BranchId,ProductId,IsProductBox,ProductPrice,QuantityBefore,QuantityAdded,QuantityAfter,EmployeeUpdated,InitialStock) VALUES(?,?,?,?,?,?,?,?,?)");
+								$ins_branch_stock->bindValue(1,$branch_id);
+								$ins_branch_stock->bindValue(2,$ProductId);
+								$ins_branch_stock->bindValue(3,$IsProductBox);
+								$ins_branch_stock->bindValue(4,$ProductPrice);
+								$ins_branch_stock->bindValue(5,0);
+								$ins_branch_stock->bindValue(6,0);
+								$ins_branch_stock->bindValue(7,$added);
+								$ins_branch_stock->bindValue(8,$session_user_id);
+								$ins_branch_stock->bindValue(9,$added);
+								$ok_ins_branch_stock = $ins_branch_stock->execute();
+								if ($ok_ins_branch_stock) {
+									$con->commit();
+									$response = "success";
+									$MainFunctions->SaveStockTransaction($ProductId,$session_user_id,1,2,$IsProductBox,$ft_sel_qnty_in_head["QuantityAfter"],(0-$added),($ft_sel_qnty_in_head["QuantityAfter"]-$added));
+									$MainFunctions->SaveStockTransaction($ProductId,$session_user_id,2,3,$IsProductBox,0,$added,$added);
+								}else{
+									$con->rollback();
+									$response = "failed";
+									print_r($ins_branch_stock->errorInfo());
+								}
 							}
 						}else{
 							$con->rollback();
@@ -464,7 +494,6 @@ public function StockOut($product,$IsProductBox,$SoldPrice,$QuantitySold,$Client
 				case 1:
 					$QuantitySold *= $pro_added;
 					break;
-				
 				default:
 					$QuantitySold = $QuantitySold;
 					break;
@@ -536,6 +565,7 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 	$error_value = "";
 	// $con->beginTransaction();
 	for ($i=0; $i < count($arr_product); $i++) { 
+		$last = count($arr_product)-1;
 		$product = $arr_product[$i];
 		$IsProductBox = $arr_IsProductBox[$i];
 		$SoldPrice = $arr_SoldPrice[$i];
@@ -544,7 +574,7 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 		$CompanyName = $arr_CompanyName[$i];
 		$ClientPhone = $arr_ClientPhone[$i];
 		$MemberId = $arr_MemberId[$i];
-		$MemberPin = $arr_MemberPin[$i];
+		$MemberPin = $arr_MemberPin[0];
 		$PaymentMethod = $PaymentMethod;
 		$PaymentWay = $PaymentWay;
 		$invNumbr = $arr_invNumbr[$i];
@@ -604,7 +634,7 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 						$error_value = $response;
 					}
 				}else{
-					// $response = "Error".$ft_sel['st_qnt'];
+					// $response = "Error: ".$ft_sel['st_qnt'];
 					$response = "not_enough";
 					$error_holder = true;
 					$error_value = $response;
@@ -615,8 +645,8 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 				$error_value = $response;
 			}
 		}else{
-			// $response = "invalid";
-			$response = $MemberId."  -  ".$MemberPin."  -  ".$sel_auth->rowCount()." - ".$ClientName;
+			$response = "invalid";
+			// $response = $MemberId."  -  ".$MemberPin."  -  ".$sel_auth->rowCount()." - ".$ClientName;
 		}
 
 

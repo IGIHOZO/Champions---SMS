@@ -12,13 +12,11 @@ require("../../../assets/header4.php");
 
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
 
 
-<script>
-
-</script>
 <style type="text/css">
   .signupdiv{
       background: #fff;
@@ -97,9 +95,9 @@ require("../../../assets/header4.php");
                     <th>
                       Set-Type
                     </th>
-                    <th>
+               <!--      <th>
                       Box_Pieces
-                    </th>
+                    </th> -->
                     <th>
                       Date Ragistered
                     </th>
@@ -115,7 +113,7 @@ require("../../../assets/header4.php");
             var cnt = 1;
             for (const key in res.res) {
               // console.log(res.res[key]);
-              $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].ProductName+"</td> <td>"+res.res[key].ProductCategory+"</td><td>"+res.res[key].IsProductBox+"</td> <td>"+res.res[key].ProductBoxPieces+"</td><td>"+res.res[key].ProductDate+"</td> </tr>");
+              $("#report_div").append("<tr> <td>"+cnt+".</td> <td>"+res.res[key].ProductName+"</td> <td>"+res.res[key].ProductCategory+"</td><td>"+res.res[key].IsProductBox+"</td><td>"+res.res[key].ProductDate+"</td> </tr>");
               cnt++;
             }
           }else{
@@ -179,7 +177,7 @@ require("../../../assets/header4.php");
                 <!-- /.input group -->
               </div>
               <div class="form-group">
-                <label>Phone Unit type:</label>
+                <label>Unit type:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
@@ -325,8 +323,6 @@ function ExportToExcel(type, fn, dl) {
 
 });
  $(function(){
-  // $("#branch").css("width",30%);
-
   $("#category").select2();
  }); 
 </script>

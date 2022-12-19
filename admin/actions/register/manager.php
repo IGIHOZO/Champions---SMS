@@ -6,6 +6,7 @@ require("../../../assets/header4.php");
 ?>
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
 
@@ -70,7 +71,7 @@ require("../../../assets/header4.php");
           <div class="box" style="margin-left: 0.5%">
             <div class="box-body">
               <a class="btn btn-success" style="font-weight: bolder;">Export Excel</a>
-                <a style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">New Member</a>
+                <a style="float:right;" class="btn btn-primary" id="Next" data-toggle="modal" id="newGoalBtn" data-target="#newRequestModal">New Manager</a>
 
               <center><div style="text-align: center;margin: 0 auto">
                 <table class="table table-reaponsive" id="respTale">
@@ -205,7 +206,7 @@ require("../../../assets/header4.php");
                 <div class="input-group">
                   <button class="btn btn-success" style="font-weight: bold;" id="BranchEmployeeSignUp">Register</button>
                 </div>
-                <a href="product" style="float:right;" class="btn btn-primary" id="Next">Next</a>
+                <a href="employee" style="float:right;" class="btn btn-primary" id="Next">Next</a>
 
                 <!-- /.input group -->
               </div>
@@ -237,18 +238,18 @@ require("../../../assets/header4.php");
               <div id="respp" style="font-weight: bold;display: none;text-align: center;"></div>
               <!-- Date dd/mm/yyyy -->
               <div class="form-group">
-                <label>Member Name:</label>
+                <label>Manager Name:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">
                     <i class="fa fa-user"></i>
                   </div>
-                  <input type="text" class="form-control" placeholder="Member Name" id="upd_names">
+                  <input type="text" class="form-control" placeholder="Manager Name" id="upd_names">
                 </div>
 
               </div>
               <div class="form-group">
-                <label>Member >> Stock:</label>
+                <label>Manager >> Stock:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">

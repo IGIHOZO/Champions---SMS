@@ -5,6 +5,8 @@ error_reporting(E_ALL);
 require("../../../assets/header4.php");
 ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -72,7 +74,7 @@ require("../../../assets/header4.php");
                           <button class="btn btn-success" id="RegisterBranch">Register</button>
 
                         </div>
-                        <a href="employee"  style="float:right;" class="btn btn-primary">Next</a>
+                        <a href="manager"  style="float:right;" class="btn btn-primary">Next</a>
                         <!-- /.input group -->
                       </div>
             </div>

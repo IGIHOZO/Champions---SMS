@@ -203,6 +203,7 @@ session_start();
             </span>
           </a>
           <ul class="treeview-menu">
+          <li><a href="report/allProducts"><i class="fa fa-circle-o"></i> All Products</a></li>
             <li><a href="report/sales"><i class="fa fa-circle-o"></i> Sales Report</a></li>
             <li><a href="report/stock"><i class="fa fa-circle-o"></i> Stock Report</a></li>
             <li><a href="report/warehouse"><i class="fa fa-circle-o"></i> Warehouses</a></li>

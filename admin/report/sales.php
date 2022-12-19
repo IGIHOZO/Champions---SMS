@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("../../assets/header333.php");
 ?>
-
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -30,7 +30,19 @@ require("../../assets/header333.php");
               <span>
                 <table style="width: 100%;">
                   <tr>
-                    <td><button class="btn btn-success" style="font-weight: bolder;float:left;position:relative" onclick="return ExportToExcel()">Export Excel</button></td>
+                    <td><button class="btn btn-success" style="font-weight: bolder;float:left;position:relative" onclick="return ExportToExcel()">Export Excel</button>
+                    <select name="sortby" id="sortby" class="form-control" style="width: 40%;float:right;margin:0px 100px">
+                      <option value="" selected>Sort By</option>
+                      <option>Price</option>
+                      <option>Date</option>
+                      <option>Member</option>
+                      <option>Stock</option>
+                      <option>Payment</option>
+                      <option>Client</option>
+                      <option>Company</option>
+                      <option>Item</option>
+                    </select>
+                  </td>
                     <td>
                     <label for="dtto">From:</label>
                       <input type="date" name="dtfrom" id="dtfrom" class="form-control" style="position:relative"></td>
@@ -88,7 +100,10 @@ require("../../assets/header333.php");
 <!-- bootstrap color picker -->
 <script src="../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 <!-- bootstrap time picker -->
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script src="../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 <!-- SlimScroll -->
 <script src="../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- iCheck 1.0.1 -->
@@ -123,31 +138,40 @@ require("../../assets/header333.php");
           // console.log(res.res);
           if (res.found===1) {
             for (const key in res.res) {
-              $("#report_div").append("<table class='table table-responsive' id='"+key+"'> <thead> <th colspan='10'> <center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center> </th> </thead> "+
+              if (key==0) {
+              $("#report_div").html("<center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center>");
+                
+              }else{
+              $("#report_div").append("<center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center>");
+                
+              }
 
-                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
+              $("#report_div").append("<table class='table table-responsive' id='tbl"+key+"'> <thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>PaymentWay</th>  </thead> <tbody> ");
               if (res.res[key].is_found==0) {
-                $("#"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
+                $("#tbl"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
                 // $("#"+key+"").css("display","none");
               }else{
+                
                 let finalData = res.res[key].data;
                 let ll = finalData.length;
                   var ttlQntty = ttlSoldPrice = 0;
 
                 for (var i = 0; i < ll; i++) {
                   // console.log(res.res[key].data[i].SoldPrice);
-                $("#"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
+                $("#tbl"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
                 // $("#"+key+"").append("<tr> ");
+
                 ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
                 ttlSoldPrice+= parseInt(res.res[key].data[i].SoldPrice);
 
                 }
-                $("#"+key+"").append("<tr><tr><td></td></tr><th colspan='6'>Total</th> <th>"+Intl.NumberFormat().format(ttlQntty)+"</th> <th>"+Intl.NumberFormat().format(ttlSoldPrice)+"</th> <th colspan='2'></th><tr> ");
+              $("#tbl"+key+"").DataTable();
+                $("#report_div").append("</tbody></table>");
+                $("#tbl"+key+"").append("<th>Total</th> <th>"+Intl.NumberFormat().format(ttlQntty)+"</th> <th>"+Intl.NumberFormat().format(ttlSoldPrice)+"</th> <th colspan='2'></th><tr> ");
 
                 
 
               }
-
             }
           }else{
             // console.log("not found");
@@ -156,9 +180,9 @@ require("../../assets/header333.php");
           }
           }
       });
+      // $("#tbl0").DataTable();
 
   })
-
 $("#dtto").change(function(){
   var dtFrom = $("#dtfrom").val();
   var dtTo = $("#dtto").val();
@@ -201,6 +225,51 @@ $("#dtto").change(function(){
 
 });
 
+
+$("#sortby").change(function(){
+  var sortby = $("#sortby").val();
+  // var dtTo = $("#dtto").val();
+  if(sortby!=''){
+    $("#report_div").html("");
+    var GeneralSallesReportSortBy = true;
+      $.ajax({url:"../../main/view.php",
+        type:"POST",data:{GeneralSallesReportSortBy:GeneralSallesReportSortBy,sortby:sortby},cache:false,success:function(res){  
+          var res = JSON.parse(res);
+          // console.log(res.res);
+          if (res.found===1) {
+            for (const key in res.res) {
+              $("#report_div").append("<table class='table table-responsive' id='"+key+"'> <thead> <th colspan='10'> <center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center> </th> </thead> "+
+
+                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
+              if (res.res[key].is_found==0) {
+                $("#"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
+              }else{
+                let finalData = res.res[key].data;
+                let ll = finalData.length;
+                  var ttlQntty = ttlSoldPrice = 0;
+                for (var i = 0; i < ll; i++) {
+                  // console.log(res.res[key].data[i].SoldPrice);
+                $("#"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
+                // $("#"+key+"").append("<tr> ");
+                ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
+                ttlSoldPrice+= parseInt(res.res[key].data[i].SoldPrice);
+                }
+                $("#"+key+"").append("<tr><tr><td></td></tr><th colspan='6'>Total</th> <th>"+Intl.NumberFormat().format(ttlQntty)+"</th> <th>"+Intl.NumberFormat().format(ttlSoldPrice)+"</th> <th colspan='2'></th><tr> ");
+              }
+            }
+          }else{
+            // console.log("not found");
+            $("#report_div").html("<center><h3>No data available ...</h3></center>");
+            // $("#"+key+"").css("display","none");
+          }
+          }
+      });
+  }
+
+});
+
+
+
 function ExportToExcel(type, fn, dl) {
        var elt = document.getElementById('report_div');
        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
@@ -210,5 +279,6 @@ function ExportToExcel(type, fn, dl) {
     }
 
 </script>
+
 </body>
 </html>

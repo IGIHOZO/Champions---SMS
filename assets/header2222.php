@@ -180,6 +180,18 @@ echo "<script>window.location='../../'</script>";
         </li>
         <li class="treeview">
           <a href="#">
+            <i class="fa fa-folder"></i> <span>Reports</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="../reports/sales"><i class="fa fa-circle-o"></i>Sales</a></li>
+            <li><a href="../reports/stock"><i class="fa fa-circle-o"></i>Stock</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="#">
             <i class="fa fa-folder"></i> <span>Advanced</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
