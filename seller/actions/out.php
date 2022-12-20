@@ -145,6 +145,7 @@ echo "<script>window.location='../home'</script>";
                     <option> OP</option>
                     <option> Purchase order</option>
                     <option> Bank Slip</option>
+                    <option> Bank Transfer</option>
             </select>
             </button>
             <br><br>
