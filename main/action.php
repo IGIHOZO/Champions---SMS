@@ -505,7 +505,12 @@ public function StockOut($product,$IsProductBox,$SoldPrice,$QuantitySold,$Client
 				$ok_upd_branch = $upd_branch->execute();
 				if ($ok_upd_branch) {
 					//==== Update StockOut
-					$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber,MemberId) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+					if($PaymentMethod==0){
+						$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber,MemberId,Paid,UnPaid,PaymentStatus) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+					}else{
+						$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber,MemberId) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+					}
 					$QuantityRemaining = $ft_sel['st_qnt'] - $QuantitySold;
 					$upd_stockout->bindValue(1,$session_user_id);						$upd_stockout->bindValue(8,$QuantitySold);
 					$upd_stockout->bindValue(2,$branch);								$upd_stockout->bindValue(9,$QuantityRemaining);
@@ -515,6 +520,11 @@ public function StockOut($product,$IsProductBox,$SoldPrice,$QuantitySold,$Client
 					$upd_stockout->bindValue(5,$ft_sel['st_prc']); 						$upd_stockout->bindValue(13,$PaymentMethod);
 					$upd_stockout->bindValue(6,$SoldPrice);								$upd_stockout->bindValue(14,$PaymentWay);
 					$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);$upd_stockout->bindValue(16,$member);
+					if($PaymentMethod==0){
+						$upd_stockout->bindValue(17,0);
+						$upd_stockout->bindValue(18,$SoldPrice);
+						$upd_stockout->bindValue(19,0);
+					}
 					$ok = $upd_stockout->execute();
 	
 					if ($ok) {
@@ -605,7 +615,11 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 					$ok_upd_branch = $upd_branch->execute();
 					if ($ok_upd_branch) {
 						//==== Update StockOut
-						$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber,MemberId) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+						if($PaymentMethod==0){
+							$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber,MemberId,Paid,UnPaid,PaymentStatus) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+						}else{
+							$upd_stockout = $con->prepare("INSERT INTO stockout(EmployeeId,BranchId,ProductId,IsProductBox,ExpectedPrice,SoldPrice,QuantityBefore,QuantitySold,QuantityRemaining,ClientName,CompanyName,ClientPhone,PaymentMethod,PaymentWay,InvoiceNumber,MemberId) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+						}
 						$QuantityRemaining = $ft_sel['st_qnt'] - $QuantitySold;
 						$upd_stockout->bindValue(1,$session_user_id);						$upd_stockout->bindValue(8,$QuantitySold);
 						$upd_stockout->bindValue(2,$branch);								$upd_stockout->bindValue(9,$QuantityRemaining);
@@ -615,6 +629,11 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 						$upd_stockout->bindValue(5,$ft_sel['st_prc']); 						$upd_stockout->bindValue(13,$PaymentMethod);
 						$upd_stockout->bindValue(6,$SoldPrice);								$upd_stockout->bindValue(14,$PaymentWay);
 						$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);$upd_stockout->bindValue(16,$MemberId);
+						if($PaymentMethod==0){
+							$upd_stockout->bindValue(17,0);
+							$upd_stockout->bindValue(18,$SoldPrice);
+							$upd_stockout->bindValue(19,0);
+						}
 						$ok = $upd_stockout->execute();
 	
 						if ($ok) {
