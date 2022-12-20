@@ -281,6 +281,7 @@ class MainView extends DBConnect
 							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
 							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 						}
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -382,6 +383,7 @@ class MainView extends DBConnect
 							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
 							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 						}
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -457,6 +459,7 @@ class MainView extends DBConnect
 							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
 							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 						}
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -533,6 +536,7 @@ class MainView extends DBConnect
 							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
 							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 						}
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -610,6 +614,7 @@ class MainView extends DBConnect
 							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
 							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 						}
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];

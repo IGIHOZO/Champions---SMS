@@ -522,7 +522,7 @@ public function StockOut($product,$IsProductBox,$SoldPrice,$QuantitySold,$Client
 					$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);$upd_stockout->bindValue(16,$member);
 					if($PaymentMethod==0){
 						$upd_stockout->bindValue(17,0);
-						$upd_stockout->bindValue(18,$SoldPrice);
+						$upd_stockout->bindValue(18,($SoldPrice*$QuantitySold));
 						$upd_stockout->bindValue(19,0);
 					}
 					$ok = $upd_stockout->execute();
@@ -631,7 +631,7 @@ public function StockOutAllTrans($product,$IsProductBox,$SoldPrice,$QuantitySold
 						$upd_stockout->bindValue(7,$ft_sel['st_qnt']);						$upd_stockout->bindValue(15,$invNumbr);$upd_stockout->bindValue(16,$MemberId);
 						if($PaymentMethod==0){
 							$upd_stockout->bindValue(17,0);
-							$upd_stockout->bindValue(18,$SoldPrice);
+							$upd_stockout->bindValue(18,($SoldPrice*$QuantitySold));
 							$upd_stockout->bindValue(19,0);
 						}
 						$ok = $upd_stockout->execute();
@@ -1046,6 +1046,46 @@ public function deleteExpenses($idd)
 
 }
 
+public function updateUnPaidApprove($paid, $unpain, $stockout)
+{
+	$con = parent::connect();
+	$sel = $con->prepare("SELECT * FROM stockout WHERE stockout.StockOutId='$stockout'");
+		$sel->execute();
+		if ($sel->rowCount()>=1) {
+			$ft_sel = $sel->fetch(PDO::FETCH_ASSOC);
+			if ($paid==$ft_sel['UnPaid']) {
+				$newStatus = 1;
+			}else if($paid<$ft_sel['UnPaid']){
+				$newStatus = 0;
+			}else if ($paid<0) {
+				$newStatus = "Invalid";
+			}else{
+				$newStatus = "Too_much";
+			}
+			if ($newStatus==1 OR $newStatus==0) {
+				$ins = $con->prepare("UPDATE stockout SET stockout.Paid=?,stockout.UnPaid=?,stockout.PaymentStatus=? WHERE stockout.StockOutId=?");
+				$ins->bindValue(1,$paid);
+				$ins->bindValue(2,$unpain);
+				$ins->bindValue(3,$newStatus);
+				$ins->bindValue(4,$stockout);
+				$ok = $ins->execute();
+				if ($ok) {
+					echo "success";
+				}else{
+					echo "failed";
+				}
+			}else{
+				echo $newStatus;
+			}
+		}else{
+			echo "not_found";
+		}
+
+
+}
+
+
+
 
 
 
@@ -1124,6 +1164,8 @@ if (isset($_GET['BranchEmployeeSignUp'])) {
 	$MainActions->deleteImports($_POST['idd']);
 }elseif (isset($_POST['deleteExpenses'])) {
 	$MainActions->deleteExpenses($_POST['idd']);
+}elseif (isset($_POST['updateUnPaidApprove'])) {
+	$MainActions->updateUnPaidApprove($_POST['paid'],$_POST['unpaid'],$_POST['newStock']);
 }
 
 

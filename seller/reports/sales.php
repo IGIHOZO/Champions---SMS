@@ -55,6 +55,90 @@ require("../../assets/header22222.php");
 
         </div>
         <!-- /.col (right) -->
+              
+    <div class="modal fade" id="newRequestModal" tabindex="-1" role="dialog" aria-labelledby="newRequestModalLabel" aria-hidden="false" sty>
+      <div class="modal-dialog" style="min-width: 60%" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="font-weight: bold;font-size: 20px;" id="exampleModalLabel">Update Debt</h5>
+            <div id="respp" style="font-weight: bold;display: block;text-align: center;"></div>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span style="float:right;margin-top: -50px;" aria-hidden="false">×</span>
+            </button>
+          </div>
+          <!-- <div class="modal-body"> -->
+          <!-- <form action = "employee" method = "POST" name="sentMessage" id="contactForm" novalidate="novalidate"> -->
+
+            <div class="modal-body">
+            <!-- <section class="content"> -->
+      <div class="row">
+        <div class="col-md-9">
+          <div class="box" style="margin-left: 15%">
+            <div class="box-body">
+              <div class="form-group">
+                <label>Paid Amount:</label>
+
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-trophy"></i>
+                  </div>
+                  <input type="number" class="form-control" id="paid" oninput="return updateUnPaid();">
+                </div>
+
+              </div>
+              <div class="form-group">
+                <label>UnPaid Amount
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-shopping-cart"></i>
+                  </div>
+                  <input disabled type="number" class="form-control" id="unpaid">
+                </div>
+                <!-- /.input group -->
+              </div>
+              <div class="form-group">
+                <label>Total Debited
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-shopping-cart"></i>
+                  </div>
+                  <input disabled type="number" class="form-control" id="ttlDebited">
+                </div>
+                <!-- /.input group -->
+              </div>
+              <!-- /.form group -->
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        <!-- /.col (right) -->
+      </div>
+
+            </div>
+            <div class="modal-footer">
+              <div class="form-group">
+        
+                <div class="input-group">
+                  <button class="btn btn-success" style="font-weight: bold;" onclick=" return updateUnPaidApprove();">Update</button>
+                </div>
+                <a href="#" style="float:right;" class="btn btn-default" type="button" data-dismiss="modal" aria-label="Close">Close</a>
+
+                <!-- /.input group -->
+              </div>
+            </div>
+          <!-- </form> -->
+          <input type='hidden' id='holdStock'>
+          <input type='hidden' id='holdPaid'>
+          <input type='hidden' id='holdUnPaid'>
+          <input type='hidden' id='holdTtlAmount'>
+
+        </div>
+      </div>
+    </div>
+    
       </div>
       <!-- /.row -->
     </section>
@@ -66,7 +150,7 @@ require("../../assets/header22222.php");
 
   <!-- /.control-sidebar -->
   <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
+      immediately after the control sidebar -->
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
@@ -126,9 +210,9 @@ require("../../assets/header22222.php");
           // console.log(res.res);
           if (res.found===1) {
             for (const key in res.res) {
-              $("#report_div").append("<table class='table table-responsive' id='respTable'> <thead> <th colspan='10'> <center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center> </th> </thead> "+
+              $("#report_div").append("<table class='table table-responsive' id='respTable'> "+
 
-                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
+                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> <tbody>");
               if (res.res[key].is_found==0) {
                 $("#respTable").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
                 // $("#"+key+"").css("display","none");
@@ -138,14 +222,19 @@ require("../../assets/header22222.php");
                   var ttlQntty = ttlSoldPrice = 0;
 
                 for (var i = 0; i < ll; i++) {
-                  // console.log(res.res[key].data[i].SoldPrice);
-                $("#respTable").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
+                  var PaymentStatus = "";
+                  if  (res.res[key].data[i].PaymentStatus=="Not Yet"){
+                      PaymentStatus = "<a onclick='return beforeUpdateDebt("+res.res[key].data[i].StockOutId+","+res.res[key].data[i].Paid+","+res.res[key].data[i].UnPaid+","+(res.res[key].data[i].SoldPrice*res.res[key].data[i].QuantitySold)+");' href='#' style='color:red;text-decoration:underline' data-toggle='modal' id='newGoalBtn' data-target='#newRequestModal'> Not Yet</a>";
+                  }else{
+                      PaymentStatus = "<a onclick='return beforeUpdateDebt("+res.res[key].data[i].StockOutId+","+res.res[key].data[i].Paid+","+res.res[key].data[i].UnPaid+","+(res.res[key].data[i].SoldPrice*res.res[key].data[i].QuantitySold)+");' href='#' style='color:green;font-weight:bolder' data-toggle='modal' id='newGoalBtn' data-target='#newRequestModal'> All Paid</a>";
+                  }
+                $("#respTable").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td>  <td>"+res.res[key].data[i].Paid+"</td> <td>"+res.res[key].data[i].UnPaid+"</td> <td>"+PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
                 // $("#"+key+"").append("<tr> ");
                 ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
                 ttlSoldPrice+= parseInt(res.res[key].data[i].SoldPrice);
 
                 }
-                // $("#respTable").append("<tr><tr><td></td></tr><th>Total</th> <th>"+Intl.NumberFormat().format(ttlQntty)+"</th> <th>"+Intl.NumberFormat().format(ttlSoldPrice)+"</th> <th colspan='2'></th><tr> ");
+                $("#respTable").append("  </table><tbody>  ");
                 $('#respTable').DataTable();
 
                 
@@ -173,34 +262,33 @@ $("#dtto").change(function(){
       $.ajax({url:"../../main/view.php",
         type:"POST",data:{GeneralSallesReportRangeBranch:GeneralSallesReportRangeBranch,dtFrom:dtFrom,dtTo:dtTo},cache:false,success:function(res){  
           var res = JSON.parse(res);
-          // console.log(res.res);
           if (res.found===1) {
             for (const key in res.res) {
-              $("#report_div").append("<table class='table table-responsive' id='respTable'> <thead> <th colspan='10'> <center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center> </th> </thead> "+
-
-                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
+              $("#report_div").append("<table class='table table-responsive' id='respTable'> <thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> <tbody> ");
               if (res.res[key].is_found==0) {
-                $("#"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
+                $("#respTable").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
               }else{
                 let finalData = res.res[key].data;
                 let ll = finalData.length;
                   var ttlQntty = ttlSoldPrice = 0;
                 for (var i = 0; i < ll; i++) {
-                  // console.log(res.res[key].data[i].SoldPrice);
-                $("#respTable").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
-                // $("#"+key+"").append("<tr> ");
+                      var PaymentStatus = "";
+                  if  (res.res[key].data[i].PaymentStatus=="Not Yet"){
+                      PaymentStatus = "<a onclick='return beforeUpdateDebt("+res.res[key].data[i].StockOutId+","+res.res[key].data[i].Paid+","+res.res[key].data[i].UnPaid+","+(res.res[key].data[i].SoldPrice*res.res[key].data[i].QuantitySold)+");'  href='#' style='color:red;text-decoration:underline' data-toggle='modal' id='newGoalBtn' data-target='#newRequestModal'> Not Yet</a>";
+                  }else{
+                    PaymentStatus = "<a onclick='return beforeUpdateDebt("+res.res[key].data[i].StockOutId+","+res.res[key].data[i].Paid+","+res.res[key].data[i].UnPaid+","+(res.res[key].data[i].SoldPrice*res.res[key].data[i].QuantitySold)+");'  href='#' style='color:green;font-weight:bolder' data-toggle='modal' id='newGoalBtn' data-target='#newRequestModal'> All Paid</a>";
+                  }
+                  $("#respTable").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].Paid+"</td> <td>"+res.res[key].data[i].UnPaid+"</td> <td>"+PaymentStatus+"</td>  <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
                 ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
                 ttlSoldPrice+= parseInt(res.res[key].data[i].SoldPrice);
-                }
-                $("#respTable").append("<tr><tr><td></td></tr><th>Total</th> <th>"+Intl.NumberFormat().format(ttlQntty)+"</th> <th>"+Intl.NumberFormat().format(ttlSoldPrice)+"</th> <th colspan='2'></th><tr> ");
+                } 
+                $("#respTable").append("</tbody></table>");
                 $('#respTable').DataTable();
                 
               }
             }
           }else{
-            // console.log("not found");
             $("#report_div").html("<center><h3>No data available ...</h3></center>");
-            // $("#"+key+"").css("display","none");
           }
           }
       });
@@ -209,13 +297,70 @@ $("#dtto").change(function(){
 });
 
 function ExportToExcel(type, fn, dl) {
-       var elt = document.getElementById('report_div');
-       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
-       return dl ?
-         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
-         XLSX.writeFile(wb, fn || ('StockSalesReport.' + (type || 'xlsx')));
+      var elt = document.getElementById('report_div');
+      var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+      return dl ?
+        XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+        XLSX.writeFile(wb, fn || ('StockSalesReport.' + (type || 'xlsx')));
     }
+function beforeUpdateDebt(Stock, Paid, Unpaid, ttlAmount){
+  var newStock = document.getElementById("holdStock").value;
+  var newPaid = document.getElementById("holdPaid").value;
+  var newUnPaid = document.getElementById("holdUnPaid").value;
+  var newTtlDebited = document.getElementById("holdTtlAmount").value;
+  
+  document.getElementById("paid").value = Paid;
+  document.getElementById("unpaid").value = Unpaid;
+  document.getElementById("ttlDebited").value = ttlAmount;
+  document.getElementById("holdStock").value = Stock;
 
+}
+function updateUnPaid(){
+  var paid = document.getElementById("paid").value;
+  var unpaid =  document.getElementById("unpaid").value;
+  var ttldebited =  document.getElementById("ttlDebited").value;
+  
+  var newUpaid = ttldebited-paid;
+  document.getElementById("unpaid").value = newUpaid;
+}
+function updateUnPaidApprove(){
+  console.log("Clicked");
+  var paid = document.getElementById("paid").value;
+  var unpaid =  document.getElementById("unpaid").value;
+  var holdStock = document.getElementById("holdStock").value;
+  if(paid!='' && holdStock!='' && unpaid!=''){
+    var updateUnPaidApprove = true;
+    $.ajax({url:"../../main/action.php",
+        type:"POST",data:{updateUnPaidApprove:updateUnPaidApprove,paid:paid,unpaid:unpaid,newStock:holdStock},cache:false,success:function(res){  
+          switch (res) {
+            case 'Invalid':
+              $("#respp").html("<h3>Invalid Amount</h3>");
+              break;
+              case 'Too_much':
+                $("#respp").html("<h3 style='color:red;font-weight:bold;'>Amount paid is more than total debited ..</h3>");
+              break;
+              case 'failed':
+              
+              break;
+              case 'not_found':
+              
+              break;
+              case 'success':
+                $("#respp").html("<h3 style='color:green;font-weight:bold;'>Updated Successfully !</h3>");
+              break;
+          
+            default:
+              break;
+          }
+          }
+    });
+  }else{
+  console.log("paid: "+paid);
+  console.log("unpaid: "+unpaid);
+  console.log("holdStock: "+holdStock);
+
+  }
+}
 </script>
 </body>
 </html>
