@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("../../assets/header22222.php");
 ?>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">

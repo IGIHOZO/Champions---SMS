@@ -281,7 +281,7 @@ class MainView extends DBConnect
 						}
 						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
 						$ccnntt++;
 					}
 				}else{
@@ -365,7 +365,7 @@ class MainView extends DBConnect
 						}
 						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
 						$ccnntt++;
 					}
 				}else{
@@ -423,7 +423,7 @@ class MainView extends DBConnect
 						}
 						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
 						$ccnntt++;
 					}
 				}else{
@@ -482,7 +482,7 @@ class MainView extends DBConnect
 						}
 						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
 						$ccnntt++;
 					}
 				}else{
@@ -542,7 +542,7 @@ class MainView extends DBConnect
 						}
 						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = $ft_ssel['StockOutDate'];
+						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
 						$ccnntt++;
 					}
 				}else{
@@ -1509,6 +1509,70 @@ function StockProductsAll(){
 
 }
 
+public function filterMember($memberDetails)
+{
+	$str_arr = explode (" | ", $memberDetails); 
+	$client = '';
+	$company = '';
+	$telephone = '';
+		$cc = 0;
+	foreach ($str_arr as $value) {
+		// echo "$value <br>";
+		switch ($cc) {
+			case 0:
+				$client = $value;
+				break;
+			case 1:
+				$company = $value;
+				break;
+			case 2:
+				$telephone = $value;
+				break;
+			default:
+
+				break;
+		}
+			$cc++;
+	}
+	// echo $client.'<br>';
+	// echo $company.'<br>';
+	// echo $telephone.'<br>';
+	$con = parent::connect();
+				$ssel = $con->prepare("SELECT * FROM employees,products,stockout WHERE products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.ClientName LIKE '%$client%' AND stockout.CompanyName LIKE '%$company%' AND stockout.ClientPhone LIKE '%$telephone%'  ORDER BY stockout.StockOutId DESC");
+			$ssel->execute();
+			if ($ssel->rowCount()>=1) {
+				$arr['res']['is_found'] = 1;
+				$ccnntt = 0;
+				while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+					$arr['res']['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+					$arr['res']['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+					$arr['res']['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+					$arr['res']['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+					$arr['res']['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+					$arr['res']['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+					$arr['res']['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+					$arr['res']['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+					$arr['res']['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+					$arr['res']['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+					$arr['res']['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+					$arr['res']['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+					if ($ft_ssel['CompanyName']==NULL) {
+						$ft_ssel['CompanyName'] = '-';
+					}
+					$arr['res']['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+					$arr['res']['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+					$arr['res']['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+					$ccnntt++;
+				}
+			}else{
+				$arr['res']['is_found'] = 0;
+			}
+	return print(json_encode($arr));
+
+}
+
+
+
 
 
 
@@ -1628,6 +1692,8 @@ else if (isset($_POST['GeneralStockReport'])) {
 	$MainView->AllProductsHeader();
 }else if (isset($_POST['StockProductsAll'])) {
 	$MainView->StockProductsAll();
+}else if (isset($_POST['filterMember'])) {
+	$MainView->filterMember($_POST['memberDetails']);
 }
 
 

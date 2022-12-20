@@ -911,19 +911,19 @@ $("#SaveExpensesBranch").click(function(){
 	var ExpensePrice = $("#ExpensePrice").val();
 	var ExpenseQuantity = $("#ExpenseQuantity").val();
 	var ExpenseMethod = $("#ExpenseMethod").val();
-  
 	if (ExpenseName!='' && ExpensePrice!='' && ExpenseQuantity!='' && ExpenseMethod!='') {
-	  var SaveExpensesBranch = true;
+	var SaveExpensesBranch = true;
 		$.ajax({url:"../../main/action.php",
-		  type:"POST",data:{SaveExpensesBranch:SaveExpensesBranch,ExpenseName:ExpenseName,ExpensePrice:ExpensePrice,ExpenseQuantity:ExpenseQuantity,ExpenseMethod:ExpenseMethod},cache:false,success:function(res){  
+		type:"POST",data:{SaveExpensesBranch:SaveExpensesBranch,ExpenseName:ExpenseName,ExpensePrice:ExpensePrice,ExpenseQuantity:ExpenseQuantity,ExpenseMethod:ExpenseMethod},cache:false,success:function(res){  
 			window.location.reload();
 			// console.log(res);
 			}
 		});
 	}else{
-	  alert("Fill all fields ...");
+	alert("Fill all fields ...");
 	}
-  })
+})
+
 
 
 

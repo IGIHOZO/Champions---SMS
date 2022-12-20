@@ -24,6 +24,8 @@ td {
   vertical-align: middle;
 }
 </style>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -127,7 +129,6 @@ td {
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery 3 -->
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -145,7 +146,10 @@ td {
 <!-- bootstrap color picker -->
 <script src="../../bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 <!-- bootstrap time picker -->
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script src="../../plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 <!-- SlimScroll -->
 <script src="../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- iCheck 1.0.1 -->
@@ -210,6 +214,7 @@ td {
                   var ttlInitial = ttlTTLIn = ttlTTLOut = ttlRemaining = 0;
 
                 for (var i = 0; i < ll; i++) {
+
                   // console.log(res.res[key].data[i].SoldPrice);
                 $("#respTable").append("<tr> ");
                 var nn = '"'+res.res[key].data[i].product_name+'"';
@@ -225,6 +230,8 @@ td {
                 }
                 $("#respTable").append("<tfoot> <th colspan='3'>Total:</th> <th>"+Intl.NumberFormat().format(ttlInitial)+"</th> <th>"+Intl.NumberFormat().format(ttlTTLIn)+"</th> <th>"+Intl.NumberFormat().format(ttlTTLOut)+"</th> <th>"+Intl.NumberFormat().format(ttlRemaining)+"</th> <th></th> </tfoot> ")
                 $("#respTable").append(" </tbody> ");
+  $("#respTable").DataTable();
+                
 
               }
 
@@ -237,7 +244,6 @@ td {
       });
 
   })
-
 
 
 $("#initialStock").focusout(function(){

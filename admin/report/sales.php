@@ -2,9 +2,16 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require("../../assets/header333.php");
+require("../../main/drive/config.php");
+@require("../../assets/header333.php");
 ?>
-<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/jquery.min.js"></script>  
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />  
+<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />  
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>  
+
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -31,7 +38,20 @@ require("../../assets/header333.php");
                 <table style="width: 100%;">
                   <tr>
                     <td><button class="btn btn-success" style="font-weight: bolder;float:left;position:relative" onclick="return ExportToExcel()">Export Excel</button>
-                    <select name="sortby" id="sortby" class="form-control" style="width: 40%;float:right;margin:0px 100px">
+                    <td><select name="filterMember" onchange="return filterMember();" id="filterMember" class="form-control" style="width: 80%;float:right;margin:0px 100px">
+                        <?php
+                        $sel = $con->prepare("SELECT * FROM stockout GROUP BY ClientName,CompanyName,ClientPhone");
+                        $sel->execute();
+                        if ($sel->rowCount()>=1) {
+                          while ($ft_sel = $sel->fetch(PDO::FETCH_ASSOC)) {
+                            echo "<option>".$ft_sel['ClientName']." | ".$ft_sel['CompanyName']." | ".$ft_sel['ClientPhone']."</option>";
+                          }
+                        }
+                        ?>
+                    </select>
+                  </td>
+                    <td>
+                    <select name="sortby" id="sortby" class="form-control" style="width: 80%;float:right;margin:0px 100px">
                       <option value="" selected>Sort By</option>
                       <option>Price</option>
                       <option>Date</option>
@@ -118,6 +138,7 @@ require("../../assets/header333.php");
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 <!-- Page script -->
 <script>
+  $("#filterMember").select2();
 
   function PaymentMethod(method){
     switch(method){
@@ -271,13 +292,42 @@ $("#sortby").change(function(){
 
 
 function ExportToExcel(type, fn, dl) {
-       var elt = document.getElementById('report_div');
-       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
-       return dl ?
-         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
-         XLSX.writeFile(wb, fn || ('SalesReport.' + (type || 'xlsx')));
+      var elt = document.getElementById('report_div');
+      var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+      return dl ?
+        XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+        XLSX.writeFile(wb, fn || ('SalesReport.' + (type || 'xlsx')));
     }
 
+function filterMember() {
+	var memberDetails = document.getElementById("filterMember").value;
+	if (memberDetails!='' || memberDetails!=null) {
+		var filterMember = true;
+		$.ajax({url:"../../main/view.php",
+		type:"POST",data:{filterMember:filterMember,memberDetails:memberDetails},cache:false,success:function(res){  
+      var res = JSON.parse(res);
+      console.log(res.res.is_found);
+          if (res.res.is_found===1) {
+            $("#report_div").html("<table id='tbll' class='table table-responsive' ><thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>PaymentWay</th>  </thead> <tbody>");
+            var i = 0;
+            var ttlQntty = ttlSoldPrice = 0;
+            for (const key in res.res.data) {
+              // console.log(res.res.data[key]);
+                $("#tbll").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res.data[key].EmployeesId+"'>"+res.res.data[key].employee_name+"<a></td> <td>"+res.res.data[key].StockOutDate+"</td>  <td>"+res.res.data[key].product_name+"</td>  <td>"+res.res.data[key].ClientName+"</td>  <td>"+res.res.data[key].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res.data[key].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res.data[key].SoldPrice)+"</td> <td>"+res.res.data[key].PaymentWay+"</td> </tr> ");
+                ttlQntty+= parseInt(res.res.data[key].QuantitySold);
+                ttlSoldPrice+= parseInt(res.res.data[key].SoldPrice);
+                i ++;
+              }
+              $("#tbll").append("<tr><tr><td></td></tr><th colspan='6'>Total</th> <th>"+Intl.NumberFormat().format(ttlQntty)+"</th> <th>"+Intl.NumberFormat().format(ttlSoldPrice)+"</th> <th colspan='2'></th><tr> ");
+            $("#report_div").append("</tbody></table>");
+          $("#tbll").DataTable();
+          }else{
+            $("#report_div").html("<center><h3>No data available ...</h3></center>");
+          }
+			}
+		});
+	}
+}
 </script>
 
 </body>
