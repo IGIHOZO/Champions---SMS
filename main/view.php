@@ -264,6 +264,23 @@ class MainView extends DBConnect
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						if($ft_ssel['PaymentMethod']==0){
+							switch($ft_ssel['PaymentStatus']){
+								case 0:
+									$PaymentStatus = 'Not Yet';
+								break;
+								default:
+									$PaymentStatus = 'All Paid';
+								break;
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+						}else{
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+						}
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -348,6 +365,23 @@ class MainView extends DBConnect
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						if($ft_ssel['PaymentMethod']==0){
+							switch($ft_ssel['PaymentStatus']){
+								case 0:
+									$PaymentStatus = 'Not Yet';
+								break;
+								default:
+									$PaymentStatus = 'All Paid';
+								break;
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+						}else{
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+						}
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -406,6 +440,23 @@ class MainView extends DBConnect
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						if($ft_ssel['PaymentMethod']==0){
+							switch($ft_ssel['PaymentStatus']){
+								case 0:
+									$PaymentStatus = 'Not Yet';
+								break;
+								default:
+									$PaymentStatus = 'All Paid';
+								break;
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+						}else{
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+						}
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -452,12 +503,12 @@ class MainView extends DBConnect
 				$branch = $ft_sel['BranchId'];
 				if ($emp==0) {
 					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
-				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
-				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' ORDER BY stockout.StockOutId DESC");
+				AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
+				AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' ORDER BY stockout.StockOutId DESC");
 				}else{
 					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
-				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
-				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
+				AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
+				AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
 				}
 				
 				$ssel->execute();
@@ -465,6 +516,23 @@ class MainView extends DBConnect
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						if($ft_ssel['PaymentMethod']==0){
+							switch($ft_ssel['PaymentStatus']){
+								case 0:
+									$PaymentStatus = 'Not Yet';
+								break;
+								default:
+									$PaymentStatus = 'All Paid';
+								break;
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+						}else{
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+						}
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -512,12 +580,12 @@ class MainView extends DBConnect
 				$branch = $ft_sel['BranchId'];
 				if ($emp==0) {
 					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
-				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
-				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' ORDER BY stockout.StockOutId DESC");
+				AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
+				AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' ORDER BY stockout.StockOutId DESC");
 				}else{
 					$ssel = $con->prepare("SELECT * FROM employees,products,branches,stockout WHERE branches.BranchId=stockout.BranchId
-				 AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
-				 AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
+				AND products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.EmployeeId AND stockout.BranchId='$branch'
+			AND stockout.StockOutDate>='$dtFrom' AND stockout.StockOutDate<='$dtTo' AND employees.EmployeesId='$emp' ORDER BY stockout.StockOutId DESC");
 				}
 				
 				$ssel->execute();
@@ -525,6 +593,23 @@ class MainView extends DBConnect
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+						if($ft_ssel['PaymentMethod']==0){
+							switch($ft_ssel['PaymentStatus']){
+								case 0:
+									$PaymentStatus = 'Not Yet';
+								break;
+								default:
+									$PaymentStatus = 'All Paid';
+								break;
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+						}else{
+							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+						}
 						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
@@ -1544,6 +1629,23 @@ public function filterMember($memberDetails)
 				$arr['res']['is_found'] = 1;
 				$ccnntt = 0;
 				while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+					if($ft_ssel['PaymentMethod']==0){
+						switch($ft_ssel['PaymentStatus']){
+							case 0:
+								$PaymentStatus = 'Not Yet';
+							break;
+							default:
+								$PaymentStatus = 'All Paid';
+							break;
+						}
+						$arr['res']['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+						$arr['res']['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+						$arr['res']['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+					}else{
+						$arr['res']['data'][$ccnntt]['Paid'] = '-';
+						$arr['res']['data'][$ccnntt]['UnPaid'] = 'Paid';
+						$arr['res']['data'][$ccnntt]['PaymentStatus'] = '-';
+					}
 					$arr['res']['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 					$arr['res']['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
 					$arr['res']['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
