@@ -263,44 +263,68 @@ class MainView extends DBConnect
 				if ($ssel->rowCount()>=1) {
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
+					$invoice = [];
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
-						if($ft_ssel['PaymentMethod']==0){
-							switch($ft_ssel['PaymentStatus']){
-								case 0:
-									$PaymentStatus = 'Not Yet';
-								break;
-								default:
-									$PaymentStatus = 'All Paid';
-								break;
+						if (!in_array($ft_ssel['InvoiceNumber'], $invoice)) {
+							array_push($invoice, $ft_ssel['InvoiceNumber']);
+							$ft_ssel['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$ft_ssel['ClientName'] = $ft_ssel['ClientName'];
+							// $ft_ssel['employee_name'] = $ft_ssel['EmployeeNames'];
+							$ft_ssel['CompanyName'] = $ft_ssel['CompanyName'];
+							$ft_ssel['PaymentWay'] = $ft_ssel['PaymentWay'];
+							$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+							if($ft_ssel['PaymentMethod']==0){
+								switch($ft_ssel['PaymentStatus']){
+									case 0:
+										$PaymentStatus = 'Not Yet';
+									break;
+									default:
+										$PaymentStatus = 'All Paid';
+									break;
+								}
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							}else{
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 							}
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							$arr['res'][$cnt]['data'][$ccnntt]['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+							if ($ft_ssel['CompanyName']==NULL) {
+								$ft_ssel['CompanyName'] = '-';
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+							$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+							$ccnntt++;
+							
+							
 						}else{
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+							// $ft_ssel['InvoiceNumber'] = "<center></center>";
+							// $ft_ssel['ClientName'] = "<center></center>";
+							// // $ft_ssel['employee_name'] = "<center></center>";
+							// $ft_ssel['CompanyName'] = "<center></center>";
+							// $ft_ssel['PaymentWay'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = "<center></center>";
+							continue;
 						}
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
-						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
-						if ($ft_ssel['CompanyName']==NULL) {
-							$ft_ssel['CompanyName'] = '-';
-						}
-						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
-						$ccnntt++;
+						
 					}
 				}else{
 					// $arr['is_found'][$cnt] = 0;
@@ -365,44 +389,70 @@ class MainView extends DBConnect
 				if ($ssel->rowCount()>=1) {
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
+					$invoice = [];
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
-						if($ft_ssel['PaymentMethod']==0){
-							switch($ft_ssel['PaymentStatus']){
-								case 0:
-									$PaymentStatus = 'Not Yet';
-								break;
-								default:
-									$PaymentStatus = 'All Paid';
-								break;
+						if (!in_array($ft_ssel['InvoiceNumber'], $invoice)) {
+							array_push($invoice, $ft_ssel['InvoiceNumber']);
+							$ft_ssel['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$ft_ssel['ClientName'] = $ft_ssel['ClientName'];
+							// $ft_ssel['employee_name'] = $ft_ssel['EmployeeNames'];
+							$ft_ssel['CompanyName'] = $ft_ssel['CompanyName'];
+							$ft_ssel['PaymentWay'] = $ft_ssel['PaymentWay'];
+							$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+
+							if($ft_ssel['PaymentMethod']==0){
+								switch($ft_ssel['PaymentStatus']){
+									case 0:
+										$PaymentStatus = 'Not Yet';
+									break;
+									default:
+										$PaymentStatus = 'All Paid';
+									break;
+								}
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							}else{
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 							}
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+							if ($ft_ssel['CompanyName']==NULL) {
+								$ft_ssel['CompanyName'] = '-';
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+							$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+							$ccnntt++;
+							
 						}else{
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+							// $ft_ssel['InvoiceNumber'] = "<center></center>";
+							// $ft_ssel['ClientName'] = "<center></center>";
+							// // $ft_ssel['employee_name'] = "<center></center>";
+							// $ft_ssel['CompanyName'] = "<center></center>";
+							// $ft_ssel['PaymentWay'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = "<center></center>";
+							continue;
 						}
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
-						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
-						if ($ft_ssel['CompanyName']==NULL) {
-							$ft_ssel['CompanyName'] = '-';
-						}
-						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
-						$ccnntt++;
+						
+
 					}
 				}else{
 					// $arr['is_found'][$cnt] = 0;
@@ -441,44 +491,68 @@ class MainView extends DBConnect
 				if ($ssel->rowCount()>=1) {
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
+					$invoice = [];
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
-						if($ft_ssel['PaymentMethod']==0){
-							switch($ft_ssel['PaymentStatus']){
-								case 0:
-									$PaymentStatus = 'Not Yet';
-								break;
-								default:
-									$PaymentStatus = 'All Paid';
-								break;
+						if (!in_array($ft_ssel['InvoiceNumber'], $invoice)) {
+							array_push($invoice, $ft_ssel['InvoiceNumber']);
+							$ft_ssel['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$ft_ssel['ClientName'] = $ft_ssel['ClientName'];
+							// $ft_ssel['employee_name'] = $ft_ssel['EmployeeNames'];
+							$ft_ssel['CompanyName'] = $ft_ssel['CompanyName'];
+							$ft_ssel['PaymentWay'] = $ft_ssel['PaymentWay'];
+							$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+							if($ft_ssel['PaymentMethod']==0){
+								switch($ft_ssel['PaymentStatus']){
+									case 0:
+										$PaymentStatus = 'Not Yet';
+									break;
+									default:
+										$PaymentStatus = 'All Paid';
+									break;
+								}
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							}else{
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 							}
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							$arr['res'][$cnt]['data'][$ccnntt]['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+							if ($ft_ssel['CompanyName']==NULL) {
+								$ft_ssel['CompanyName'] = '-';
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+							$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+							$ccnntt++;
+							
+							
 						}else{
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+							// $ft_ssel['InvoiceNumber'] = "<center></center>";
+							// $ft_ssel['ClientName'] = "<center></center>";
+							// // $ft_ssel['employee_name'] = "<center></center>";
+							// $ft_ssel['CompanyName'] = "<center></center>";
+							// $ft_ssel['PaymentWay'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = "<center></center>";
+							continue;
 						}
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
-						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
-						if ($ft_ssel['CompanyName']==NULL) {
-							$ft_ssel['CompanyName'] = '-';
-						}
-						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
-						$ccnntt++;
+
 					}
 				}else{
 					// $arr['is_found'][$cnt] = 0;
@@ -518,44 +592,68 @@ class MainView extends DBConnect
 				if ($ssel->rowCount()>=1) {
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
+					$invoice = [];
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
-						if($ft_ssel['PaymentMethod']==0){
-							switch($ft_ssel['PaymentStatus']){
-								case 0:
-									$PaymentStatus = 'Not Yet';
-								break;
-								default:
-									$PaymentStatus = 'All Paid';
-								break;
+						if (!in_array($ft_ssel['InvoiceNumber'], $invoice)) {
+							array_push($invoice, $ft_ssel['InvoiceNumber']);
+							$ft_ssel['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$ft_ssel['ClientName'] = $ft_ssel['ClientName'];
+							// $ft_ssel['employee_name'] = $ft_ssel['EmployeeNames'];
+							$ft_ssel['CompanyName'] = $ft_ssel['CompanyName'];
+							$ft_ssel['PaymentWay'] = $ft_ssel['PaymentWay'];
+							$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+
+							if($ft_ssel['PaymentMethod']==0){
+								switch($ft_ssel['PaymentStatus']){
+									case 0:
+										$PaymentStatus = 'Not Yet';
+									break;
+									default:
+										$PaymentStatus = 'All Paid';
+									break;
+								}
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							}else{
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 							}
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+							if ($ft_ssel['CompanyName']==NULL) {
+								$ft_ssel['CompanyName'] = '-';
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+							$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+							$ccnntt++;
+							
 						}else{
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+							// $ft_ssel['InvoiceNumber'] = "<center></center>";
+							// $ft_ssel['ClientName'] = "<center></center>";
+							// // $ft_ssel['employee_name'] = "<center></center>";
+							// $ft_ssel['CompanyName'] = "<center></center>";
+							// $ft_ssel['PaymentWay'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = "<center></center>";
+							continue;
 						}
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
-						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
-						if ($ft_ssel['CompanyName']==NULL) {
-							$ft_ssel['CompanyName'] = '-';
-						}
-						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
-						$ccnntt++;
+
 					}
 				}else{
 					// $arr['is_found'][$cnt] = 0;
@@ -596,44 +694,68 @@ class MainView extends DBConnect
 				if ($ssel->rowCount()>=1) {
 					$arr['res'][$cnt]['is_found'] = 1;
 					$ccnntt = 0;
+					$invoice = [];
 					while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
-						if($ft_ssel['PaymentMethod']==0){
-							switch($ft_ssel['PaymentStatus']){
-								case 0:
-									$PaymentStatus = 'Not Yet';
-								break;
-								default:
-									$PaymentStatus = 'All Paid';
-								break;
+						if (!in_array($ft_ssel['InvoiceNumber'], $invoice)) {
+							array_push($invoice, $ft_ssel['InvoiceNumber']);
+							$ft_ssel['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$ft_ssel['ClientName'] = $ft_ssel['ClientName'];
+							// $ft_ssel['employee_name'] = $ft_ssel['EmployeeNames'];
+							$ft_ssel['CompanyName'] = $ft_ssel['CompanyName'];
+							$ft_ssel['PaymentWay'] = $ft_ssel['PaymentWay'];
+							$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+							if($ft_ssel['PaymentMethod']==0){
+								switch($ft_ssel['PaymentStatus']){
+									case 0:
+										$PaymentStatus = 'Not Yet';
+									break;
+									default:
+										$PaymentStatus = 'All Paid';
+									break;
+								}
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							}else{
+								$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
+								$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
+								$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
 							}
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+							$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+							$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+							$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+							$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+							$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+							$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+							$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+							if ($ft_ssel['CompanyName']==NULL) {
+								$ft_ssel['CompanyName'] = '-';
+							}
+							$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+							$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+							$ccnntt++;
+							
+							
 						}else{
-							$arr['res'][$cnt]['data'][$ccnntt]['Paid'] = '-';
-							$arr['res'][$cnt]['data'][$ccnntt]['UnPaid'] = 'Paid';
-							$arr['res'][$cnt]['data'][$ccnntt]['PaymentStatus'] = '-';
+							// $ft_ssel['InvoiceNumber'] = "<center></center>";
+							// $ft_ssel['ClientName'] = "<center></center>";
+							// // $ft_ssel['employee_name'] = "<center></center>";
+							// $ft_ssel['CompanyName'] = "<center></center>";
+							// $ft_ssel['PaymentWay'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = "<center></center>";
+							// $arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = "<center></center>";
+							continue;
 						}
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutId'] = $ft_ssel['StockOutId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
-						$arr['res'][$cnt]['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
-						$arr['res'][$cnt]['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
-						$arr['res'][$cnt]['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
-						$arr['res'][$cnt]['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
-						$arr['res'][$cnt]['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
-						if ($ft_ssel['CompanyName']==NULL) {
-							$ft_ssel['CompanyName'] = '-';
-						}
-						$arr['res'][$cnt]['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-						$arr['res'][$cnt]['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
-						$ccnntt++;
+
 					}
 				}else{
 					// $arr['is_found'][$cnt] = 0;
@@ -1509,12 +1631,12 @@ function BranckCertainProduct($branch,$product){
 
 function WarehouseCertainProduct($warehouse,$product){
 	$con = parent::connect();
-	$sel = $con->prepare("SELECT ((mainstock.AllIn+mainstock.InitialStock)-mainstock.AllOut) AS Remaining FROM mainstock WHERE mainstock.WarehouseId=? AND mainstock.ProductId=? AND mainstock.StockStatus=1");
+	$sel = $con->prepare("SELECT QuantityAfter FROM mainstock WHERE mainstock.WarehouseId=? AND mainstock.ProductId=? AND mainstock.StockStatus=1");
 	$sel->bindValue(1,$warehouse);
 	$sel->bindValue(2,$product);
 	$sel->execute();
 	if($sel->rowCount()>=1){
-		$num = $sel->fetch(PDO::FETCH_ASSOC)['Remaining'];
+		$num = $sel->fetch(PDO::FETCH_ASSOC)['QuantityAfter'];
 	}else{
 		$num = 0;
 	}
@@ -1633,7 +1755,29 @@ public function filterMember($memberDetails)
 			if ($ssel->rowCount()>=1) {
 				$arr['res']['is_found'] = 1;
 				$ccnntt = 0;
+				$invoice = [];
 				while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+					if (!in_array($ft_ssel['InvoiceNumber'], $invoice)) {
+						array_push($invoice, $ft_ssel['InvoiceNumber']);
+						$ft_ssel['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+						$ft_ssel['ClientName'] = $ft_ssel['ClientName'];
+						// $ft_ssel['employee_name'] = $ft_ssel['EmployeeNames'];
+						$ft_ssel['CompanyName'] = $ft_ssel['CompanyName'];
+						$ft_ssel['PaymentWay'] = $ft_ssel['PaymentWay'];
+						$arr['res']['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+						$arr['res']['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+
+						
+						
+					}else{
+						$ft_ssel['InvoiceNumber'] = "<center></center>";
+						$ft_ssel['ClientName'] = "<center></center>";
+						// $ft_ssel['employee_name'] = "<center></center>";
+						$ft_ssel['CompanyName'] = "<center></center>";
+						$ft_ssel['PaymentWay'] = "<center></center>";
+						$arr['res']['data'][$ccnntt]['employee_name'] = "<center></center>";
+						$arr['res']['data'][$ccnntt]['StockOutDate'] = "<center></center>";
+					}
 					if($ft_ssel['PaymentMethod']==0){
 						switch($ft_ssel['PaymentStatus']){
 							case 0:
@@ -1651,9 +1795,10 @@ public function filterMember($memberDetails)
 						$arr['res']['data'][$ccnntt]['UnPaid'] = 'Paid';
 						$arr['res']['data'][$ccnntt]['PaymentStatus'] = '-';
 					}
+					$arr['res']['data'][$ccnntt]['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
 					$arr['res']['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
 					$arr['res']['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
-					$arr['res']['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+					// $arr['res']['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
 					$arr['res']['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
 					$arr['res']['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
 					$arr['res']['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
@@ -1668,7 +1813,84 @@ public function filterMember($memberDetails)
 					}
 					$arr['res']['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
 					$arr['res']['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
-					$arr['res']['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+					// $arr['res']['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+					$ccnntt++;
+				}
+			}else{
+				$arr['res']['is_found'] = 0;
+			}
+	return print(json_encode($arr));
+
+}
+
+public function detailsOneInvoice($invoice)
+{
+
+	$con = parent::connect();
+				$ssel = $con->prepare("SELECT * FROM employees,products,stockout WHERE products.ProductId=stockout.ProductId AND employees.EmployeesId=stockout.MemberId AND stockout.InvoiceNumber='$invoice'  ORDER BY stockout.StockOutId DESC");
+			$ssel->execute();
+			if ($ssel->rowCount()>=1) {
+				$arr['res']['is_found'] = 1;
+				$ccnntt = 0;
+				$invoice = [];
+				while ($ft_ssel = $ssel->fetch(PDO::FETCH_ASSOC)) {
+					if (!in_array($ft_ssel['InvoiceNumber'], $invoice)) {
+						array_push($invoice, $ft_ssel['InvoiceNumber']);
+						$ft_ssel['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+						$ft_ssel['ClientName'] = $ft_ssel['ClientName'];
+						// $ft_ssel['employee_name'] = $ft_ssel['EmployeeNames'];
+						$ft_ssel['CompanyName'] = $ft_ssel['CompanyName'];
+						$ft_ssel['PaymentWay'] = $ft_ssel['PaymentWay'];
+						$arr['res']['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+						$arr['res']['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
+
+						
+						
+					}else{
+						$ft_ssel['InvoiceNumber'] = "<center></center>";
+						$ft_ssel['ClientName'] = "<center></center>";
+						// $ft_ssel['employee_name'] = "<center></center>";
+						$ft_ssel['CompanyName'] = "<center></center>";
+						$ft_ssel['PaymentWay'] = "<center></center>";
+						$arr['res']['data'][$ccnntt]['employee_name'] = "<center></center>";
+						$arr['res']['data'][$ccnntt]['StockOutDate'] = "<center></center>";
+					}
+					if($ft_ssel['PaymentMethod']==0){
+						switch($ft_ssel['PaymentStatus']){
+							case 0:
+								$PaymentStatus = 'Not Yet';
+							break;
+							default:
+								$PaymentStatus = 'All Paid';
+							break;
+						}
+						$arr['res']['data'][$ccnntt]['Paid'] = $ft_ssel['Paid'];
+						$arr['res']['data'][$ccnntt]['UnPaid'] = $ft_ssel['UnPaid'];
+						$arr['res']['data'][$ccnntt]['PaymentStatus'] = $PaymentStatus;
+					}else{
+						$arr['res']['data'][$ccnntt]['Paid'] = '-';
+						$arr['res']['data'][$ccnntt]['UnPaid'] = 'Paid';
+						$arr['res']['data'][$ccnntt]['PaymentStatus'] = '-';
+					}
+					$arr['res']['data'][$ccnntt]['InvoiceNumber'] = $ft_ssel['InvoiceNumber'];
+					$arr['res']['data'][$ccnntt]['product_id'] = $ft_ssel['ProductId'];
+					$arr['res']['data'][$ccnntt]['product_name'] = $ft_ssel['ProductName'];
+					// $arr['res']['data'][$ccnntt]['employee_name'] = $ft_ssel['EmployeeNames'];
+					$arr['res']['data'][$ccnntt]['EmployeesId'] = $ft_ssel['EmployeesId'];
+					$arr['res']['data'][$ccnntt]['IsProductBox'] = $ft_ssel['IsProductBox'];
+					$arr['res']['data'][$ccnntt]['ProductBoxPieces'] = $ft_ssel['ProductBoxPieces'];
+					$arr['res']['data'][$ccnntt]['StoskOut_IsProductBox'] = $ft_ssel['IsProductBox'];
+					$arr['res']['data'][$ccnntt]['ExpectedPrice'] = $ft_ssel['ExpectedPrice'];
+					$arr['res']['data'][$ccnntt]['SoldPrice'] = $ft_ssel['SoldPrice'];
+					$arr['res']['data'][$ccnntt]['QuantitySold'] = $ft_ssel['QuantitySold'];
+					$arr['res']['data'][$ccnntt]['PaymentMethod'] = $ft_ssel['PaymentMethod'];
+					$arr['res']['data'][$ccnntt]['PaymentWay'] = $ft_ssel['PaymentWay'];
+					if ($ft_ssel['CompanyName']==NULL) {
+						$ft_ssel['CompanyName'] = '-';
+					}
+					$arr['res']['data'][$ccnntt]['ClientName'] = $ft_ssel['ClientName'];
+					$arr['res']['data'][$ccnntt]['CompanyName'] = $ft_ssel['CompanyName'];
+					// $arr['res']['data'][$ccnntt]['StockOutDate'] = substr($ft_ssel['StockOutDate'], 0, 10);
 					$ccnntt++;
 				}
 			}else{
@@ -1801,6 +2023,8 @@ else if (isset($_POST['GeneralStockReport'])) {
 	$MainView->StockProductsAll();
 }else if (isset($_POST['filterMember'])) {
 	$MainView->filterMember($_POST['memberDetails']);
+}else if (isset($_POST['detailsOneInvoice'])) {
+	$MainView->detailsOneInvoice($_POST['invoice']);
 }
 
 

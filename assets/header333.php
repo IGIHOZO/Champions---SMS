@@ -209,7 +209,7 @@ echo "<script>window.location='../../'</script>";
           </a>
           <ul class="treeview-menu">
             <li><a href="allProducts"><i class="fa fa-circle-o"></i> All Products</a></li>
-            <li><a href="sales"><i class="fa fa-circle-o"></i> Sales Report</a></li>
+            <li><a href="sales"><i class="fa fa-circle-o"></i>Client Sales Report</a></li>
             <li><a href="stock"><i class="fa fa-circle-o"></i> Stock Report</a></li>
             <li><a href="warehouse"><i class="fa fa-circle-o"></i> Warehouses</a></li>
            <!--  <li><a href="../orient/head"><i class="fa fa-circle-o"></i>To Admin-Stock</a></li>

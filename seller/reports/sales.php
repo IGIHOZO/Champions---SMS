@@ -207,15 +207,13 @@ require("../../assets/header22222.php");
       $.ajax({url:"../../main/view.php",
         type:"POST",data:{GeneralSallesReportBranch:GeneralSallesReportBranch},cache:false,success:function(res){  
           var res = JSON.parse(res);
-          // console.log(res.res);
           if (res.found===1) {
             for (const key in res.res) {
               $("#report_div").append("<table class='table table-responsive' id='respTable'> "+
 
-                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> <tbody>");
+                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th> <th>InvoiceNumber</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> <tbody>");
               if (res.res[key].is_found==0) {
                 $("#respTable").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
-                // $("#"+key+"").css("display","none");
               }else{
                 let finalData = res.res[key].data;
                 let ll = finalData.length;
@@ -228,8 +226,7 @@ require("../../assets/header22222.php");
                   }else{
                       PaymentStatus = "<a onclick='return beforeUpdateDebt("+res.res[key].data[i].StockOutId+","+res.res[key].data[i].Paid+","+res.res[key].data[i].UnPaid+","+(res.res[key].data[i].SoldPrice*res.res[key].data[i].QuantitySold)+");' href='#' style='color:green;font-weight:bolder' data-toggle='modal' id='newGoalBtn' data-target='#newRequestModal'> All Paid</a>";
                   }
-                $("#respTable").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td>  <td>"+res.res[key].data[i].Paid+"</td> <td>"+res.res[key].data[i].UnPaid+"</td> <td>"+PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
-                // $("#"+key+"").append("<tr> ");
+                $("#respTable").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].InvoiceNumber+"</td>  <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td>  <td>"+res.res[key].data[i].Paid+"</td> <td>"+res.res[key].data[i].UnPaid+"</td> <td>"+PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
                 ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
                 ttlSoldPrice+= parseInt(res.res[key].data[i].SoldPrice);
 
@@ -243,11 +240,8 @@ require("../../assets/header22222.php");
 
             }
           }else{
-            // console.log("not found");
             $("#report_div").html("<center><h3>No data available ...</h3></center>");
-            // $("#"+key+"").css("display","none");
           }
-          // $('#respTable').DataTable();
           }
       });
 

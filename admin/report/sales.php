@@ -166,8 +166,9 @@ require("../../main/drive/config.php");
               $("#report_div").append("<center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center>");
                 
               }
+              // $("#report_div").append("<table class='table table-responsive' id='tbl"+key+"'> <thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>InvoiceNumber</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th> <th>PaymentWay</th>  </thead> <tbody> ");
 
-              $("#report_div").append("<table class='table table-responsive' id='tbl"+key+"'> <thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th> <th>PaymentWay</th>  </thead> <tbody> ");
+              $("#report_div").append("<table class='table table-responsive' id='tbl"+key+"'> <thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>InvoiceNumber</th>  <th>Date</th>  <th>ClientName</th>  <th>CompanyName</th> <th>PaymentStatus</th> <th>PaymentWay</th>  </thead> <tbody> ");
               if (res.res[key].is_found==0) {
                 $("#tbl"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
                 // $("#"+key+"").css("display","none");
@@ -179,7 +180,9 @@ require("../../main/drive/config.php");
 
                 for (var i = 0; i < ll; i++) {
                   // console.log(res.res[key].data[i].SoldPrice);
-                $("#tbl"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].Paid+"</td> <td>"+res.res[key].data[i].UnPaid+"</td> <td>"+res.res[key].data[i].PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
+                // $("#tbl"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].InvoiceNumber+"</td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td> <td>"+res.res[key].data[i].Paid+"</td> <td>"+res.res[key].data[i].UnPaid+"</td> <td>"+res.res[key].data[i].PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
+
+                $("#tbl"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td> <a href='#' onclick='return detailsOneInvoice(\""+res.res[key].data[i].InvoiceNumber+"\")'> "+res.res[key].data[i].InvoiceNumber+"</a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+res.res[key].data[i].PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
                 // $("#"+key+"").append("<tr> ");
 
                 ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
@@ -218,7 +221,7 @@ $("#dtto").change(function(){
             for (const key in res.res) {
               $("#report_div").append("<table class='table table-responsive' id='"+key+"'> <thead> <th colspan='10'> <center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center> </th> </thead> "+
 
-                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
+                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>InvoiceNumber</th>  <th>Date</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
               if (res.res[key].is_found==0) {
                 $("#"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
               }else{
@@ -227,7 +230,7 @@ $("#dtto").change(function(){
                   var ttlQntty = ttlSoldPrice = 0;
                 for (var i = 0; i < ll; i++) {
                   // console.log(res.res[key].data[i].SoldPrice);
-                $("#"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td>  <td>"+res.res[key].data[i].Paid+"</td> <td>"+res.res[key].data[i].UnPaid+"</td> <td>"+res.res[key].data[i].PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
+                $("#"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td> <a href='#' onclick='return detailsOneInvoice(\""+res.res[key].data[i].InvoiceNumber+"\")'> "+res.res[key].data[i].InvoiceNumber+"</a></td>  <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td> <td>"+res.res[key].data[i].PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
                 // $("#"+key+"").append("<tr> ");
                 ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
                 ttlSoldPrice+= parseInt(res.res[key].data[i].SoldPrice);
@@ -261,7 +264,7 @@ $("#sortby").change(function(){
             for (const key in res.res) {
               $("#report_div").append("<table class='table table-responsive' id='"+key+"'> <thead> <th colspan='10'> <center style='background-color:#eee;font-size:20px'>"+res.res[key].branch_name+" </center> </th> </thead> "+
 
-                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
+                "<thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>InvoiceNumber</th>  <th>Date</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> </table><tbody> ");
               if (res.res[key].is_found==0) {
                 $("#"+key+"").append("<tr> <td colspan='10'><center>No data found ...</center></td> </tr>");
               }else{
@@ -270,7 +273,7 @@ $("#sortby").change(function(){
                   var ttlQntty = ttlSoldPrice = 0;
                 for (var i = 0; i < ll; i++) {
                   // console.log(res.res[key].data[i].SoldPrice);
-                $("#"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td> <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].product_name+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res[key].data[i].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res[key].data[i].SoldPrice)+"</td>  <td>"+res.res[key].data[i].Paid+"</td> <td>"+res.res[key].data[i].UnPaid+"</td> <td>"+res.res[key].data[i].PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
+                $("#"+key+"").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res[key].data[i].EmployeesId+"'>"+res.res[key].data[i].employee_name+"<a></td>   <td> <a href='#' onclick='return detailsOneInvoice(\""+res.res[key].data[i].InvoiceNumber+"\")'> "+res.res[key].data[i].InvoiceNumber+"</a></td>  <td>"+res.res[key].data[i].StockOutDate+"</td>  <td>"+res.res[key].data[i].ClientName+"</td>  <td>"+res.res[key].data[i].CompanyName+"</td>  <td>"+res.res[key].data[i].PaymentStatus+"</td> <td>"+res.res[key].data[i].PaymentWay+"</td> </tr> ");
                 // $("#"+key+"").append("<tr> ");
                 ttlQntty+= parseInt(res.res[key].data[i].QuantitySold);
                 ttlSoldPrice+= parseInt(res.res[key].data[i].SoldPrice);
@@ -308,12 +311,12 @@ function filterMember() {
       var res = JSON.parse(res);
       console.log(res.res.is_found);
           if (res.res.is_found===1) {
-            $("#report_div").html("<table id='tbll' class='table table-responsive' ><thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> <tbody>");
+            $("#report_div").html("<table id='tbll' class='table table-responsive' ><thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>InvoiceNumber</th>  <th>Date</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> <tbody>");
             var i = 0;
             var ttlQntty = ttlSoldPrice = 0;
             for (const key in res.res.data) {
               // console.log(res.res.data[key]);
-                $("#tbll").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res.data[key].EmployeesId+"'>"+res.res.data[key].employee_name+"<a></td> <td>"+res.res.data[key].StockOutDate+"</td>  <td>"+res.res.data[key].product_name+"</td>  <td>"+res.res.data[key].ClientName+"</td>  <td>"+res.res.data[key].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res.data[key].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res.data[key].SoldPrice)+"</td> <td>"+res.res.data[key].Paid+"</td> <td>"+res.res.data[key].UnPaid+"</td> <td>"+res.res.data[key].PaymentStatus+"</td>  <td>"+res.res.data[key].PaymentWay+"</td> </tr> ");
+                $("#tbll").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res.data[key].EmployeesId+"'>"+res.res.data[key].employee_name+"<a></td> <td>"+res.res.data[key].InvoiceNumber+"</td>  <td>"+res.res.data[key].StockOutDate+"</td>  <td> <a href='#' onclick='return detailsOneInvoice(\""+res.res.data[key].InvoiceNumber+"\")'> "+res.res.data[key].InvoiceNumber+"</a></td>  <td>"+res.res.data[key].CompanyName+"</td> <td>"+res.res.data[key].PaymentStatus+"</td>  <td>"+res.res.data[key].PaymentWay+"</td> </tr> ");
                 ttlQntty+= parseInt(res.res.data[key].QuantitySold);
                 ttlSoldPrice+= parseInt(res.res.data[key].SoldPrice);
                 i ++;
@@ -327,6 +330,33 @@ function filterMember() {
 			}
 		});
 	}
+}
+
+function detailsOneInvoice(invoice){
+  var detailsOneInvoice = true;
+		$.ajax({url:"../../main/view.php",
+		type:"POST",data:{detailsOneInvoice:detailsOneInvoice,invoice:invoice},cache:false,success:function(res){  
+      var res = JSON.parse(res);
+      console.log(res.res.is_found);
+          if (res.res.is_found===1) {
+            $("#report_div").html("<table id='tbll' class='table table-responsive' ><thead  class='thead-dark'>  <th>#</th>  <th>MemberName</th>  <th>InvoiceNumber</th>  <th>Date</th>  <th>Product</th>  <th>ClientName</th>  <th>CompanyName</th>  <th>QuantitySold</th> <th>SoldPrice</th>  <th>Paid</th> <th>UnPaid</th> <th>PaymentStatus</th>  <th>PaymentWay</th>  </thead> <tbody>");
+            var i = 0;
+            var ttlQntty = ttlSoldPrice = 0;
+            for (const key in res.res.data) {
+              // console.log(res.res.data[key]);
+                $("#tbll").append("<tr><td>"+ (i+1) +"</td> <td><a style='color:black!important' target='_blank' href='emp_sales?emp="+res.res.data[key].EmployeesId+"'>"+res.res.data[key].employee_name+"<a></td> <td>"+res.res.data[key].InvoiceNumber+"</td>  <td>"+res.res.data[key].StockOutDate+"</td>  <td>"+res.res.data[key].product_name+"</td>  <td>"+res.res.data[key].ClientName+"</td>  <td>"+res.res.data[key].CompanyName+"</td>  <td>"+Intl.NumberFormat().format(res.res.data[key].QuantitySold)+"</td>   <td>"+Intl.NumberFormat().format(res.res.data[key].SoldPrice)+"</td> <td>"+res.res.data[key].Paid+"</td> <td>"+res.res.data[key].UnPaid+"</td> <td>"+res.res.data[key].PaymentStatus+"</td>  <td>"+res.res.data[key].PaymentWay+"</td> </tr> ");
+                ttlQntty+= parseInt(res.res.data[key].QuantitySold);
+                ttlSoldPrice+= parseInt(res.res.data[key].SoldPrice);
+                i ++;
+              }
+              $("#tbll").append("<tr><tr><td></td></tr><th colspan='6'>Total</th> <th>"+Intl.NumberFormat().format(ttlQntty)+"</th> <th>"+Intl.NumberFormat().format(ttlSoldPrice)+"</th> <th colspan='2'></th><tr> ");
+            $("#report_div").append("</tbody></table>");
+          $("#tbll").DataTable();
+          }else{
+            $("#report_div").html("<center><h3>No data available ...</h3></center>");
+          }
+			}
+		});
 }
 </script>
 
